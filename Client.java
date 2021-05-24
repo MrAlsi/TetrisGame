@@ -29,7 +29,7 @@ public class Client {
             }
             
             System.out.println("\nConnessione al server in corso...");
-            Socket socket = new Socket("212.124.174.25", 6789); //Creazione socket, connessione a localhost:1555
+            Socket socket = new Socket("78.134.45.68", 6789); //Creazione socket, connessione a localhost:1555
             System.out.println("\n- - - - Connesso alla chat - - - -\n");
             //Otteniamo gli stream
             InputStream socketInput = socket.getInputStream();
@@ -52,15 +52,20 @@ public class Client {
 
             //LOGICA APPLICATIVA - RICEZIONE MESSAGGI
             
-            while(message != null && !message.equals("quit")) { //Finché il server non chiude la connessione o non ricevi un messaggio "quit"...
+            while(message != null && !message.toLowerCase().equals("/quit")) { //Finché il server non chiude la connessione o non ricevi un messaggio "quit"...
                 message = fromServer.readLine(); //Leggi un messaggio inviato dal server (bloccante!)
                     if (message != null) {
+                        if (message.toLowerCase().equals("/commands")){
+                            System.out.println("\nCommands list:\n/quit to exit.\n/commands");
+                        }
                         System.out.println(message);
                     }
             }
 
+            System.out.println("\nUscita dal server in corso...");
             senderThread.interrupt(); //Chiedi al senderThread di fermarsi
             socket.close(); //Chiudi la connessione
+            System.out.println("\nUscita eseguita con successo");
 
         } catch (Exception e) {
             e.printStackTrace();
