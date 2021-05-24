@@ -18,48 +18,48 @@ public class Server {
 
     public static void main(String [] args) {
 
-    ServerSocket listener = null;
-    PrintWriter out = null;
-    int port = 6789;
+        ServerSocket listener = null;
+        PrintWriter out = null;
+        int port = 6789;
 
-    System.out.println("\nAvviando il server...");
+        System.out.println("\nAvviando il server...");
 
-        try {
- 
-            // server in ascolto sulla porta 6789
-            listener = new ServerSocket(port);
-            listener.setReuseAddress(true);
-            System.out.println("\n- - - Server on - - -");
-        
-            // creo il thread di comunicazione del server
-            // e lo avvio 
-            ServerSender serverSender = new ServerSender();
-            Thread senderThread = new Thread(serverSender);
-            senderThread.start();
+            try {
+    
+                // server in ascolto sulla porta 6789
+                listener = new ServerSocket(port);
+                listener.setReuseAddress(true);
+                System.out.println("\n- - - Server on - - -");
+            
+                // creo il thread di comunicazione del server
+                // e lo avvio 
+                ServerSender serverSender = new ServerSender();
+                Thread senderThread = new Thread(serverSender);
+                senderThread.start();
 
-            // ciclo per far connettere più client al server
-            while (true) {
-                for(int i = 0; i <= 8; i++){
+                // ciclo per far connettere più client al server
+                while (true) {
+                    for(int i = 0; i <= 8; i++){
 
-                    Socket socket = listener.accept();
+                        Socket socket = listener.accept();
 
-                    // creo un thread per ogni client così
-                    // da essere gestiti singolarmente
-                    ClientHandler clientSock = new ClientHandler(socket, "");
-                    new Thread(clientSock).start();
+                        // creo un thread per ogni client così
+                        // da essere gestiti singolarmente
+                        ClientHandler clientSock = new ClientHandler(socket, "");
+                        new Thread(clientSock).start();
 
+                    }
                 }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
             }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
     }
 
 
     // classe per la trasmissione di un messaggio inviato da un client agli altri client
-    private static void broadcastMessage(String message, String username) {
+    public static void broadcastMessage(String message, String username) {
 
 		for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
 
@@ -73,7 +73,7 @@ public class Server {
 
 
     // classe per la trasmissione di un messaggio inviato dal server agli altri client
-    private static void broadcastServerMessage(String message) {	
+    public static void broadcastServerMessage(String message) {	
 
         for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
 
@@ -82,7 +82,7 @@ public class Server {
         }
 	}
 
-
+    
     // classe per la gestione del thread del server
     public static class ServerSender implements Runnable {
 
@@ -141,9 +141,10 @@ public class Server {
             try {
                 //LOGICA APPLICATIVA - RICEZIONE MESSAGGI
                 String message = "";
-                while(message != null && !message.equals("quit")) { //Finché il client non chiude la connessione o non ricevi un messaggio "quit"...
+                while(message != null) { //Finché il client non chiude la connessione o non ricevi un messaggio "quit"...
                     message = fromClient.readLine(); //Leggi un messaggio inviato dal server (bloccante!)
                         if (message != null) {
+                            if (message.toLowerCase().equals("/quit")) break;
                             System.out.println("[" + username + "]: " + message);
                             broadcastMessage(String.format("[%s]: %s", username, message), username);
 
@@ -154,7 +155,14 @@ public class Server {
 
             } catch (Exception e) {
                 e.printStackTrace();
-            }          
+            } finally {
+				if (username != null) {
+					if (true) System.out.println(username + " is leaving");
+					connectedClients.remove(username);
+                    System.out.println(username + " has left");
+					broadcastServerMessage(username + " has left");
+				}
+			}         
         }      
     }
 }
