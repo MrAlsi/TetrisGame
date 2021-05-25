@@ -15,14 +15,15 @@ import java.util.Arrays;
 public class Server {
   
     private static HashMap<String, PrintWriter> connectedClients = new HashMap<>();
+    private static Boolean gameStarted = false;
 
     public static void main(String [] args) {
 
         ServerSocket listener = null;
         PrintWriter out = null;
         int port = 6789;
-
-        System.out.println("\nAvviando il server...");
+        
+        System.out.println("\nStarting the server...");
 
             try {
     
@@ -39,16 +40,34 @@ public class Server {
 
                 // ciclo per far connettere più client al server
                 while (true) {
-                    for(int i = 0; i <= 8; i++){
+                    while(gameStarted == false){
+                        while(connectedClients.size() < 8){
+                            if(gameStarted == true){
+                                break;
+                            }
+                            Socket socket = listener.accept();
 
-                        Socket socket = listener.accept();
+                            // creo un thread per ogni client così
+                            // da essere gestiti singolarmente
+                            ClientHandler clientSock = new ClientHandler(socket, "");
+                            new Thread(clientSock).start();
+                            System.out.println("Connected clients: " + connectedClients.size() + "/8");
+                            broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/8");
 
-                        // creo un thread per ogni client così
-                        // da essere gestiti singolarmente
-                        ClientHandler clientSock = new ClientHandler(socket, "");
-                        new Thread(clientSock).start();
-
+                        }
+                        gameStarted = true;
                     }
+
+                    while(gameStarted == true){
+                        System.out.println("\n\n- - - THE GAME IS STARTING - - -" );
+                        broadcastServerMessage("\n\n- - - THE GAME IS STARTING - - -");
+
+                        System.out.println("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
+                        broadcastServerMessage("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
+                        while(true){
+
+                        }
+                    }                    
                 }
 
             } catch (Exception e) {
@@ -95,7 +114,13 @@ public class Server {
             String userMessage = "";
             while(!Thread.interrupted()) { //Finché non ricevi un comando "quit" dall'utente...
                 userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
-                broadcastServerMessage("[SERVER]: " + userMessage);
+                if(userMessage.toLowerCase().equals("/start")){
+                    System.out.println("sono qui"); 
+                    gameStarted = true;
+                }
+                else if(userMessage != null && !userMessage.toLowerCase().equals("/start")){
+                    broadcastServerMessage("[SERVER]: " + userMessage);
+                }
 
             }
 
@@ -127,7 +152,9 @@ public class Server {
                 System.out.println("New client connected: " + username + " [" 
                     + clientSocket.getInetAddress().getHostAddress() 
                     + "]" );
-            
+                broadcastServerMessage("New client connected: " + username + " [" 
+                    + clientSocket.getInetAddress().getHostAddress() 
+                    + "]" );
                 connectedClients.put(username, out);
             
             } catch (Exception e) {
@@ -160,7 +187,9 @@ public class Server {
 					if (true) System.out.println(username + " is leaving");
 					connectedClients.remove(username);
                     System.out.println(username + " has left");
+                    System.out.println("Connected clients: " + connectedClients.size() + "/8");
 					broadcastServerMessage(username + " has left");
+                    broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/8");
 				}
 			}         
         }      
