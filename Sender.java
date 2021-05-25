@@ -15,8 +15,13 @@ public class Sender implements Runnable {
         String userMessage = "";
         while(!Thread.interrupted()) { //Finché non ricevi un comando "quit" dall'utente...
             userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
-            toOther.println(userMessage); //... e invialo al server
-            toOther.flush();
+            if (userMessage.toLowerCase().equals("/help")){
+                System.out.println("\n- - - Here is the command list - - -\n|     /quit to exit\n|     /players to check online players\n|     /nick to change nickname");
+            }
+            else if (userMessage != null && !userMessage.toLowerCase().equals("/commands" )){    
+                toOther.println(userMessage); //... e invialo al server
+                toOther.flush();
+            }
         }
 
         userInput.close();
