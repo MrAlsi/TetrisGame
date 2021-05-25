@@ -17,10 +17,10 @@ public class Client {
             int command = 0;
             while(usernameCheck == false){
                 Scanner sc = new Scanner(System.in);
-                System.out.print("\nInserisci username: ");
+                System.out.print("\nInsert username: ");
                 username = sc.nextLine();
-                System.out.println( "\n" + username + " e' stato impostato come username");
-                System.out.println( "\nCosa vuoi fare? \n1 - Accedere al server \n2 - Modificare l'username");
+                System.out.println( "\n" + username + " was set as your username.");
+                System.out.println( "\n- - - Options - - -\n1 - Connect to the server \n2 - Change username");
                 System.out.print( "1/2: ");
                 command = sc.nextInt();
                 if(command == 1){
@@ -28,9 +28,9 @@ public class Client {
                 }           
             }
             
-            System.out.println("\nConnessione al server in corso...");
+            System.out.println("\nConnecting to the server...");
             Socket socket = new Socket("78.134.45.68", 6789); //Creazione socket, connessione a localhost:1555
-            System.out.println("\n- - - - Connesso alla chat - - - -\n");
+            System.out.println("\n- - - - Connected! - - - -\n");
             //Otteniamo gli stream
             InputStream socketInput = socket.getInputStream();
             OutputStream socketOutput = socket.getOutputStream();
@@ -54,18 +54,15 @@ public class Client {
             
             while(message != null && !message.toLowerCase().equals("/quit")) { //Finché il server non chiude la connessione o non ricevi un messaggio "quit"...
                 message = fromServer.readLine(); //Leggi un messaggio inviato dal server (bloccante!)
-                    if (message != null) {
-                        if (message.toLowerCase().equals("/commands")){
-                            System.out.println("\nCommands list:\n/quit to exit.\n/commands");
-                        }
-                        System.out.println(message);
-                    }
+                if (message != null){
+                    System.out.println(message);
+                }               
             }
 
-            System.out.println("\nUscita dal server in corso...");
+            System.out.println("\nLeaving the server...");
             senderThread.interrupt(); //Chiedi al senderThread di fermarsi
             socket.close(); //Chiudi la connessione
-            System.out.println("\nUscita eseguita con successo");
+            System.out.println("\n- - Server left - -");
 
         } catch (Exception e) {
             e.printStackTrace();
