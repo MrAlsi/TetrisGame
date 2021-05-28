@@ -47,10 +47,14 @@ public class MainSchermata {
     }
     //codice scritta bella colorata tetris
     public static void Tetris(Panel panel){
-        Label tetris1=new Label("\n ______  ____ ______ ____  __  __ \n").setBackgroundColor(BLACK).setForegroundColor(TextColor.ANSI.RED);
-        Label tetris2=new Label(" | || | ||    | || | || \\\\ || (( \\\n" ).setBackgroundColor(BLACK).setForegroundColor(TextColor.ANSI.RED_BRIGHT);
-        Label tetris3=new Label("   ||   ||==    ||   ||_// ||  \\\\ \n").setBackgroundColor(BLACK).setForegroundColor(TextColor.ANSI.GREEN_BRIGHT);
-        Label tetris4=new Label("   ||   ||___   ||   || \\\\ || \\_))\n").setBackgroundColor(BLACK).setForegroundColor(TextColor.ANSI.BLUE_BRIGHT);
+        Label tetris1=new Label("\n ______  ____ ______ ____  __  __ \n").setBackgroundColor(BLACK).setForegroundColor
+                (TextColor.ANSI.RED);
+        Label tetris2=new Label(" | || | ||    | || | || \\\\ || (( \\\n" ).setBackgroundColor(BLACK).setForegroundColor
+                (TextColor.ANSI.RED_BRIGHT);
+        Label tetris3=new Label("   ||   ||==    ||   ||_// ||  \\\\ \n").setBackgroundColor(BLACK).setForegroundColor
+                (TextColor.ANSI.GREEN_BRIGHT);
+        Label tetris4=new Label("   ||   ||___   ||   || \\\\ || \\_))\n").setBackgroundColor(BLACK).setForegroundColor
+                (TextColor.ANSI.BLUE_BRIGHT);
 
         panel.addComponent(tetris1);
         panel.addComponent(tetris2);
@@ -67,7 +71,8 @@ public class MainSchermata {
         //richiamo scritta bella
         Tetris(panel);
 
-        Label lab=new Label("Vuoi accedere come Server o Client?\n").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+        Label lab=new Label("Vuoi accedere come Server o Client?\n").setBackgroundColor(BLACK).setForegroundColor(
+                coloreLabel);
         panel.addComponent(lab);
 
 
@@ -129,6 +134,35 @@ public class MainSchermata {
                 }).addTo(panel);
 
             }
+        }).addTo(panel);
+        Label felice=new Label("O vuoi farci felici e leggere chi siano i creatori del gioco? ;)\n").setBackgroundColor
+                (BLACK).setForegroundColor(coloreLabel);
+        panel.addComponent(felice);
+        //bottone per accedere al regolamento e ai crediti(sarebbe carino che se un client sta guardando il regolamento
+        // il server non possa avviare il gioco)
+        new Button("Crediti e regolamento", new Runnable(){
+            @Override
+            public void run() {
+                panel.removeAllComponents();
+                panel.setFillColorOverride(BLACK);
+                Label regolamento=new Label("Ciao, queste sono le regole del nostro gioco:\n Si gioca da 2 fino a " +
+                        "un massimo di 8 giocatori,...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label crediti=new Label("\n Questo gioco è stato realizzato da:\n Gabriel Riccardo Alsina,\n " +
+                        "Carlotta Carboni,\n Luca Palmieri,\n Alssandro Pasi.").setBackgroundColor(BLACK).setForegroundColor
+                        (coloreLabel);
+                panel.addComponent(regolamento);
+                panel.addComponent(crediti);
+                //bottone per tornare alla home
+                new Button("Indietro",new Runnable(){
+                    @Override
+                    public void run(){
+                        panel.removeAllComponents();
+                        panel.setFillColorOverride(BLACK);
+                        Schermata(panel);
+                    }
+                }).addTo(panel);
+            }
+
         }).addTo(panel);
 
     }
