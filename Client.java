@@ -29,7 +29,7 @@ public class Client {
             }
             
             System.out.println("\nConnecting to the server...");
-            Socket socket = new Socket("78.134.45.68", 6789); //Creazione socket, connessione a localhost:1555
+            Socket socket = new Socket("78.134.78.200", 6789); //Creazione socket, connessione a localhost:1555
             System.out.println("\n- - - - Connected! - - - -\n");
             //Otteniamo gli stream
             InputStream socketInput = socket.getInputStream();
