@@ -12,68 +12,58 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.Arrays;
 
-public class Server {
+public class Server implements Runnable {
   
     private static HashMap<String, PrintWriter> connectedClients = new HashMap<>();
-    private static Boolean gameStarted = false;
+    private static ConnectionListener connectionListener = new ConnectionListener();
+    private static Thread listenerThread = new Thread(connectionListener);
+    private static Boolean gameStart = false;
+    protected Thread runningThread= null;
 
-    public static void main(String [] args) {
+    public static void main(String[] args){
+        Server server = new Server();
+        new Thread(server).start();
 
-        ServerSocket listener = null;
-        PrintWriter out = null;
-        int port = 6789;
+    }
+
+    public void run() {
+        
+        synchronized(this){
+            this.runningThread = Thread.currentThread();
+        }
         
         System.out.println("\nStarting the server...");
 
-            try {
-    
-                // server in ascolto sulla porta 6789
-                listener = new ServerSocket(port);
-                listener.setReuseAddress(true);
-                System.out.println("\n- - - Server on - - -");
+        try {
             
-                // creo il thread di comunicazione del server
-                // e lo avvio 
-                ServerSender serverSender = new ServerSender();
-                Thread senderThread = new Thread(serverSender);
-                senderThread.start();
+            listenerThread.start();
+            // creo il thread di comunicazione del server
+            // e lo avvio 
+            ServerSender serverSender = new ServerSender();
+            Thread senderThread = new Thread(serverSender);
+            senderThread.start();
 
-                // ciclo per far connettere più client al server
-                while (true) {
-                    while(gameStarted == false){
-                        while(connectedClients.size() < 8){
-                            if(gameStarted == true){
-                                break;
-                            }
-                            Socket socket = listener.accept();
+            // ciclo per far connettere più client al server
+            System.out.println("\n- - - Server on - - -");
+            while(true){  
+                // commenta easterEgg per distrugere il server
+                String easterEgg = new String();  
+                if(gameStart == true || connectedClients.size() > 7){
+                    gameStart = true;
+                    System.out.println("\n\n- - - THE GAME IS STARTING - - -" );
+                    broadcastServerMessage("\n\n- - - THE GAME IS STARTING - - -");
 
-                            // creo un thread per ogni client così
-                            // da essere gestiti singolarmente
-                            ClientHandler clientSock = new ClientHandler(socket, "");
-                            new Thread(clientSock).start();
-                            System.out.println("Connected clients: " + connectedClients.size() + "/8");
-                            broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/8");
+                    System.out.println("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
+                    broadcastServerMessage("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
+                    while(gameStart){
 
-                        }
-                        gameStarted = true;
                     }
-
-                    while(gameStarted == true){
-                        System.out.println("\n\n- - - THE GAME IS STARTING - - -" );
-                        broadcastServerMessage("\n\n- - - THE GAME IS STARTING - - -");
-
-                        System.out.println("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
-                        broadcastServerMessage("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
-                        while(true){
-
-                        }
-                    }                    
                 }
+            }                    
+        } catch (Exception e) {
 
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+        }
     }
 
 
@@ -101,6 +91,36 @@ public class Server {
         }
 	}
 
+
+    public static class ConnectionListener implements Runnable {
+
+        public ConnectionListener() {
+            
+        }
+        @Override
+        public void run() {
+            try{
+                ServerSocket listener = null;
+                int port = 6789;
+                listener = new ServerSocket(port);
+                listener.setReuseAddress(true);
+                while(true){
+                    Socket socket = listener.accept();
+                    // creo un thread per ogni client così
+                    // da essere gestiti singolarmente
+                    ClientHandler clientSock = new ClientHandler(socket, "");
+                    new Thread(clientSock).start();
+                    System.out.println("Connected clients: " + connectedClients.size() + "/8");
+                    broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/8"); 
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }     
+        }
+    }
+
+
+
     
     // classe per la gestione del thread del server
     public static class ServerSender implements Runnable {
@@ -108,23 +128,20 @@ public class Server {
         public ServerSender() {
 
         }
-
+        @Override
         public void run() {
-            Scanner userInput = new Scanner(System.in);
-            String userMessage = "";
-            while(!Thread.interrupted()) { //Finché non ricevi un comando "quit" dall'utente...
-                userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
-                if(userMessage.toLowerCase().equals("/start")){
-                    System.out.println("sono qui"); 
-                    gameStarted = true;
+            Scanner serverInput = new Scanner(System.in);
+            String serverMessage = "";
+            while(true) { //Finché non ricevi un comando "quit" dall'utente...
+                serverMessage = serverInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
+                if(serverMessage.equals("/start")){ 
+                    listenerThread.interrupt();
+                    gameStart = true;
                 }
-                else if(userMessage != null && !userMessage.toLowerCase().equals("/start")){
-                    broadcastServerMessage("[SERVER]: " + userMessage);
+                else if(serverMessage != null && !serverMessage.toLowerCase().equals("/start")){
+                    broadcastServerMessage("[SERVER]: " + serverMessage);
                 }
-
             }
-
-            userInput.close();
         }
     }
 
@@ -162,7 +179,7 @@ public class Server {
             }     
 
         }
-
+        @Override
         public void run()
         {           
             try {
