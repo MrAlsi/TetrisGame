@@ -2,6 +2,7 @@ package com.company;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
+
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.Button;
@@ -16,12 +17,16 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 import static com.googlecode.lanterna.TextColor.ANSI.BLUE;
 
 public class MainSchermata {
     public static void main(String[] args) throws IOException {
+
 
         //codice per avere uno chermo
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
@@ -67,8 +72,7 @@ public class MainSchermata {
         final TextColor coloreLabel=TextColor.ANSI.GREEN_BRIGHT;
         Label testo=new Label("Benvenuto in:\n").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
         panel.addComponent(testo);
-        //panel.addComponent(new Label("Benvenuto in:\n"));
-        //richiamo scritta bella
+
         Tetris(panel);
 
         Label lab=new Label("Vuoi accedere come Server o Client?\n").setBackgroundColor(BLACK).setForegroundColor(
@@ -108,21 +112,47 @@ public class MainSchermata {
 
             }
         }).addTo(panel);
-        //bottone per accedeere come server
+
+        //bottone per accedere come server
         new Button("Server", new Runnable() {
-            @Override
+
             public void run() {
+
+              //  System.out.println("sto eseguendo");
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
                 //metodo per la scritta tetris
                 Tetris(panel);
 
                 //registro il nome del server
-                Label user=new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                TextBox textUser=new TextBox();
-                panel.addComponent(user);
-                panel.addComponent(textUser);
-                System.out.println(textUser.getText());
+                String name=null;
+                    do {
+                        Label user = new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        TextBox textUser = new TextBox();
+                        panel.addComponent(user);
+                        panel.addComponent(textUser);
+                        name = textUser.getText();
+                    }while(name==null);
+                    final String finalName = name;
+                    new Button("Avvia Server",new Runnable(){
+                        @Override
+                        public void run(){
+                            panel.removeAllComponents();
+                            panel.setFillColorOverride(BLACK);
+                            //dovrei chiamare il codice del server
+                            Server server = new Server(finalName,panel,coloreLabel);
+                            server.StartServer(server);
+
+                        }
+                    }).addTo(panel);
+
+
+
+                //System.out.println(" ciao");
+                //qui ci proviamo a mettere un bel semaforino
+                //server
+
+
                 //bottone per tornare alla home
                 new Button("Indietro",new Runnable(){
                     @Override
