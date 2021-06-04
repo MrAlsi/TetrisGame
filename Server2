@@ -1,4 +1,37 @@
-{
+package com.company;
+
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
+
+import com.googlecode.lanterna.*;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.GridLayout;
+import com.googlecode.lanterna.gui2.Label;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.Arrays;
+
+import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+
+
+public class Server  implements Runnable{
     private HashMap<String, PrintWriter> connectedClients = new HashMap();
     private Server.ConnectionListener connectionListener = new Server.ConnectionListener();
     private Thread listenerThread = new Thread(connectionListener);
@@ -34,9 +67,11 @@
         panel.setFillColorOverride(BLACK);
         Label lab=new Label("\nStarting the server..."+ name).setBackgroundColor(BLACK).setForegroundColor(
                 coloreLabel);
+
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
         panel.addComponent(lab);
+      
        // System.out.println("\nStarting the server...");
 
         try {
@@ -49,7 +84,12 @@
             senderThread.start();
 
             // ciclo per far connettere più client al server
-            System.out.println("\n- - - Server on - - -");
+            Label lab_serveron=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).
+                    setForegroundColor(coloreLabel);
+            panel.addComponent(lab_serveron);
+
+
+            //System.out.println("\n- - - Server on - - -");
             while(true){
                 // commenta easterEgg per distrugere il server
                 String easterEgg = new String();
