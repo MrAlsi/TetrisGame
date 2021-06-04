@@ -125,22 +125,22 @@ public class MainSchermata {
                 Tetris(panel);
 
                 //registro il nome del server
-                String name=null;
-                    do {
-                        Label user = new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        TextBox textUser = new TextBox();
-                        panel.addComponent(user);
-                        panel.addComponent(textUser);
-                        name = textUser.getText();
-                    }while(name==null);
-                    final String finalName = name;
-                    new Button("Avvia Server",new Runnable(){
+
+
+                Label user = new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                final TextBox textUser = new TextBox();
+                panel.addComponent(user);
+                panel.addComponent(textUser);
+
+                new Button("Avvia Server",new Runnable(){
                         @Override
                         public void run(){
+                            String name = textUser.getText();
                             panel.removeAllComponents();
                             panel.setFillColorOverride(BLACK);
                             //dovrei chiamare il codice del server
-                            Server server = new Server(finalName,panel,coloreLabel);
+
+                            Server server = new Server(name,panel,coloreLabel);
                             server.StartServer(server);
 
                         }
