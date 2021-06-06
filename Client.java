@@ -40,21 +40,21 @@ public class Client implements Runnable {
         panel.setPreferredSize(new TerminalSize(100, 10));
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
-        Label lab = new Label("\nti sei registrato con il nome: " + name + "... ").setBackgroundColor(BLACK)
+        Label lab = new Label("\nYour nickname: " + name).setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
-        Label connessione = new Label("\nConnessione al server in corso...").setBackgroundColor(BLACK)
+        Label connessione = new Label("\nConnecting to the server...").setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
         panel.addComponent(lab);
         panel.addComponent(connessione);
         Socket socket = null; //Creazione socket, connessione a localhost:1555
         try {
             socket = new Socket(IP, 6789);
-            Label connesso = new Label("\n- - - - Connesso alla chat - - - -\n").setBackgroundColor(BLACK)
+            Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
                     .setForegroundColor(coloreLabel);
             panel.addComponent(connesso);
         } catch (IOException ex) {
             ex.printStackTrace();
-            Label nonconnesso = new Label("\n- - - - non siamo riusciti a connetterti al server - - - -\nriprova").setBackgroundColor(BLACK)
+            Label nonconnesso = new Label("\n- - - - Connection failed try again - - - -\n").setBackgroundColor(BLACK)
                     .setForegroundColor(coloreLabel);
             panel.addComponent(nonconnesso);
             panel.removeAllComponents();
@@ -87,7 +87,7 @@ public class Client implements Runnable {
         PrintWriter toServer = new PrintWriter(socketWriter); //Scrive stringhe sul socket
 
         //Creazione del thread di invio messaggi
-        Sender clientSender = new Sender(toServer,panel,coloreLabel);
+        Sender clientSender = new Sender(toServer,panel,coloreLabel,name);
         Thread senderThread = new Thread(clientSender);
 
         String message = name;
@@ -104,13 +104,17 @@ public class Client implements Runnable {
                 ex.printStackTrace();
             }
             if (message != null) {
+
+                Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                panel.addComponent(lab_clientMsg);
                 System.out.println(message);
+
             }
         }
         Label uscita = new Label("\\nUscita dal server in corso...").setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
         panel.addComponent(uscita);
-        //ystem.out.println("\nUscita dal server in corso...");
+        //System.out.println("\nUscita dal server in corso...");
         senderThread.interrupt(); //Chiedi al senderThread di fermarsi
         try {
             socket.close(); //Chiudi la connessione
