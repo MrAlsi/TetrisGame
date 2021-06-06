@@ -104,6 +104,7 @@ public class MainSchermata {
 
         Empty(panel, 1);
 
+
         //bottone client
         new Button("Find Game", new Runnable() {
             @Override
@@ -114,18 +115,32 @@ public class MainSchermata {
                 Tetris(panel);
 
                 //registrazione utente
-                Label user=new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                TextBox textUser=new TextBox();// nome nuovo client
+                Label user=new Label("\ninserisci il tuo nome: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                final TextBox textUserClient=new TextBox();// nome nuovo client
                 Empty(panel, 1);
-                Label IP=new Label("\nServer IP: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                TextBox textIP=new TextBox();//indirizzo IP del server a cui voglio collegarmi
+                Label IP=new Label("\nServer IP : ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                final TextBox textIP=new TextBox();//indirizzo IP del server a cui voglio collegarmi
 
                 panel.addComponent(user);
-                panel.addComponent(textUser);
+                panel.addComponent(textUserClient);
                 panel.addComponent(IP);
                 panel.addComponent(textIP);
 
                 Empty(panel, 1);
+                new Button("Start Client",new Runnable(){
+                    @Override
+                    public void run(){
+                        String name = textUserClient.getText();
+                        String IP = textIP.getText();
+                        panel.removeAllComponents();
+                        panel.setFillColorOverride(BLACK);
+                        //richiamo codice client
+
+                        Client client=new Client(name,IP,panel,coloreLabel);
+                        client.StartClient(client);
+
+                    }
+                }).addTo(panel);
                 //bottone che mi riporta alla home
                 new Button("Indietro",new Runnable(){
                     @Override
