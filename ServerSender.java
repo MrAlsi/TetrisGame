@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class ServerSender implements Runnable{
     public Boolean gameStarted;
     HashMap<String ,PrintWriter> connectedClients;
-    public ServerSender(Boolean gameStarted ) {
+    public ServerSender() {
         this.gameStarted=gameStarted;
 
     }
@@ -19,7 +19,6 @@ public class ServerSender implements Runnable{
         while(!Thread.interrupted()) { //Finché non ricevi un comando "quit" dall'utente...
             userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
             if(userMessage.toLowerCase().equals("/start")){
-                System.out.println("sono qui");
                 gameStarted = true;
             }
             else if(userMessage != null && !userMessage.toLowerCase().equals("/start")){
