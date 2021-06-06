@@ -2,8 +2,6 @@ package com.company;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
-
-import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.GridLayout;
@@ -15,18 +13,11 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
-import java.util.Arrays;
-
 import java.awt.*;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
+import java.util.Arrays;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
-import static com.googlecode.lanterna.TextColor.ANSI.BLUE;
 
 public class MainSchermata {
     public static void main(String[] args) throws IOException {
@@ -63,8 +54,9 @@ public class MainSchermata {
 
         BasicWindow window = new BasicWindow();
         // importante
-
         window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN));
+        //window.setFixedSize((new TerminalSize(10,20)));
+
         window.setComponent(panel);
 
 
