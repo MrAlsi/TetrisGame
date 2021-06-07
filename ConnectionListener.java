@@ -12,13 +12,14 @@ import java.util.Map;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 public class ConnectionListener implements Runnable {
-    private HashMap<String, PrintWriter> connectedClients = new HashMap();
+    private HashMap<String, PrintWriter> connectedClients;
     private Panel panel;
     private TextColor coloreLabel;
 
-    public ConnectionListener(Panel panel,TextColor coloreLabel) {
+    public ConnectionListener(Panel panel,TextColor coloreLabel, HashMap connectedClients) {
         this.panel=panel;
         this.coloreLabel=coloreLabel;
+        this.connectedClients=connectedClients;
     }
     @Override
     public void run() {
@@ -31,7 +32,7 @@ public class ConnectionListener implements Runnable {
                 Socket socket = listener.accept();
                 // creo un thread per ogni client così
                 // da essere gestiti singolarmente
-                ClientHandler clientSock = new ClientHandler(socket, "",panel,coloreLabel);
+                ClientHandler clientSock = new ClientHandler(socket, "",panel,coloreLabel,connectedClients);
                 clientSock.clientHandler();
                 new Thread(clientSock).start();
 
