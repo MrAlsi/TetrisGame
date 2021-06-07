@@ -54,7 +54,7 @@ public class Server  implements Runnable{
         this.name = name;
         this.panel= panel;
         this.coloreLabel= coloreLabel;
-        connectionListener=new ConnectionListener(panel,coloreLabel);
+        connectionListener=new ConnectionListener(panel,coloreLabel,connectedClients);
         listenerThread= new Thread(connectionListener);
 
     }
@@ -86,24 +86,29 @@ public class Server  implements Runnable{
             listenerThread.start();
             // creo il thread di comunicazione del server
             // e lo avvio
-            ServerSender serverSender = new ServerSender();
+            ServerSender serverSender = new ServerSender(panel, coloreLabel, connectedClients);
             Thread senderThread = new Thread(serverSender);
             senderThread.start();
 
             // ciclo per far connettere più client al server
-            Label lab_serveron=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-            panel.addComponent(lab_serveron);
-
-
+            Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+            panel.addComponent(lab_serverOn);
 
             //System.out.println("\n- - - Server on - - -");
             while(true){
                 // commenta easterEgg per distrugere il server
                 String easterEgg = new String();
                 if(gameStart == true || connectedClients.size() > 7){
+                    panel.setVisible(true);
                     gameStart = true;
+                    Label lab_gameStarting=new Label("\n\n- - - THE GAME IS STARTING - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                    panel.addComponent(lab_gameStarting);
+
                     System.out.println("\n\n- - - THE GAME IS STARTING - - -" );
                     broadcastServerMessage("\n\n- - - THE GAME IS STARTING - - -");
+
+                    Label lab_gameStarted=new Label("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                    panel.addComponent(lab_gameStarted);
 
                     System.out.println("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
                     broadcastServerMessage("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
