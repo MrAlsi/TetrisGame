@@ -1,33 +1,68 @@
 package com.company;
 
+import com.googlecode.lanterna.gui2.Label;
+
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.Label;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.TextBox;
+import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+
+
+import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+
 public class ServerSender implements Runnable{
-    public Boolean gameStarted;
-    HashMap<String ,PrintWriter> connectedClients;
-    public ServerSender() {
-        this.gameStarted=gameStarted;
+
+    public HashMap<String ,PrintWriter> connectedClients;
+    private Panel panel;
+    private TextColor coloreLabel;
+
+    public ServerSender(Panel panel, TextColor coloreLabel, HashMap connectedClients) {
+
+        this.panel=panel;
+        this.coloreLabel=coloreLabel;
+        this.connectedClients=connectedClients;
 
     }
 
     public void run() {
-        Scanner userInput = new Scanner(System.in);
-        String userMessage = "";
-        while(!Thread.interrupted()) { //Finché non ricevi un comando "quit" dall'utente...
-            userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
-            if(userMessage.toLowerCase().equals("/start")){
-                gameStarted = true;
-            }
-            else if(userMessage != null && !userMessage.toLowerCase().equals("/start")){
-                broadcastServerMessage("[SERVER]: " + userMessage);
-            }
 
-        }
+        TextBox messaggio=new TextBox();
+        panel.addComponent(messaggio);
+        inviaMessaggio(messaggio);
 
-        userInput.close();
+    }
+
+    public void inviaMessaggio(final TextBox messaggio){
+        new Button("Invia",new Runnable(){
+            @Override
+            public void run(){
+                //Finché non ricevi un comando "quit" dall'utente...
+                //userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
+                //toOther.println(userMessage); //... e invialo al server
+                if(!messaggio.getText().equals("")) {
+                    String messaggioString = messaggio.getText();
+
+                    if(messaggioString.equals("/start")){
+                        panel.removeAllComponents();
+                        panel.setVisible(false);
+
+                    } else{
+                        Label lab_serverMsg = new Label("[SERVER]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(lab_serverMsg);
+
+                        broadcastServerMessage("[SERVER]: " + messaggioString);
+                    }
+                    messaggio.setText("");
+                }
+            }
+        }).addTo(panel);
     }
 
     public void broadcastServerMessage(String message) {
