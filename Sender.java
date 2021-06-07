@@ -56,11 +56,6 @@ public class Sender implements Runnable {
                         messaggio.setText("");
 
                     }
-                    //panel.removeAllComponents();
-                    //panel.setFillColorOverride(BLACK);
-
-
-
                 }
             }).addTo(panel);
         }
