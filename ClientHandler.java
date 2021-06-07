@@ -30,14 +30,15 @@ public  class ClientHandler implements Runnable {
     private BufferedReader fromClient;
     private Panel panel;
     private TextColor coloreLabel;
-    private HashMap<String, PrintWriter> connectedClients;
+    public HashMap<String, PrintWriter> connectedClients;
 
     // Constructor
-    public ClientHandler(Socket socket, String userName,Panel panel,TextColor coloreLabel) {
+    public ClientHandler(Socket socket, String userName,Panel panel,TextColor coloreLabel, HashMap connectedClients) {
         this.clientSocket = socket;
         this.username = userName;
         this.panel=panel;
         this.coloreLabel=coloreLabel;
+        this.connectedClients=connectedClients;
     }
 
     public void clientHandler() {
