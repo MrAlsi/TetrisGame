@@ -47,12 +47,8 @@ public class Server  implements Runnable{
     public static Thread senderThread;
     public static Thread listenerThread;
 
-    /*
-    private ServerSocket listener = null;
-    private PrintWriter out = null;
-    int port = 6789;*/
-
-
+    // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread 
+    // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
     public Server(String name, Panel panel, TextColor coloreLabel) {
         this.name = name;
         this.panel= panel;
@@ -62,11 +58,13 @@ public class Server  implements Runnable{
 
     }
 
+    // Metodo che richiamo subito e serve per far partire il thread dedicato al server
     public void StartServer(Server server) {
         serverThread = new Thread(server);
         serverThread.start();
     }
 
+    // Inizializzo la schermata del server
     public void run(){
         synchronized(this){
             this.runningThread = Thread.currentThread();
@@ -82,24 +80,25 @@ public class Server  implements Runnable{
         panel.setFillColorOverride(BLACK);
         panel.addComponent(lab);
 
-        // System.out.println("\nStarting the server...");
-
         try {
 
+            // Il server si mette in ascolto per eventuali client che tentano di connettersi
             listenerThread.start();
-            // creo il thread di comunicazione del server
-            // e lo avvio
+
+            // Creo il thread di comunicazione del server e lo avvio
+            // Questo thread permette al server di mandare messaggi a tutti i client
+            // durante il pre-partita
             ServerSender serverSender = new ServerSender(panel, coloreLabel, connectedClients);
             senderThread = new Thread(serverSender);
             senderThread.start();
 
-            // ciclo per far connettere più client al server
             Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
             panel.addComponent(lab_serverOn);
 
-            //System.out.println("\n- - - Server on - - -");
+            // Questa parte andrà rimossa
             while(true){
-                // commenta easterEgg per distrugere il server
+
+                // Commenta easterEgg per distrugere il server
                 String easterEgg = new String();
                 if(gameStart == true || connectedClients.size() > 7){
                     panel.setVisible(true);
@@ -127,13 +126,7 @@ public class Server  implements Runnable{
 
     }
 
-    // classe per la gestione dei thread dei client
-
-
-
-
-
-    // classe per la trasmissione di un messaggio inviato dal server agli altri client
+    // Classe per la trasmissione di un messaggio inviato dal server agli altri client
     public void broadcastServerMessage(String message) {
 
         for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
@@ -142,36 +135,4 @@ public class Server  implements Runnable{
             e.getValue().flush();
         }
     }
-/*
-    public  void broadcastMessage(String message, String username) {
-
-        for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
-
-            if(!e.getKey().equals(username)){
-
-                e.getValue().println(message);
-                e.getValue().flush();
-            }
-        }
-    }
-    /*
-    private Screen screen;
-    private TextBox textBox;
-    private final String emptyString = "";
-
-    public String getText() throws IOException {
-        String result = null;
-        KeyStroke key = null;
-        while ((key = screen.readInput()).getKeyType() != KeyType.Enter) {
-            textBox.handleKeyStroke(key);
-            // use only one of handleInput() or handleKeyStroke()
-            textBox.setText(textBox.getText());
-        }
-        result = textBox.getText();
-        textBox.setText(emptyString);
-        return result;
-    }
-    */
-
-
 }
