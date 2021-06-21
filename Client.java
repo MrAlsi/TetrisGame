@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
-
 public class Client implements Runnable {
     private String name;
     private String IP;
@@ -21,19 +20,21 @@ public class Client implements Runnable {
     private TextColor coloreLabel;
     private Thread runningThread;
 
-    //costruttore
+    // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, Panel panel, TextColor coloreLabel) {
         this.name = name;
         this.IP = IP;
         this.panel = panel;
         this.coloreLabel = coloreLabel;
     }
+
     public void StartClient(Client client){
         new Thread(client).start();
     }
 
     public void run() {
 
+        // Inizializzo la chat pre-partita del client
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
         panel.setPosition(new TerminalPosition(0, 0));
@@ -47,6 +48,7 @@ public class Client implements Runnable {
         panel.addComponent(lab);
         panel.addComponent(connessione);
         Socket socket = null; //Creazione socket, connessione a localhost:1555
+
         try {
             socket = new Socket(IP, 6789);
             Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
@@ -64,16 +66,16 @@ public class Client implements Runnable {
 
         }
 
-
-        //System.out.println("\n- - - - Connesso alla chat - - - -\n");
-        //Otteniamo gli stream
         InputStream socketInput = null;
+
         try {
             socketInput = socket.getInputStream();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
         OutputStream socketOutput = null;
+
         try {
             socketOutput = socket.getOutputStream();
         } catch (IOException ex) {
@@ -95,65 +97,43 @@ public class Client implements Runnable {
         toServer.flush();
         senderThread.start();
 
-        //LOGICA APPLICATIVA - RICEZIONE MESSAGGI
-
-        while (message != null && !message.equals("quit")) { //Finché il server non chiude la connessione o non ricevi un messaggio "quit"...
+        // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
+        while (message != null && !message.equals("/quit")) { 
             try {
-                message = fromServer.readLine(); //Leggi un messaggio inviato dal server (bloccante!)
+
+                // Leggi un messaggio inviato dal server
+                message = fromServer.readLine();  
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            if (message != null) {
 
+            if (message != null) {
+                
+                // Se il messaggio non è nullo lo stampo
                 Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientMsg);
                 System.out.println(message);
-
             }
         }
+
+        // Se il server invia un comando /quit mi disconnetto dal server
         Label uscita = new Label("\\nUscita dal server in corso...").setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
         panel.addComponent(uscita);
-        //System.out.println("\nUscita dal server in corso...");
-        senderThread.interrupt(); //Chiedi al senderThread di fermarsi
+        senderThread.interrupt(); 
+
         try {
             socket.close(); //Chiudi la connessione
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
         Label successo = new Label("\nUscita eseguita con successo").setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
         panel.addComponent(successo);
-        //System.out.println("\nUscita eseguita con successo");
         panel.removeAllComponents();
 
     }
 
-
-    /*public void run() {
-        {
-            synchronized (this) {
-                this.runningThread = Thread.currentThread();
-            }
-            //SETUP
-
-        /*
-            Boolean usernameCheck = false;
-            String username = "";
-            int command = 0;
-            while(usernameCheck == false){
-                Scanner sc = new Scanner(System.in);
-                System.out.print("\nInserisci username: ");
-                username = sc.nextLine();
-                System.out.println( "\n" + username + " e' stato impostato come username");
-                System.out.println( "\nCosa vuoi fare? \n1 - Accedere al server \n2 - Modificare l'username");
-                System.out.print( "1/2: ");
-                command = sc.nextInt();
-                if(command == 1){
-                    usernameCheck = true;
-                }
-            }
-*/
-            //System.out.println("\nConnessione al server in corso...");
-
-        }
+}
