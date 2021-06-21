@@ -34,15 +34,18 @@ import java.util.Arrays;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 
+
 public class Server  implements Runnable{
     private HashMap<String, PrintWriter> connectedClients = new HashMap();
     private ConnectionListener connectionListener;
-    private Thread listenerThread ;
     protected Thread runningThread= null;
     private Boolean gameStart = false;
     public String name;
     public TextColor coloreLabel;
     public Panel panel;
+    public static Thread serverThread;
+    public static Thread senderThread;
+    public static Thread listenerThread;
 
     /*
     private ServerSocket listener = null;
@@ -54,14 +57,14 @@ public class Server  implements Runnable{
         this.name = name;
         this.panel= panel;
         this.coloreLabel= coloreLabel;
-        connectionListener=new ConnectionListener(panel,coloreLabel,connectedClients);
-        listenerThread= new Thread(connectionListener);
+        connectionListener = new ConnectionListener(panel,coloreLabel,connectedClients);
+        listenerThread = new Thread(connectionListener);
 
     }
 
     public void StartServer(Server server) {
-
-        new Thread(server).start();
+        serverThread = new Thread(server);
+        serverThread.start();
     }
 
     public void run(){
@@ -87,7 +90,7 @@ public class Server  implements Runnable{
             // creo il thread di comunicazione del server
             // e lo avvio
             ServerSender serverSender = new ServerSender(panel, coloreLabel, connectedClients);
-            Thread senderThread = new Thread(serverSender);
+            senderThread = new Thread(serverSender);
             senderThread.start();
 
             // ciclo per far connettere più client al server
