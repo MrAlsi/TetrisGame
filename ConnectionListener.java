@@ -15,6 +15,7 @@ public class ConnectionListener implements Runnable {
     private HashMap<String, PrintWriter> connectedClients;
     private Panel panel;
     private TextColor coloreLabel;
+    public static Thread handlerThread;
 
     public ConnectionListener(Panel panel,TextColor coloreLabel, HashMap connectedClients) {
         this.panel=panel;
@@ -34,7 +35,8 @@ public class ConnectionListener implements Runnable {
                 // da essere gestiti singolarmente
                 ClientHandler clientSock = new ClientHandler(socket, "",panel,coloreLabel,connectedClients);
                 clientSock.clientHandler();
-                new Thread(clientSock).start();
+                handlerThread = new Thread(clientSock);
+                handlerThread.start();
 
 
                 Label lab_clientJoin=new Label("Connected clients: " + connectedClients.size() + "/8").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
