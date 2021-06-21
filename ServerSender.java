@@ -16,8 +16,8 @@ import com.googlecode.lanterna.gui2.TextBox;
 import static com.company.MainSchermata.Schermata;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
-
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+
 
 public class ServerSender implements Runnable{
 
@@ -33,6 +33,7 @@ public class ServerSender implements Runnable{
 
     }
 
+    // Aggiungo la textbox al pannello pre-partita del server
     public void run() {
 
         TextBox messaggio=new TextBox();
@@ -41,34 +42,44 @@ public class ServerSender implements Runnable{
 
     }
 
+    // Aggiungo il pulsante "invia" al pannello pre-partita del server
     public void inviaMessaggio(final TextBox messaggio){
         new Button("Invia",new Runnable(){
             @Override
             public void run(){
-                //Finché non ricevi un comando "quit" dall'utente...
-                //userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
-                //toOther.println(userMessage); //... e invialo al server
+                
+                // Posso inviare il messaggio solo nel caso non sia "vuoto"
                 if(!messaggio.getText().equals("")) {
                     String messaggioString = messaggio.getText();
 
+                    // Se il server invia il messaggio "/start" il gioco parte
                     if(messaggioString.equals("/start")){
                         panel.removeAllComponents();
                         panel.setVisible(false);
                         broadcastServerMessage(messaggioString);
 
                     } else{
+
+                        // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
                         Label lab_serverMsg = new Label("[SERVER]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(lab_serverMsg);
 
                         broadcastServerMessage("[SERVER]: " + messaggioString);
                     }
+
+                    // Una volta inviato il messaggio pulisco la textbox
                     messaggio.setText("");
                 }
             }
         }).addTo(panel);
+
+        // Aggiungo il pulsante "indietro" alla schermata pre-partita del server
         new Button("Indietro",new Runnable(){
             @Override
             public void run(){
+
+                // Una volta premuto spengo il server e torno alla home
+                // Da sistemare
                 ConnectionListener.handlerThread.interrupt();
                 Server.listenerThread.interrupt();
                 Server.serverThread.interrupt();
@@ -81,6 +92,7 @@ public class ServerSender implements Runnable{
         }).addTo(panel);
     }
 
+    // Metodo per inoltrare il messaggio del server a tutti i client
     public void broadcastServerMessage(String message) {
 
         for(Map.Entry<String, PrintWriter> e : connectedClients.entrySet()) {
