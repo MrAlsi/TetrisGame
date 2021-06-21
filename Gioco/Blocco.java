@@ -3,47 +3,60 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.screen.Screen;
-
-import java.lang.reflect.GenericDeclaration;
 
 public class Blocco {
-    TextGraphics quadrato;
-    int larghezza=3;
-    int altezza=2;
-    TextGraphics schermo;
+    TextGraphics schermo; // Griglia nel terminale
+    // TextGraphics quadrato; // Quadratino nel terminale
+    private int coefColonna = 4; // Numero di quadratini che formano la larghezza di un Blocco nel terminale
+    private int coefRiga = 2; // Numero di quadratini che formano l'altezza di un Blocco nel terminale
+
     TextColor colore;
-    int col;
-    int rig;
-    int stato=3; //0=Vuoto - 1=Pezzo che sta scendendo - 2=Struttura
+    int colonnaGriglia;
+    int rigaGriglia;
+    int stato = 3; // 0=Vuoto - 1=Pezzo che sta scendendo - 2=Struttura  - 3=Spazzattura
 
-    public Blocco(TextGraphics schermo, int col, int rig, TextColor colore){
-        this.schermo=schermo;
+    public Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore) {
+        this.schermo = schermo;
         schermo.setForegroundColor(colore);
-        this.col=col;
-        this.rig=rig;
-        quadrato=schermo.fillRectangle(new TerminalPosition(col, rig), new TerminalSize(larghezza, altezza), Symbols.BLOCK_SOLID);
-
+        this.colonnaGriglia = colonnaGriglia;
+        this.rigaGriglia = rigaGriglia;
+        // quadrato = schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
+        schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
     }
 
-    public void cambiaColore(TextColor colore){
+    public void cambiaColore(TextColor colore) {
         schermo.setBackgroundColor(colore);
     }
 
-    public int getPosizioneRiga(){
-        return rig;
+    // Ritorna la posizione della colonna sullo schermo, coordinata * coefficente
+    public int getColonna() {
+        return colonnaGriglia;
     }
 
-    public int getPosizioneColonna(){
-        return col;
+    // Ritorna la posizione della riga sullo schermo, coordinata * coefficente
+    public int getRiga() {
+        return rigaGriglia;
     }
 
-    public int getStato(){
+    public void sceso(){rigaGriglia++;}
+
+    public int getStato() {
         return stato;
     }
 
-    public void setStato(){
-
+    public void setStato() {
     }
 
+    public boolean collisioneSotto(Griglia campo) {
+        //Non capisco perché funzioni con 1, potrebbe dare problemi in futuro ma al momento funziona
+        if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga()+1].getStato() >= 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale) {
+
+    }
 }
