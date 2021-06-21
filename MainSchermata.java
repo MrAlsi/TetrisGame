@@ -24,6 +24,10 @@ public class MainSchermata {
 
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
+        System.out.println(size);
+        System.out.println(size.getWidth());
+        System.out.println(size.getHeight());
+
         // width will store the width of the screen
         int width = (int)size.getWidth();
 
@@ -34,7 +38,13 @@ public class MainSchermata {
         int topMargin = height/50;
 
         //codice per avere uno chermo
-        Terminal terminal = new DefaultTerminalFactory().createTerminal();
+        final int COLS = width/8;
+        final int ROWS = height/16;
+        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
+        defaultTerminalFactory.setInitialTerminalSize(new TerminalSize(COLS,ROWS));
+        Terminal terminal = defaultTerminalFactory.createTerminal();
+
+        //Terminal terminal = new DefaultTerminalFactory().createTerminal();
         final Screen screen = new TerminalScreen(terminal);
         screen.startScreen();
 
@@ -179,6 +189,7 @@ public class MainSchermata {
 
                         Server server = new Server(name,panel,coloreLabel);
                         server.StartServer(server);
+
 
                     }
                 }).addTo(panel);
