@@ -126,7 +126,7 @@ public class Server  implements Runnable{
 
     }
 
-    // Classe per la trasmissione di un messaggio inviato dal server agli altri client
+    // Metodo per la trasmissione di un messaggio inviato dal server agli altri client
     public void broadcastServerMessage(String message) {
 
         for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
