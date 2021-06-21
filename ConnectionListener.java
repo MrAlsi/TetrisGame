@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
+// Questa classe si occupa di rimanere in attesa di nuove connessioni da parte dei client
 public class ConnectionListener implements Runnable {
     private HashMap<String, PrintWriter> connectedClients;
     private Panel panel;
@@ -31,17 +32,18 @@ public class ConnectionListener implements Runnable {
             listener.setReuseAddress(true);
             while(true){
                 Socket socket = listener.accept();
-                // creo un thread per ogni client così
-                // da essere gestiti singolarmente
+
+                // Per ogni client che si connette al server creo un thread handlerThread,  
+                // a lato server, per ogni client così che possano essere gestiti singolarmente dal server
                 ClientHandler clientSock = new ClientHandler(socket, "",panel,coloreLabel,connectedClients);
                 clientSock.clientHandler();
                 handlerThread = new Thread(clientSock);
                 handlerThread.start();
 
-
                 Label lab_clientJoin=new Label("Connected clients: " + connectedClients.size() + "/8").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientJoin);
 
+                // Aggiorno i vari client che un nuovo giocatore si è connesso al server
                 System.out.println("Connected clients: " + connectedClients.size() + "/8");
                 broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/8");
             }
@@ -49,6 +51,7 @@ public class ConnectionListener implements Runnable {
             e.printStackTrace();
         }
     }
+    
     public void broadcastServerMessage(String message) {
 
         for(Map.Entry<String, PrintWriter> e : connectedClients.entrySet()) {
