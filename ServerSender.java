@@ -12,6 +12,8 @@ import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
+
+import static com.company.MainSchermata.Schermata;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 
@@ -52,6 +54,7 @@ public class ServerSender implements Runnable{
                     if(messaggioString.equals("/start")){
                         panel.removeAllComponents();
                         panel.setVisible(false);
+                        broadcastServerMessage(messaggioString);
 
                     } else{
                         Label lab_serverMsg = new Label("[SERVER]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
@@ -61,6 +64,19 @@ public class ServerSender implements Runnable{
                     }
                     messaggio.setText("");
                 }
+            }
+        }).addTo(panel);
+        new Button("Indietro",new Runnable(){
+            @Override
+            public void run(){
+                ConnectionListener.handlerThread.interrupt();
+                Server.listenerThread.interrupt();
+                Server.serverThread.interrupt();
+                Server.senderThread.interrupt();
+                panel.removeAllComponents();
+                panel.setFillColorOverride(BLACK);
+                Schermata(panel);
+
             }
         }).addTo(panel);
     }
