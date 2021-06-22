@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
-
+//classe per la schermata di inizializzazione del gioco
 public class MainSchermata {
     public static void main(String[] args) throws IOException {
-
+        //organizzazione della schermata
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
         System.out.println(size);
@@ -99,9 +99,7 @@ public class MainSchermata {
     //codice home
     public static void Schermata(final Panel panel){
         final TextColor coloreLabel=TextColor.ANSI.GREEN_BRIGHT;
-        // Label testo=new Label("Benvenuto in:\n").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-        // panel.addComponent(testo);
-
+       
         Tetris(panel);
 
         Empty(panel, 1);
@@ -111,6 +109,7 @@ public class MainSchermata {
         new Button("Find Game", new Runnable() {
             @Override
             public void run() {
+                //svuoto lo schermo 
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
                 //solita scrittina bellina
@@ -129,9 +128,11 @@ public class MainSchermata {
                 panel.addComponent(textIP);
 
                 Empty(panel, 1);
+                //bottone per startare il codice del client
                 new Button("Start Client",new Runnable(){
                     @Override
                     public void run(){
+                        //passo alle variabili i contenuti delle textbox
                         String name = textUserClient.getText();
                         String IP = textIP.getText();
                         panel.removeAllComponents();
@@ -147,8 +148,10 @@ public class MainSchermata {
                 new Button("Indietro",new Runnable(){
                     @Override
                     public void run(){
+                        //svuoto la schermo
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
+                        //richiamo schermata inziale
                         Schermata(panel);
                     }
                 }).addTo(panel);
@@ -164,28 +167,28 @@ public class MainSchermata {
             public void run() {
 
                 //  System.out.println("sto eseguendo");
+                //svuoto lo schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
                 //metodo per la scritta tetris
                 Tetris(panel);
 
                 //registro il nome del server
-
-
                 Label user = new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 final TextBox textUser = new TextBox();
                 panel.addComponent(user);
                 panel.addComponent(textUser);
 
                 Empty(panel, 1);
-
+                //bottone per strtare il server
                 new Button("Start Server",new Runnable(){
                     @Override
                     public void run(){
                         String name = textUser.getText();
+                        //svuoto lo schermo
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
-                        //dovrei chiamare il codice del server
+                        //richiamo il codice del server
 
                         Server server = new Server(name,panel,coloreLabel);
                         server.StartServer(server);
@@ -194,18 +197,16 @@ public class MainSchermata {
                     }
                 }).addTo(panel);
 
-                //System.out.println(" ciao");
-                //qui ci proviamo a mettere un bel semaforino
-                //server
-
                 Empty(panel, 1);
 
                 //bottone per tornare alla home
                 new Button("Indietro",new Runnable(){
                     @Override
                     public void run(){
+                        //svuoto lo schermo
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
+                        //richiamo schermata iniziale
                         Schermata(panel);
                     }
                 }).addTo(panel);
@@ -219,10 +220,11 @@ public class MainSchermata {
         panel.addComponent(separatore);
 
         Empty(panel, 2);
-
+        //bottone per leggere le regole del gioco
         new Button("Rules", new Runnable(){
             @Override
             public void run() {
+                //svuoto lo schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
                 Label regolamento = new Label("Regolamento:\n\nUna partita è formata da massimo 8 giocatori.\nVince chi resta più tempo in partita. ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
@@ -233,8 +235,10 @@ public class MainSchermata {
                 new Button("Indietro",new Runnable(){
                     @Override
                     public void run(){
+                        //svuoto lo schermo
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
+                        //richiamo la schermata iniziale
                         Schermata(panel);
                     }
                 }).addTo(panel);
@@ -249,6 +253,7 @@ public class MainSchermata {
         new Button("Credits", new Runnable(){
             @Override
             public void run() {
+                //svuoto lo schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
 
@@ -261,8 +266,10 @@ public class MainSchermata {
                 new Button("Indietro",new Runnable(){
                     @Override
                     public void run(){
+                        //svuoto lo schermo
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
+                        //richiamo schermata iniziale
                         Schermata(panel);
                     }
                 }).addTo(panel);
