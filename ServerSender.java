@@ -2,6 +2,7 @@ package com.company;
 
 import com.googlecode.lanterna.gui2.Label;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class ServerSender implements Runnable{
     private Panel panel;
     private TextColor coloreLabel;
 
+
     public ServerSender(Panel panel, TextColor coloreLabel, HashMap connectedClients) {
 
         this.panel=panel;
@@ -36,18 +38,18 @@ public class ServerSender implements Runnable{
     // Aggiungo la textbox al pannello pre-partita del server
     public void run() {
 
-        TextBox messaggio=new TextBox();
+        TextBox messaggio = new TextBox();
         panel.addComponent(messaggio);
         inviaMessaggio(messaggio);
 
     }
 
-    // Aggiungo il pulsante "invia" al pannello pre-partita del server
+    // Aggiungo il pulsante "Send" al pannello pre-partita del server
     public void inviaMessaggio(final TextBox messaggio){
-        new Button("Invia",new Runnable(){
+        new Button("Send",new Runnable(){
             @Override
             public void run(){
-                
+
                 // Posso inviare il messaggio solo nel caso non sia "vuoto"
                 if(!messaggio.getText().equals("")) {
                     String messaggioString = messaggio.getText();
@@ -74,20 +76,21 @@ public class ServerSender implements Runnable{
         }).addTo(panel);
 
         // Aggiungo il pulsante "indietro" alla schermata pre-partita del server
-        new Button("Indietro",new Runnable(){
+        new Button("Close",new Runnable(){
             @Override
             public void run(){
 
                 // Una volta premuto spengo il server e torno alla home
                 // Da sistemare
-                ConnectionListener.handlerThread.interrupt();
-                Server.listenerThread.interrupt();
-                Server.serverThread.interrupt();
-                Server.senderThread.interrupt();
-                panel.removeAllComponents();
-                panel.setFillColorOverride(BLACK);
-                Schermata(panel);
+                try {
 
+                    System.exit(0);
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                }
             }
         }).addTo(panel);
     }
