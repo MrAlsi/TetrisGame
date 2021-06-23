@@ -32,9 +32,9 @@ public class Sender implements Runnable {
             inviaMessaggio(messaggio);
         }
 
-        // Inserisco il pulsante "invia" nella schermata pre-partita
+        // Inserisco il pulsante "Send" nella schermata pre-partita
         public void inviaMessaggio(final TextBox messaggio){
-            new Button("Invia",new Runnable(){
+            new Button("Send",new Runnable(){
                 @Override
                 public void run(){
                     
@@ -49,6 +49,22 @@ public class Sender implements Runnable {
                         toOther.flush();
                         messaggio.setText("");
 
+                    }
+                }
+            }).addTo(panel);
+
+            new Button("Close",new Runnable(){
+                @Override
+                public void run(){
+
+                    // Una volta premuto spengo il server e torno alla home
+                    // Da sistemare
+                    try {
+
+                        System.exit(0);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }).addTo(panel);
