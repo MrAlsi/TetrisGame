@@ -24,7 +24,7 @@ import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 // Per ogni client che si connetterà al server creo un Thread handlerThread che si occupa
 // di gestire singolarmente i client uno a uno
 public  class ClientHandler implements Runnable {
-    private Socket clientSocket;
+    public static Socket clientSocket;
     private String username;
     private BufferedReader fromClient;
     private Panel panel;
@@ -78,7 +78,7 @@ public  class ClientHandler implements Runnable {
         try {
         
             String message = "";
-            while (message != null) {
+            while (message != null || Server.serverThread.isAlive()) {
 
                 // Quando un client invia un messaggio viene ricevuto dal server qui 
                 message = fromClient.readLine(); 
