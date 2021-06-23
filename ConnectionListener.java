@@ -21,16 +21,19 @@ public class ConnectionListener implements Runnable {
     public ConnectionListener(Panel panel,TextColor coloreLabel, HashMap connectedClients) {
         this.panel=panel;
         this.coloreLabel=coloreLabel;
-        this.connectedClients=connectedClients;
+        this.connectedClients = connectedClients;
     }
     @Override
     public void run() {
         try{
-            ServerSocket listener = null;
+
+            ServerSocket listener;
             int port = 6789;
             listener = new ServerSocket(port);
             listener.setReuseAddress(true);
-            while(true){
+            
+            while(Server.serverThread.isAlive()){
+
                 Socket socket = listener.accept();
 
                 // Per ogni client che si connette al server creo un thread handlerThread,  
