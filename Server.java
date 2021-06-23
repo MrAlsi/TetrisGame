@@ -38,8 +38,6 @@ import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 public class Server  implements Runnable{
     private HashMap<String, PrintWriter> connectedClients = new HashMap();
     private ConnectionListener connectionListener;
-    protected Thread runningThread= null;
-    private Boolean gameStart = false;
     public String name;
     public TextColor coloreLabel;
     public Panel panel;
@@ -66,19 +64,26 @@ public class Server  implements Runnable{
 
     // Inizializzo la schermata del server
     public void run(){
-        synchronized(this){
-            this.runningThread = Thread.currentThread();
-        }
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
         panel.setPosition(new TerminalPosition(0,0));
         panel.setPreferredSize(new TerminalSize(100,10));
         Label lab=new Label("\nStarting "+ name + "... ").setBackgroundColor(BLACK).setForegroundColor(
                 coloreLabel);
-
-        panel.removeAllComponents();
-        panel.setFillColorOverride(BLACK);
         panel.addComponent(lab);
+        try{
+            URL whatismyip = new URL("http://checkip.amazonaws.com");
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    whatismyip.openStream()));
+
+            String ip = in.readLine(); //you get the IP as a String
+
+            Label myIp = new Label("\nShare your ip address: " + ip).setBackgroundColor(BLACK).setForegroundColor(
+                    coloreLabel);
+            panel.addComponent(myIp);
+        }catch(Exception e){
+            System.out.println(e);
+        }
 
         try {
 
@@ -94,30 +99,8 @@ public class Server  implements Runnable{
 
             Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
             panel.addComponent(lab_serverOn);
+            while(serverThread.isAlive()){
 
-            // Questa parte andrà rimossa
-            while(true){
-
-                // Commenta easterEgg per distrugere il server
-                String easterEgg = new String();
-                if(gameStart == true || connectedClients.size() > 7){
-                    panel.setVisible(true);
-                    gameStart = true;
-                    Label lab_gameStarting=new Label("\n\n- - - THE GAME IS STARTING - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                    panel.addComponent(lab_gameStarting);
-
-                    System.out.println("\n\n- - - THE GAME IS STARTING - - -" );
-                    broadcastServerMessage("\n\n- - - THE GAME IS STARTING - - -");
-
-                    Label lab_gameStarted=new Label("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                    panel.addComponent(lab_gameStarted);
-
-                    System.out.println("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
-                    broadcastServerMessage("\n\n- - - GAME STARTED - - -\n|  Online players: " + connectedClients.size() + "  |");
-                    while(gameStart){
-
-                    }
-                }
             }
         } catch (Exception e) {
 
