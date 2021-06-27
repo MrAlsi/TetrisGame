@@ -70,18 +70,57 @@ public class ServerSender implements Runnable{
                         }
 
 
-                    } else{
-                        // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
-                        Label lab_serverMsg = new Label("["+name+"]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        panel.addComponent(lab_serverMsg);
+                    } else if(messaggioString.equals("/quit")) {
+                            Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
+                                    .setForegroundColor(coloreLabel);
+                            broadcastServerMessage("[SERVER]: " + serverClosed);
+                            panel.addComponent(serverClosed);
+                            Label uscita = new Label("\nLeaving the server...").setBackgroundColor(BLACK)
+                                    .setForegroundColor(coloreLabel);
+                            broadcastServerMessage("[SERVER]: " + uscita);
+                            panel.addComponent(uscita);
 
-                        broadcastServerMessage("["+name+"]: " + messaggioString);
 
-                    }
+                            } else{
+                            // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
+                            Label lab_serverMsg = new Label("["+name+"]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_serverMsg);
+
+                            broadcastServerMessage("["+name+"]: " + messaggioString);
+
+                            }
 
                     // Una volta inviato il messaggio pulisco la textbox
                     messaggio.setText("");
                 }
+
+
+
+/*
+                if(!messaggio.getText().equals("")) {
+                    String messaggioString = messaggio.getText();
+
+                    if(messaggioString.equals("/start")){
+                        if(connectedClients.size()>=2) {
+                            panel.removeAllComponents();
+                            panel.setVisible(false);
+
+
+                        }
+                        else{
+                            Label lab_serverMsg = new Label("["+name+"]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_serverMsg);
+
+                            broadcastServerMessage("[Server]: Non siete abbastanza giocatori.");
+                        }
+                    } else{
+                        Label lab_serverMsg = new Label("["+name+"]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(lab_serverMsg);
+
+                        broadcastServerMessage("["+name+"]: " + messaggioString);
+                    }
+                    messaggio.setText("");
+                }*/
             }
         }).addTo(panel);
     }
