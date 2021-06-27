@@ -6,7 +6,7 @@ import com.googlecode.lanterna.TextColor;
 
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
-import com.sun.tools.javac.Main;
+//import com.sun.tools.javac.Main;
 
 import java.io.*;
 import java.net.Socket;
@@ -100,7 +100,7 @@ public class Client implements Runnable {
         senderThread.start();
 
         // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
-        while (message != null && !message.equals("[SERVER]: /quit")) {
+        while (message != null && !message.equals("/quit")) {
             try {
 
                 // Leggi un messaggio inviato dal server
@@ -109,32 +109,42 @@ public class Client implements Runnable {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
-            if (message != null && !message.equals("[SERVER]: /quit")) {
-
-                // Se il messaggio non è nullo lo stampo
-                Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                panel.addComponent(lab_clientMsg);
-                System.out.println(message);
-
-            }else if(message != null && !message.equals("[SERVER]: /start")){
-
+            // Se il server invia un comando /quit mi disconnetto dal server
+            if(message.equals("/quit)")){
+                /*Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
+                        .setForegroundColor(coloreLabel);
+                panel.addComponent(serverClosed);
+                Label uscita = new Label("\nLeaving the server...").setBackgroundColor(BLACK)
+                        .setForegroundColor(coloreLabel);
+                panel.addComponent(uscita);*/
+                Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
+                        .setForegroundColor(coloreLabel);
+                panel.addComponent(successo);
+                break;
+            }else if(message.equals("/start")){
+                panel.removeAllComponents();
+                panel.setVisible(false);
+                //break;
                 //qui parte il gioco
 
             }else{
-
-                System.out.println("break");
-                break;
+                //Se il messaggio non è nullo lo stampo
+                Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                panel.addComponent(lab_clientMsg);
+                System.out.println(message);
+                /*System.out.println("break");
+                break;*/
             }
+          /*  if (message != null && !message.equals("/start")) {
+
+                //Se il messaggio non è nullo lo stampo
+                Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                panel.addComponent(lab_clientMsg);
+                System.out.println(message);*/
+
+
         }
 
-        // Se il server invia un comando /quit mi disconnetto dal server
-        Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
-                .setForegroundColor(coloreLabel);
-        panel.addComponent(serverClosed);
-        Label uscita = new Label("\nLeaving the server...").setBackgroundColor(BLACK)
-                .setForegroundColor(coloreLabel);
-        panel.addComponent(uscita);
 
 
         try {
@@ -145,9 +155,8 @@ public class Client implements Runnable {
             ex.printStackTrace();
         }
 
-        Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
-                .setForegroundColor(coloreLabel);
-        panel.addComponent(successo);
+
+
 
     }
 }
