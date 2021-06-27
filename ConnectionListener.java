@@ -21,40 +21,37 @@ public class ConnectionListener implements Runnable {
     public ConnectionListener(Panel panel,TextColor coloreLabel, HashMap connectedClients) {
         this.panel=panel;
         this.coloreLabel=coloreLabel;
-        this.connectedClients = connectedClients;
+        this.connectedClients=connectedClients;
     }
     @Override
     public void run() {
         try{
-
-            ServerSocket listener;
+            ServerSocket listener = null;
             int port = 6789;
             listener = new ServerSocket(port);
             listener.setReuseAddress(true);
-            
-            while(Server.serverThread.isAlive()){
-
+            while(true){
                 Socket socket = listener.accept();
 
-                // Per ogni client che si connette al server creo un thread handlerThread,  
+                // Per ogni client che si connette al server creo un thread handlerThread,
                 // a lato server, per ogni client così che possano essere gestiti singolarmente dal server
                 ClientHandler clientSock = new ClientHandler(socket, "",panel,coloreLabel,connectedClients);
                 clientSock.clientHandler();
                 handlerThread = new Thread(clientSock);
                 handlerThread.start();
 
-                Label lab_clientJoin=new Label("Connected clients: " + connectedClients.size() + "/8").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label lab_clientJoin=new Label("Connected clients: " + (connectedClients.size()+1)+ "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientJoin);
 
                 // Aggiorno i vari client che un nuovo giocatore si è connesso al server
-                System.out.println("Connected clients: " + connectedClients.size() + "/8");
-                broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/8");
+                System.out.println("Connected clients: " + (connectedClients.size()+1) + "/4");
+                broadcastServerMessage("[SERVER]: Connected clients: " + (connectedClients.size()+1) + "/4");
             }
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     public void broadcastServerMessage(String message) {
 
         for(Map.Entry<String, PrintWriter> e : connectedClients.entrySet()) {
