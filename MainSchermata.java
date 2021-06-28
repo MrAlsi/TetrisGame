@@ -227,7 +227,7 @@ public class MainSchermata {
                 //svuoto lo schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
-                Label regolamento = new Label("Regolamento:\n\nUna partita è formata da massimo 8 giocatori.\nVince chi resta più tempo in partita. ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label regolamento = new Label("Regolamento:\n\nUna partita è formata da massimo 4 giocatori.\nVince chi resta più tempo in partita. ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(regolamento);
 
                 Empty(panel, 1);
@@ -257,7 +257,7 @@ public class MainSchermata {
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
 
-                Label crediti=new Label("\nQuesto gioco è stato realizzato da:\n\n\nGabriel Riccardo Alsina,\n\nCarlotta Carboni,\n\nLuca Palmieri,\n\nAlssandro Pasi.").setBackgroundColor(BLACK).setForegroundColor
+                Label crediti=new Label("\nQuesto gioco è stato realizzato da:\n\n\nGabriel Riccardo Alsina,\n\nCarlotta Carboni,\n\nLuca Palmieri,\n\nAlessandro Pasi,\n\nAnhelina Halychanska.").setBackgroundColor(BLACK).setForegroundColor
                         (coloreLabel);
 
                 panel.addComponent(crediti);
