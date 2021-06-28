@@ -45,7 +45,7 @@ public class Server  implements Runnable{
     public static Thread senderThread;
     public static Thread listenerThread;
 
-    // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread 
+    // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread
     // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
     public Server(String name, Panel panel, TextColor coloreLabel) {
         this.name = name;
@@ -93,7 +93,7 @@ public class Server  implements Runnable{
             // Creo il thread di comunicazione del server e lo avvio
             // Questo thread permette al server di mandare messaggi a tutti i client
             // durante il pre-partita
-            ServerSender serverSender = new ServerSender(panel, coloreLabel, connectedClients);
+            ServerSender serverSender = new ServerSender(panel, coloreLabel, connectedClients, name);
             senderThread = new Thread(serverSender);
             senderThread.start();
 
