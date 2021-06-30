@@ -248,8 +248,7 @@ public class MainSchermata {
 
         Empty(panel, 1);
 
-        //bottone per accedere al regolamento e ai crediti(sarebbe carino che se un client sta guardando il regolamento
-        // il server non possa avviare il gioco)
+        //bottone per accedere al regolamento e ai crediti
         new Button("Credits", new Runnable(){
             @Override
             public void run() {
