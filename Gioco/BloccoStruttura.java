@@ -1,3 +1,5 @@
+package com.company.Gioco;
+
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
@@ -14,4 +16,3 @@ public class BloccoStruttura extends Blocco{
         stato = 2;
     }
 }
-
