@@ -1,8 +1,12 @@
+package com.company.Gioco;
+
 import com.googlecode.lanterna.TextColor;
+
+
 import com.googlecode.lanterna.graphics.TextGraphics;
 
 public class BloccoPieno extends Blocco{
-    int velocita=300;
+    public static int velocita = 100;
 
     public BloccoPieno(TextGraphics screen, int colTerminale, int rigTerminale) {
         super(screen, colTerminale, rigTerminale, TextColor.ANSI.BLUE);
