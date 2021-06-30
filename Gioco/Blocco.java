@@ -1,3 +1,5 @@
+package com.company.Gioco;
+
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -5,6 +7,7 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
 public class Blocco {
+
     TextGraphics schermo; // Griglia nel terminale
     // TextGraphics quadrato; // Quadratino nel terminale
     private int coefColonna = 4; // Numero di quadratini che formano la larghezza di un Blocco nel terminale
@@ -50,6 +53,21 @@ public class Blocco {
     public boolean collisioneSotto(Griglia campo) {
         //Non capisco perché funzioni con 1, potrebbe dare problemi in futuro ma al momento funziona
         if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga()+1].getStato() >= 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void mosso(int x){
+        colonnaGriglia+=x;
+    }
+
+
+    public boolean collisioneLaterale(Griglia campo, int spostamento){
+        if(this.getColonna()+spostamento<0||
+                this.getColonna()+spostamento==12||
+                campo.griglia[this.getColonna()+spostamento][this.getRiga()].getStato() > 1){
             return true;
         } else {
             return false;
