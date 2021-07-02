@@ -1,11 +1,5 @@
 package com.company.Gioco;
 
-import com.company.Tetris.shape.util.CollisionException;
-import com.company.Tetris.shape.util.ShapeDrawer;
-import com.company.Tetris.shape.util.ShapeFactory;
-import com.company.Tetris.shapes.Shape;
-import com.company.Tetris.thread.BrickDropper;
-import com.company.Tetris.thread.KeyInputThread;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.BasicWindow;
@@ -23,7 +17,7 @@ import java.util.Random;
 
 public class Schermo {
 
-    private int delay = 0;
+    public int delay = 1000 / 60;
     private Griglia campo;
     //private TextGraphics schermo;
     private PezzoLungo p1;
@@ -32,7 +26,7 @@ public class Schermo {
 
 
 
-    private int brickDropDelay = 0;
+    private int brickDropDelay = 1000;
     private Screen screen;
     //private ShapeFactory shapeFactory;
     //private Shape shape;
@@ -93,32 +87,37 @@ public class Schermo {
             int scelta;
 
             boolean gameOver = false;
-
+            p1 = (PezzoLungo) creaPezzo(schermo, campo);
             // run game loop
             while(!gameOver) {
 
+                Thread.sleep(delay);
+                screen.refresh();
+
+                List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
+
+                if(p1.collisioneSotto()){
+                    p1.setStruttura();
+                    screen.refresh();
                     p1 = (PezzoLungo) creaPezzo(schermo, campo);
                     screen.refresh();
+                }
 
-                    for (int i = 0; i < 24; i++) {
-                        List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
-
-                        for(KeyStroke key : keyStrokes) {
-                            if(!p1.collisioneSotto()) {
-                                screen.refresh();
-                                processKeyInput(key);
-                            }
-                        }
-
-
-                        if(brickDropTimer.getDropBrick()) {
-                            p1.scendi(campo);
-                            screen.refresh();
-                            System.out.println("Scendi");
-                        }
+                for(KeyStroke key : keyStrokes) {
+                    if(!p1.collisioneSotto()) {
+                        screen.refresh();
+                        processKeyInput(key);
                     }
+                }
 
+                if(brickDropTimer.getDropBrick()) {
+                        p1.scendi(campo);
+                        screen.refresh();
+                        System.out.println("Scendi");
+                }
             }
+
+
 
 
                     //campo.cancellaRiga();
@@ -179,7 +178,7 @@ public class Schermo {
 
 
         //screen.stopScreen();*/
-        } catch (IOException | CollisionException e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("Problema con il terminale");
             e.printStackTrace();
         }
@@ -208,7 +207,7 @@ public class Schermo {
         return p1;
     }
 
-    private void processKeyInput(KeyStroke key) throws CollisionException,
+    private void processKeyInput(KeyStroke key) throws
             IOException {
         // drop
         Character c1 = ' ';
@@ -217,25 +216,28 @@ public class Schermo {
 
         if(c1.equals(key.getCharacter())) {
             while(!p1.collisioneSotto()){
-                BloccoPieno.velocita = 0;
                 System.out.println("In fondo");
                 p1.scendi(campo);
             }
-            BloccoPieno.velocita = 100;
             screen.refresh();
             return;
         }
 
         // down
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
-            yPos++;
+            if(!p1.collisioneSotto()){
+                System.out.println("Scendi");
+                p1.scendi(campo);
+                screen.refresh();
+            }
+
             return;
         }
 
         // left
         if(key.getKeyType().equals(KeyType.ArrowLeft)) {
             //if(p1.getRiga())
-            if(!p1.collisioneStruttura()) {
+            if(!p1.collisioneLaterale(-1)) {
                 System.out.println("Vai a sinistra");
                 p1.muovi(campo, -1);
                 screen.refresh();
@@ -245,7 +247,7 @@ public class Schermo {
 
         // right
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
-            if(!p1.collisioneStruttura()) {
+            if(!p1.collisioneLaterale(1)) {
                 System.out.println("Vai a destra");
                 p1.muovi(campo, 1);
                 screen.refresh();
