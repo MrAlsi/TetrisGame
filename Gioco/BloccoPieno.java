@@ -6,7 +6,7 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
 public class BloccoPieno extends Blocco{
-    public static int velocita = 100;
+    public static int velocita = 1000;
 
     public BloccoPieno(TextGraphics screen, int colTerminale, int rigTerminale) {
         super(screen, colTerminale, rigTerminale, TextColor.ANSI.BLUE);
@@ -26,23 +26,20 @@ public class BloccoPieno extends Blocco{
 
     @Override
     public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale){
-        try {
-            Thread.sleep(velocita);
+
             //Metto la casella dove sono stato come blocco vuoto
             campo.griglia[colGriglia][rigGriglia] = new BloccoVuoto(schermo, campo.griglia[colGriglia][rigGriglia].getColonna(), campo.griglia[colGriglia][rigGriglia].getRiga());
             //Riempo la successiva con un bloccoPieno
             campo.griglia[colGriglia+orizzontale][rigGriglia+verticale] = new BloccoPieno(schermo, campo.griglia[colGriglia+orizzontale][rigGriglia+verticale].getColonna(), campo.griglia[colGriglia+orizzontale][rigGriglia+verticale].getRiga());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
     }
 
     //Gestione delle collisioni
     public boolean collisioneLaterale(Griglia campo, int x, int y, int spostamento){
-        if(x==0||x==11||campo.griglia[x+spostamento][y].getStato()>=2){
-            return false;
-        } else {
+        if(x==0 || x==11 || campo.griglia[x+spostamento][y].getStato() == 2){
             return true;
+        } else {
+            return false;
         }
     }
 
