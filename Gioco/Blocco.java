@@ -69,11 +69,9 @@ public class Blocco {
     }
 
     public boolean collisioneLaterale(Griglia campo, int spostamento){
-        System.out.println(campo.griglia[this.getColonna()+spostamento][this.getRiga()].getColor() + "Collide");
         if(this.getColonna()+spostamento < 0 ||
                 this.getColonna()+spostamento == 12 ||
                 campo.griglia[this.getColonna()+spostamento][this.getRiga()].getStato() >= 2){
-            System.out.println(campo.griglia[this.getColonna()+spostamento][this.getRiga()].getColor() + "Collide");
             return true;
         } else {
             return false;
