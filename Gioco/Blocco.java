@@ -23,6 +23,7 @@ public class Blocco {
         schermo.setForegroundColor(colore);
         this.colonnaGriglia = colonnaGriglia;
         this.rigaGriglia = rigaGriglia;
+        this.colore = colore;
         // quadrato = schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
         schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
     }
@@ -39,6 +40,10 @@ public class Blocco {
     // Ritorna la posizione della riga sullo schermo, coordinata * coefficente
     public int getRiga() {
         return rigaGriglia;
+    }
+
+    public TextColor getColor() {
+        return colore;
     }
 
     public void sceso(){rigaGriglia++;}
@@ -63,11 +68,12 @@ public class Blocco {
         colonnaGriglia+=x;
     }
 
-
     public boolean collisioneLaterale(Griglia campo, int spostamento){
-        if(this.getColonna()+spostamento<0||
-                this.getColonna()+spostamento==12||
-                campo.griglia[this.getColonna()+spostamento][this.getRiga()].getStato() > 1){
+        System.out.println(campo.griglia[this.getColonna()+spostamento][this.getRiga()].getColor() + "Collide");
+        if(this.getColonna()+spostamento < 0 ||
+                this.getColonna()+spostamento == 12 ||
+                campo.griglia[this.getColonna()+spostamento][this.getRiga()].getStato() >= 2){
+            System.out.println(campo.griglia[this.getColonna()+spostamento][this.getRiga()].getColor() + "Collide");
             return true;
         } else {
             return false;
