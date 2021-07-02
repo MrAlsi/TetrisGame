@@ -1,8 +1,5 @@
 package com.company.Gioco;
 
-import com.company.Tetris.GameScreen;
-import com.company.Tetris.shape.util.CollisionException;
-import com.company.Tetris.thread.KeyInputThread;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.BasicWindow;
