@@ -22,9 +22,10 @@ public class Pezzo {
         //System.out.println(pezzo[0].getPosizioneGrigliaColonna()+"  --  "+ pezzo[0].getPosizioneGrigliaRiga());
         if (collisioneSotto()) {
             for (int i = 0; i < 4; i++) {
-                int y=pezzo[i].rigaGriglia;
-                int x=pezzo[i].colonnaGriglia;
+                int y = pezzo[i].rigaGriglia;
+                int x = pezzo[i].colonnaGriglia;
                 pezzo[i] = new BloccoStruttura(campo.screen, x, y);
+                pezzo[i].setStato();
             }
             return true;
         } else {
@@ -34,6 +35,16 @@ public class Pezzo {
             }
 
             return false;
+        }
+    }
+
+    public void setStruttura(){
+        for (int i = 0; i < 4; i++) {
+            int y=pezzo[i].rigaGriglia;
+            int x=pezzo[i].colonnaGriglia;
+            pezzo[i] = new BloccoStruttura(campo.screen, x, y);
+            pezzo[i].setStato();
+            System.out.println(pezzo[i].getStato());
         }
     }
 
