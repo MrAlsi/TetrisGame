@@ -1,7 +1,15 @@
 package com.company.Gioco;
 
+import com.googlecode.lanterna.graphics.TextGraphics;
+
 public class PezzoLungo extends Pezzo{
-    public PezzoLungo(Griglia campo, BloccoPieno b0, BloccoPieno b1, BloccoPieno b2, BloccoPieno b3) {
-        super(campo,b0, b1, b2, b3);
+    public PezzoLungo(TextGraphics schermo, Griglia campo) {
+        super(campo,new BloccoPieno(schermo, 3, 0),
+                new BloccoPieno(schermo, 4, 0),
+                new BloccoPieno(schermo, 5, 0),
+                new BloccoPieno(schermo, 6, 0));
+        tipoPezzo = 0;
+        rotazione = 1;
     }
+
 }

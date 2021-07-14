@@ -17,10 +17,23 @@ import java.util.Random;
 
 public class Schermo {
 
+
     public int delay = 1000 / 60;
     private Griglia campo;
     //private TextGraphics schermo;
-    private PezzoLungo p1;
+    private Pezzo pezzo[] = new Pezzo[7] ;
+    private Pezzo pezzoScelto;
+    private int index = 0;
+    Random rand;
+
+    private PezzoLungo p0;
+    private PezzoT p1;
+    private PezzoL p2;
+    private PezzoJ p3;
+    private PezzoS p4;
+    private PezzoZ p5;
+    private PezzoQuadrato p6;
+
     private int xPos;
     private int yPos;
 
@@ -83,37 +96,79 @@ public class Schermo {
 
             KeyStroke keyStroke = screen.pollInput();
             //Sostituisco le decisioni dell'utente con un numero random
-            Random rand = new Random();
-            int scelta;
+            rand = new Random();
+            rand.nextInt(7);
+
+            switch(rand.nextInt(7)) {
+                case 0:
+                    pezzoScelto = new PezzoLungo(schermo, campo);
+                    break;
+                case 1:
+                    pezzoScelto = new PezzoT(schermo, campo);
+                    break;
+                case 2:
+                    pezzoScelto = new PezzoL(schermo, campo);
+                    break;
+                case 3:
+                    pezzoScelto = new PezzoJ(schermo, campo);
+                    break;
+                case 4:
+                    pezzoScelto = new PezzoS(schermo, campo);
+                    break;
+                case 5:
+                    pezzoScelto = new PezzoZ(schermo, campo);
+                    break;
+                case 6:
+                    pezzoScelto = new PezzoQuadrato(schermo, campo);
+                    break;
+            }
 
             boolean gameOver = false;
-            p1 = (PezzoLungo) creaPezzo(schermo, campo);
             // run game loop
             while(!gameOver) {
 
                 Thread.sleep(delay);
                 screen.refresh();
-
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
-                if(p1.collisioneSotto()){
-                    p1.setStruttura();
+                if(pezzoScelto.collisioneSotto()){
+                    pezzoScelto.setStruttura();
                     screen.refresh();
-                    p1 = (PezzoLungo) creaPezzo(schermo, campo);
-                    screen.refresh();
+                    switch(rand.nextInt(7)) {
+                        case 0:
+                            pezzoScelto = new PezzoLungo(schermo, campo);
+                            break;
+                        case 1:
+                            pezzoScelto = new PezzoT(schermo, campo);
+                            break;
+                        case 2:
+                            pezzoScelto = new PezzoL(schermo, campo);
+                            break;
+                        case 3:
+                            pezzoScelto = new PezzoJ(schermo, campo);
+                            break;
+                        case 4:
+                            pezzoScelto = new PezzoS(schermo, campo);
+                            break;
+                        case 5:
+                            pezzoScelto = new PezzoZ(schermo, campo);
+                            break;
+                        case 6:
+                            pezzoScelto = new PezzoQuadrato(schermo, campo);
+                            break;
+                    }
                 }
 
                 for(KeyStroke key : keyStrokes) {
-                    if(!p1.collisioneSotto()) {
+                    if(!pezzoScelto.collisioneSotto()) {
                         screen.refresh();
                         processKeyInput(key);
                     }
                 }
 
                 if(brickDropTimer.getDropBrick()) {
-                        p1.scendi(campo);
-                        screen.refresh();
-                        System.out.println("Scendi");
+                    screen.refresh();
+                    pezzoScelto.scendi(campo);
                 }
             }
 
@@ -195,17 +250,6 @@ public class Schermo {
         }
     }
 
-    public static Pezzo creaPezzo(TextGraphics schermo, Griglia campo) {
-        PezzoLungo p1 = new PezzoLungo(
-                campo,
-                new BloccoPieno(schermo, 3, 0),
-                new BloccoPieno(schermo, 4, 0),
-                new BloccoPieno(schermo, 5, 0),
-                new BloccoPieno(schermo, 6, 0)
-        );
-
-        return p1;
-    }
 
     private void processKeyInput(KeyStroke key) throws
             IOException {
@@ -215,9 +259,9 @@ public class Schermo {
         Character c3 = 'x';
 
         if(c1.equals(key.getCharacter())) {
-            while(!p1.collisioneSotto()){
+            while(!pezzoScelto.collisioneSotto()){
                 System.out.println("In fondo");
-                p1.scendi(campo);
+                pezzoScelto.scendi(campo);
             }
             screen.refresh();
             return;
@@ -225,9 +269,9 @@ public class Schermo {
 
         // down
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
-            if(!p1.collisioneSotto()){
+            if(!pezzoScelto.collisioneSotto()){
                 System.out.println("Scendi");
-                p1.scendi(campo);
+                pezzoScelto.scendi(campo);
                 screen.refresh();
             }
 
@@ -237,20 +281,18 @@ public class Schermo {
         // left
         if(key.getKeyType().equals(KeyType.ArrowLeft)) {
             //if(p1.getRiga())
-            if(!p1.collisioneLaterale(-1)) {
+            if(!pezzoScelto.collisioneLaterale(-1)) {
                 System.out.println("Vai a sinistra");
-                p1.muovi(campo, -1);
-                screen.refresh();
+                pezzoScelto.muovi(campo, -1);
             }
             return;
         }
 
         // right
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
-            if(!p1.collisioneLaterale(1)) {
+            if(!pezzoScelto.collisioneLaterale(1)) {
                 System.out.println("Vai a destra");
-                p1.muovi(campo, 1);
-                screen.refresh();
+                pezzoScelto.muovi(campo, 1);
             }
 
             return;
@@ -264,7 +306,7 @@ public class Schermo {
 
         // rotate right
         if(c3.equals(key.getCharacter())) {
-
+            pezzoScelto.ruota(campo);
             return;
         }
     }

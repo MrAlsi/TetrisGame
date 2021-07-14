@@ -27,10 +27,15 @@ public class BloccoPieno extends Blocco{
     @Override
     public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale){
 
-            //Metto la casella dove sono stato come blocco vuoto
-            campo.griglia[colGriglia][rigGriglia] = new BloccoVuoto(schermo, campo.griglia[colGriglia][rigGriglia].getColonna(), campo.griglia[colGriglia][rigGriglia].getRiga());
             //Riempo la successiva con un bloccoPieno
             campo.griglia[colGriglia+orizzontale][rigGriglia+verticale] = new BloccoPieno(schermo, campo.griglia[colGriglia+orizzontale][rigGriglia+verticale].getColonna(), campo.griglia[colGriglia+orizzontale][rigGriglia+verticale].getRiga());
+
+    }
+
+    public void rimuovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale){
+
+        //Metto la casella dove sono stato come blocco vuoto
+        campo.griglia[colGriglia][rigGriglia] = new BloccoVuoto(schermo, campo.griglia[colGriglia][rigGriglia].getColonna(), campo.griglia[colGriglia][rigGriglia].getRiga());
 
     }
 

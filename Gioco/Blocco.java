@@ -46,8 +46,6 @@ public class Blocco {
         return colore;
     }
 
-    public void sceso(){rigaGriglia++;}
-
     public int getStato() {
         return stato;
     }
@@ -57,15 +55,12 @@ public class Blocco {
 
     public boolean collisioneSotto(Griglia campo) {
         //Non capisco perché funzioni con 1, potrebbe dare problemi in futuro ma al momento funziona
-        if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga()+1].getStato() >= 1) {
+        if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga()+1].getStato() > 1) {
             return true;
         } else {
+            //System.out.println("il colore è: " + campo.griglia[this.getColonna()][this.getRiga()+1].getStato());
             return false;
         }
-    }
-
-    public void mosso(int x){
-        colonnaGriglia+=x;
     }
 
     public boolean collisioneLaterale(Griglia campo, int spostamento){
@@ -79,6 +74,10 @@ public class Blocco {
     }
 
     public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale) {
+
+    }
+
+    public void rimuovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale) {
 
     }
 }

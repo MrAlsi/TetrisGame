@@ -99,7 +99,7 @@ public class MainSchermata {
     //codice home
     public static void Schermata(final Panel panel){
         final TextColor coloreLabel=TextColor.ANSI.GREEN_BRIGHT;
-       
+
         Tetris(panel);
 
         Empty(panel, 1);

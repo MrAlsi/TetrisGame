@@ -57,7 +57,7 @@ public class ServerSender implements Runnable{
                         //controllo il numero dei giocatori
                         if (connectedClients.size()+1<2) {
                             // se con il server (quindi +1) siamo meno di 2 non può iniziare il gioco
-                            Label lab_serverMsg = new Label("[SERVER]: Non siete abbastanza giocatori." ).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente." ).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
 
                         }else {
