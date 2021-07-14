@@ -36,7 +36,6 @@ public class BloccoPieno extends Blocco{
 
         //Metto la casella dove sono stato come blocco vuoto
         campo.griglia[colGriglia][rigGriglia] = new BloccoVuoto(schermo, campo.griglia[colGriglia][rigGriglia].getColonna(), campo.griglia[colGriglia][rigGriglia].getRiga());
-
     }
 
     //Gestione delle collisioni

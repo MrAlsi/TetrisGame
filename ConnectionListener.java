@@ -17,9 +17,11 @@ public class ConnectionListener implements Runnable {
     private Panel panel;
     private TextColor coloreLabel;
     public static Thread handlerThread;
+    private int SERVERPORT;
 
-    public ConnectionListener(Panel panel,TextColor coloreLabel, HashMap connectedClients) {
+    public ConnectionListener(Panel panel, int SERVERPORT, TextColor coloreLabel, HashMap connectedClients) {
         this.panel=panel;
+        this.SERVERPORT = SERVERPORT;
         this.coloreLabel=coloreLabel;
         this.connectedClients=connectedClients;
     }
@@ -27,8 +29,7 @@ public class ConnectionListener implements Runnable {
     public void run() {
         try{
             ServerSocket listener = null;
-            int port = 6789;
-            listener = new ServerSocket(port);
+            listener = new ServerSocket(SERVERPORT);
             listener.setReuseAddress(true);
             while(true){
                 Socket socket = listener.accept();

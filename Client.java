@@ -17,15 +17,17 @@ import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 public class Client implements Runnable {
     private String name;
     private String IP;
+    private int PORT;
     private Panel panel;
     private TextColor coloreLabel;
     private Thread runningThread;
     public static Socket socket;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
-    public Client(String name, String IP, Panel panel, TextColor coloreLabel) {
+    public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
         this.name = name;
         this.IP = IP;
+        this.PORT = Integer.parseInt(PORT);
         this.panel = panel;
         this.coloreLabel = coloreLabel;
     }
@@ -52,7 +54,7 @@ public class Client implements Runnable {
         Socket socket = null; //Creazione socket, connessione a localhost:1555
 
         try {
-            socket = new Socket(IP, 6789);
+            socket = new Socket(IP, PORT);
             Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
                     .setForegroundColor(coloreLabel);
             panel.addComponent(connesso);

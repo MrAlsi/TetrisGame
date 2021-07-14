@@ -128,6 +128,7 @@ public class Schermo {
             while(!gameOver) {
 
                 Thread.sleep(delay);
+                campo.eliminaRiga();
                 screen.refresh();
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
@@ -171,67 +172,6 @@ public class Schermo {
                     pezzoScelto.scendi(campo);
                 }
             }
-
-
-
-
-                    //campo.cancellaRiga();
-
-
-
-/*
-            PROVA GIOCO
-            while(true){
-                x=4;
-                y=0;
-                BloccoPieno mago = new BloccoPieno(schermo, campo.griglia[x][y].getPosizioneColonna(), campo.griglia[x][y].getPosizioneRiga());
-                System.out.println("Nuovo ciclo");
-                while(y<7){
-                    scelta = rand.nextInt(6);
-                    System.out.println(scelta);
-                    switch(scelta){
-                        case 0: //Vai a destra
-                            if(mago.collisioneLaterale(campo, x,y,1)==true){
-                                mago.muovi(campo, x, y, 1, 0);
-                                screen.refresh();
-                                x++;
-                                System.out.println("Destra");
-                                break;
-                            } else {
-                                break;
-                            }
-
-                        case 1: //Vai a sinistra
-                            if(mago.collisioneLaterale(campo, x,y,1)==true){
-                                mago.muovi(campo, x, y, -1, 0);
-                                screen.refresh();
-                                x--;
-                                System.out.println("Sinistra");
-                                break;
-                            } else {
-                                break;
-                            }
-
-                        default: //Vai giù
-                            if(mago.collisioneSotto(campo, x, y)==true) {
-                                mago.muovi(campo, x, y, 0, 1);
-                                screen.refresh();
-                                y++;
-                                System.out.println("Giù");
-                                break;
-                            } else {
-                                campo.griglia[x][y]=new BloccoStruttura(schermo, campo.griglia[x][y].getPosizioneColonna(), campo.griglia[x][y].getPosizioneRiga());
-                                screen.refresh();
-                                System.out.println("Y. " + y);
-                                y++;
-                                break;
-                            }
-                    }
-                    Thread.sleep(600);
-                }
-            }
-
-
         //screen.stopScreen();*/
         } catch (IOException | InterruptedException e) {
             System.out.println("Problema con il terminale");

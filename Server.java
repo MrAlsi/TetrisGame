@@ -39,6 +39,7 @@ public class Server  implements Runnable{
     private HashMap<String, PrintWriter> connectedClients = new HashMap();
     private ConnectionListener connectionListener;
     public String name;
+    private int SERVERPORT;
     public TextColor coloreLabel;
     public Panel panel;
     public static Thread serverThread;
@@ -47,11 +48,12 @@ public class Server  implements Runnable{
 
     // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread
     // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
-    public Server(String name, Panel panel, TextColor coloreLabel) {
+    public Server(String name, String SERVERPORT, Panel panel, TextColor coloreLabel) {
         this.name = name;
+        this.SERVERPORT = Integer.parseInt(SERVERPORT);
         this.panel= panel;
         this.coloreLabel= coloreLabel;
-        connectionListener = new ConnectionListener(panel,coloreLabel,connectedClients);
+        connectionListener = new ConnectionListener(panel, this.SERVERPORT, coloreLabel, connectedClients);
         listenerThread = new Thread(connectionListener);
 
     }

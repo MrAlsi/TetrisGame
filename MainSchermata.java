@@ -119,13 +119,17 @@ public class MainSchermata {
                 Label user=new Label("\ninserisci il tuo nome: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 final TextBox textUserClient=new TextBox();// nome nuovo client
                 Empty(panel, 1);
-                Label IP=new Label("\nServer IP : ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label IP=new Label("\nServer IP: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 final TextBox textIP=new TextBox();//indirizzo IP del server a cui voglio collegarmi
+                Label PORT=new Label("\nServer PORT: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                final TextBox textPORT=new TextBox();//porta del server a cui voglio collegarmi
 
                 panel.addComponent(user);
                 panel.addComponent(textUserClient);
                 panel.addComponent(IP);
                 panel.addComponent(textIP);
+                panel.addComponent(PORT);
+                panel.addComponent(textPORT);
 
                 Empty(panel, 1);
                 //bottone per startare il codice del client
@@ -135,11 +139,12 @@ public class MainSchermata {
                         //passo alle variabili i contenuti delle textbox
                         String name = textUserClient.getText();
                         String IP = textIP.getText();
+                        String PORT = textPORT.getText();
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
                         //richiamo codice client
 
-                        Client client=new Client(name,IP,panel,coloreLabel);
+                        Client client=new Client(name, IP, PORT, panel, coloreLabel);
                         client.StartClient(client);
 
                     }
@@ -176,8 +181,14 @@ public class MainSchermata {
                 //registro il nome del server
                 Label user = new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 final TextBox textUser = new TextBox();
+                Label SERVERPORT=new Label("\nServer PORT: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                final TextBox textSERVERPORT=new TextBox();//porta del server a cui voglio collegarmi
+
+
                 panel.addComponent(user);
                 panel.addComponent(textUser);
+                panel.addComponent(SERVERPORT);
+                panel.addComponent(textSERVERPORT);
 
                 Empty(panel, 1);
                 //bottone per strtare il server
@@ -185,12 +196,13 @@ public class MainSchermata {
                     @Override
                     public void run(){
                         String name = textUser.getText();
+                        String SERVERPORT = textSERVERPORT.getText();
                         //svuoto lo schermo
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
                         //richiamo il codice del server
 
-                        Server server = new Server(name,panel,coloreLabel);
+                        Server server = new Server(name, SERVERPORT, panel, coloreLabel);
                         server.StartServer(server);
 
 
