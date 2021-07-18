@@ -41,12 +41,12 @@ public class ConnectionListener implements Runnable {
                 handlerThread = new Thread(clientSock);
                 handlerThread.start();
 
-                Label lab_clientJoin=new Label("Connected clients: " + (connectedClients.size()+1)+ "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label lab_clientJoin=new Label("Connected clients: " + (connectedClients.size())+ "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientJoin);
 
                 // Aggiorno i vari client che un nuovo giocatore si è connesso al server
-                System.out.println("Connected clients: " + (connectedClients.size()+1) + "/4");
-                broadcastServerMessage("[SERVER]: Connected clients: " + (connectedClients.size()+1) + "/4");
+                System.out.println("Connected clients: " + (connectedClients.size()) + "/4");
+                broadcastServerMessage("[SERVER]: Connected clients: " + (connectedClients.size()) + "/4");
             }
         } catch(Exception e) {
             e.printStackTrace();
