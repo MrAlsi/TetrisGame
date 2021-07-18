@@ -77,7 +77,7 @@ public class Blocco {
 
     }
 
-    public void rimuovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale) {
+    public void rimuovi(Griglia campo, int colGriglia, int rigGriglia) {
 
     }
 }
