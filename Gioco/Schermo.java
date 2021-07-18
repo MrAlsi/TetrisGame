@@ -18,13 +18,12 @@ public class Schermo {
 
     public int delay = 1000 / 60;
     private Griglia campo;
-    private Pezzo pezzo[] = new Pezzo[7];
     private Pezzo pezzoScelto;
-    private int index = 0;
     Random sceltaPezzo = new Random();
 
     private int brickDropDelay = 1000;
     private Screen screen;
+
 
     public Schermo() throws IOException {
 
@@ -32,7 +31,7 @@ public class Schermo {
 
     public void run() throws IOException {
         try {
-
+            //Creazione terminale con dimensioni già fisse
             final int COLS = 50;
             final int ROWS = 50;
 
@@ -54,10 +53,6 @@ public class Schermo {
 
             //Gioco
 
-            //Cordinate nella griglia
-            int x = 4;    //Colonne  |||
-            int y = 0;    //Righe    ===
-
             // start brick move treads
             CadutaBlocco brickDropTimer = new CadutaBlocco();
             brickDropTimer.setDelay(brickDropDelay);
@@ -73,14 +68,20 @@ public class Schermo {
             while(!gameOver) {
 
                 Thread.sleep(delay);
-                campo.eliminaRiga();
                 screen.refresh();
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
-                if(pezzoScelto.collisioneSotto()){
-                    pezzoScelto.setStruttura();
-                    screen.refresh();
-                    pezzoScelto=prossimoPezzo(schermo);
+                if(pezzoScelto.collisioneSotto()){               //Avviene una collisione: TRUE
+                    pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
+                    screen.refresh();                            //Refresh dello schermo
+                    campo.controlloRighe();                      //Controllo se ci sono righe piene
+                    screen.refresh();                            //Refresh dello schermo
+                    if(campo.sconfitta()){
+                        System.out.println("Partita finita");
+                        gameOver=true;
+                        screen.stopScreen();
+                    }
+                      pezzoScelto=prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
                 }
 
                 for(KeyStroke key : keyStrokes) {
@@ -95,7 +96,7 @@ public class Schermo {
                     pezzoScelto.scendi(campo);
                 }
             }
-        //screen.stopScreen();*/
+
         } catch (IOException | InterruptedException e) {
             System.out.println("Problema con il terminale");
             e.printStackTrace();
@@ -156,7 +157,6 @@ public class Schermo {
                 pezzoScelto.scendi(campo);
             }
             screen.refresh();
-            return;
         }
 
         // down
@@ -166,8 +166,6 @@ public class Schermo {
                 pezzoScelto.scendi(campo);
                 screen.refresh();
             }
-
-            return;
         }
 
         // left
@@ -177,7 +175,6 @@ public class Schermo {
                 System.out.println("Vai a sinistra");
                 pezzoScelto.muovi(campo, -1);
             }
-            return;
         }
 
         // right
@@ -186,21 +183,16 @@ public class Schermo {
                 System.out.println("Vai a destra");
                 pezzoScelto.muovi(campo, 1);
             }
-
-            return;
         }
 
         // rotate left
         if(c2.equals(key.getCharacter())) {
-
-            return;
+            //Aggiungere rotazione
         }
 
         // rotate right
         if(c3.equals(key.getCharacter())) {
             pezzoScelto.ruota(campo);
-            return;
         }
     }
-
 }
