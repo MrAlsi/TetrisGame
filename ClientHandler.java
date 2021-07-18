@@ -111,13 +111,13 @@ public  class ClientHandler implements Runnable {
 
                 Label lab_clientLeft = new Label(username + " has left").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientLeft);
-                Label lab_clientTot = new Label("Connected clients: " + connectedClients.size() + "/8").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label lab_clientTot = new Label("Connected clients: " + connectedClients.size() + "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientTot);
 
                 System.out.println(username + " has left");
-                System.out.println("Connected clients: " + connectedClients.size() + "/8");
+                System.out.println("Connected clients: " + connectedClients.size() + "/4");
                 broadcastServerMessage(username + " has left");
-                broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/8");
+                broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/4");
             }
         }
     }
