@@ -11,14 +11,15 @@ public class PezzoT extends Pezzo{
         tipoPezzo = 1;
         rotazione = 1;
     }
-@Override
+
+    @Override
     public void ruota(Griglia campo) {
         switch (rotazione) {
         case 0:
-            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), 1, 1);
-            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga(), 0, 0);
-            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga(), -1, -1);
-            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga(), -1, 1);
+            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga());
+            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga());
+            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga());
+            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga());
 
             pezzo[3].muovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), 1, 1);
             pezzo[3].colonnaGriglia = pezzo[3].getColonna() + 1;
@@ -41,10 +42,10 @@ public class PezzoT extends Pezzo{
             break;
 
         case 1:
-            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), -1, 1);
-            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga(), 0, 0);
-            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga(), 1, -1);
-            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga(), -1, -1);
+            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga());
+            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga());
+            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga());
+            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga());
 
             pezzo[3].muovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), -1, 1);
             pezzo[3].colonnaGriglia = pezzo[3].getColonna() - 1;
@@ -67,10 +68,10 @@ public class PezzoT extends Pezzo{
             break;
 
         case 2:
-            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), -1, -1);
-            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga(), 0, 0);
-            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga(), 1, 1);
-            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga(), 1, -1);
+            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga());
+            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga());
+            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga());
+            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga());
 
 
             pezzo[3].muovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), -1, -1);
@@ -94,10 +95,10 @@ public class PezzoT extends Pezzo{
             break;
 
         case 3:
-            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), 1, -1);
-            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga(), 0, 0);
-            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga(), -1, 1);
-            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga(), 1, 1);
+            pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga());
+            pezzo[2].rimuovi(campo, pezzo[2].getColonna(), pezzo[2].getRiga());
+            pezzo[1].rimuovi(campo, pezzo[1].getColonna(), pezzo[1].getRiga());
+            pezzo[0].rimuovi(campo, pezzo[0].getColonna(), pezzo[0].getRiga());
 
             pezzo[3].muovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga(), 1, -1);
             pezzo[3].colonnaGriglia = pezzo[3].getColonna() + 1;
@@ -120,5 +121,4 @@ public class PezzoT extends Pezzo{
             break;
         }
     }
-
 }
