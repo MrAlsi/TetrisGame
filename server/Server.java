@@ -1,35 +1,17 @@
-package com.company;
+package com.company.server;
 
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
-
-import com.googlecode.lanterna.*;
-import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TerminalScreen;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
 
-import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Arrays;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -45,6 +27,7 @@ public class Server  implements Runnable{
     public static Thread serverThread;
     public static Thread senderThread;
     public static Thread listenerThread;
+    public static Boolean gameStarted;
 
     // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread
     // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
@@ -73,6 +56,9 @@ public class Server  implements Runnable{
         Label lab=new Label("\nStarting "+ name + "... ").setBackgroundColor(BLACK).setForegroundColor(
                 coloreLabel);
         panel.addComponent(lab);
+
+        gameStarted = false;
+
         try{
             URL whatismyip = new URL("http://checkip.amazonaws.com");
             BufferedReader in = new BufferedReader(new InputStreamReader(

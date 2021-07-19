@@ -2,12 +2,12 @@ package com.company;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -144,7 +144,7 @@ public class MainSchermata {
                         panel.setFillColorOverride(BLACK);
                         //richiamo codice client
 
-                        Client client=new Client(name, IP, PORT, panel, coloreLabel);
+                        com.company.client.Client client=new com.company.client.Client(name, IP, PORT, panel, coloreLabel);
                         client.StartClient(client);
 
                     }
@@ -184,7 +184,6 @@ public class MainSchermata {
                 Label SERVERPORT=new Label("\nServer PORT: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 final TextBox textSERVERPORT=new TextBox();//porta del server a cui voglio collegarmi
 
-
                 panel.addComponent(user);
                 panel.addComponent(textUser);
                 panel.addComponent(SERVERPORT);
@@ -202,7 +201,7 @@ public class MainSchermata {
                         panel.setFillColorOverride(BLACK);
                         //richiamo il codice del server
 
-                        Server server = new Server(name, SERVERPORT, panel, coloreLabel);
+                        com.company.server.Server server = new com.company.server.Server(name, SERVERPORT, panel, coloreLabel);
                         server.StartServer(server);
 
 

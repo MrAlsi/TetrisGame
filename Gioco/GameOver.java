@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 //classe per la schermata di inizializzazione del gioco
-public class provaGameOver {
+public class GameOver {
     public static void main(String[] args) throws IOException {
 
         final int COLS = 50;

@@ -1,19 +1,14 @@
-package com.company;
-
-import com.googlecode.lanterna.gui2.Label;
-
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+package com.company.server;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
-import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -22,7 +17,7 @@ public class ServerSender implements Runnable{
     public HashMap<String ,PrintWriter> connectedClients;
     private Panel panel;
     private TextColor coloreLabel;
-    private String name;
+    public static String name;
 
     public ServerSender(Panel panel, TextColor coloreLabel, HashMap connectedClients, String name) {
         this.name=name;
@@ -65,7 +60,7 @@ public class ServerSender implements Runnable{
                             panel.removeAllComponents();
                             panel.setVisible(false);
                             broadcastServerMessage(messaggioString);
-
+                            Server.gameStarted = true;
 
                         }
 

@@ -14,7 +14,7 @@ import java.util.Arrays;
 import static com.googlecode.lanterna.TextColor.ANSI.*;
 
 //classe per la schermata di inizializzazione del gioco
-public class provaWin {
+public class YouWin {
     public static void main(String[] args) throws IOException {
 
         final int COLS = 42;

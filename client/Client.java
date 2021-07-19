@@ -1,16 +1,15 @@
-package com.company;
+package com.company.client;
 
+import com.company.Gioco.Schermo;
+import com.company.MainSchermata;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
-
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
-//import com.sun.tools.javac.Main;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -22,6 +21,7 @@ public class Client implements Runnable {
     private TextColor coloreLabel;
     private Thread runningThread;
     public static Socket socket;
+    private String serverName;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
@@ -101,8 +101,14 @@ public class Client implements Runnable {
         toServer.flush();
         senderThread.start();
 
+        try {
+            serverName = fromServer.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
-        while (message != null && !message.equals("/quit")) {
+        while (message != null && !message.equals("["+ serverName + "]: /quit")) {
             try {
 
                 // Leggi un messaggio inviato dal server
@@ -112,20 +118,23 @@ public class Client implements Runnable {
                 ex.printStackTrace();
             }
             // Se il server invia un comando /quit mi disconnetto dal server
-            if(message.equals("/quit)")){
-                /*Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
-                        .setForegroundColor(coloreLabel);
-                panel.addComponent(serverClosed);
-                Label uscita = new Label("\nLeaving the server...").setBackgroundColor(BLACK)
-                        .setForegroundColor(coloreLabel);
-                panel.addComponent(uscita);*/
+            if(message.equals("["+ serverName + "]: /quit")){
                 Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
                         .setForegroundColor(coloreLabel);
                 panel.addComponent(successo);
                 break;
-            }else if(message.equals("/start")){
+            }else if(message.equals("["+ serverName + "]: /start")){
+
                 panel.removeAllComponents();
                 panel.setVisible(false);
+                Schermo schermo = null;
+                try {
+                    schermo = new Schermo();
+                    schermo.run();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 //break;
                 //qui parte il gioco
 

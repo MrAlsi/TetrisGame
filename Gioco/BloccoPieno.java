@@ -24,13 +24,13 @@ public class BloccoPieno extends Blocco{
         //Verticale: +1 scende      -1:sale
 
     @Override
-    public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale){
+    public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale, TextColor colore){
 
         //Riempo la successiva con un bloccoPieno
         campo.griglia[colGriglia+orizzontale][rigGriglia+verticale] =
                 new BloccoPieno(schermo,
                         campo.griglia[colGriglia+orizzontale][rigGriglia+verticale].getColonna(),
-                        campo.griglia[colGriglia+orizzontale][rigGriglia+verticale].getRiga());
+                        campo.griglia[colGriglia+orizzontale][rigGriglia+verticale].getRiga(), colore);
 
     }
 

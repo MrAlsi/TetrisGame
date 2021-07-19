@@ -1,4 +1,4 @@
-package com.company;
+package com.company.client;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Button;
@@ -7,7 +7,6 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
 import java.io.PrintWriter;
-import java.util.Scanner;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 

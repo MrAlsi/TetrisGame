@@ -20,6 +20,7 @@ public class Schermo {
     private Griglia campo;
     private Pezzo pezzoScelto;
     Random sceltaPezzo = new Random();
+    private String azione;
 
     private final int brickDropDelay = 1000;
     private Screen screen;
@@ -157,14 +158,19 @@ public class Schermo {
                 //System.out.println("In fondo");
                 pezzoScelto.scendi(campo);
             }
+            azione = "";
+            azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+            System.out.println(azione);
             screen.refresh();
         }
 
         // down
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
             if(!pezzoScelto.collisioneSotto()){
-                System.out.println("Scendi");
                 pezzoScelto.scendi(campo);
+                azione = "";
+                azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                System.out.println(azione);
                 screen.refresh();
             }
         }
@@ -173,16 +179,22 @@ public class Schermo {
         if(key.getKeyType().equals(KeyType.ArrowLeft)) {
             //if(p1.getRiga())
             if(!pezzoScelto.collisioneLaterale(-1)) {
-                System.out.println("Vai a sinistra");
                 pezzoScelto.muovi(campo, -1);
+                azione = "";
+                azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                System.out.println(azione);
+                screen.refresh();
             }
         }
 
         // right
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
             if(!pezzoScelto.collisioneLaterale(1)) {
-                System.out.println("Vai a destra");
                 pezzoScelto.muovi(campo, 1);
+                azione = "";
+                azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                System.out.println(azione);
+                screen.refresh();
             }
         }
 
@@ -194,6 +206,10 @@ public class Schermo {
         // rotate right
         if(c3.equals(key.getCharacter())) {
             pezzoScelto.ruota(campo);
+            azione = "";
+            azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+            System.out.println(azione);
+            screen.refresh();
         }
     }
 

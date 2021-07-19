@@ -1,4 +1,4 @@
-package com.company;
+package com.company.server;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Label;

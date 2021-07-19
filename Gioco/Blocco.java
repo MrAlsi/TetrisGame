@@ -73,7 +73,7 @@ public class Blocco {
         }
     }
 
-    public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale) {
+    public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale, TextColor colore) {
 
     }
 

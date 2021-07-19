@@ -1,23 +1,16 @@
-package com.company;
+package com.company.server;
 
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Arrays;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -48,9 +41,17 @@ public  class ClientHandler implements Runnable {
             fromClient = new BufferedReader(socketReader);
 
             out = new PrintWriter(clientSocket.getOutputStream(), true);
-
             username = fromClient.readLine();
+            connectedClients.put(username, out);
 
+            for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
+
+                if(e.getKey().equals(username)){
+
+                    e.getValue().println(ServerSender.name);
+                    e.getValue().flush();
+                }
+            }
             // Appena il seguente client si connette al server lo comunico a tutti nella
             // chat pre-partita
             Label lab_newClient = new Label("New client connected: " + username + " ["
@@ -65,7 +66,6 @@ public  class ClientHandler implements Runnable {
             broadcastServerMessage("New client connected: " + username + " ["
                     + clientSocket.getInetAddress().getHostAddress()
                     + "]");
-            connectedClients.put(username, out);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public  class ClientHandler implements Runnable {
         try {
         
             String message = "";
-            while (message != null || Server.serverThread.isAlive()) {
+            while (message != null || Server.serverThread.isAlive() && !Server.gameStarted) {
 
                 // Quando un client invia un messaggio viene ricevuto dal server qui 
                 message = fromClient.readLine(); 
@@ -94,6 +94,14 @@ public  class ClientHandler implements Runnable {
                     System.out.println("[" + username + "]: " + message);
                     broadcastMessage(String.format("[%s]: %s", username, message), username);
 
+                }
+            }
+
+            while(Server.gameStarted){
+                message = fromClient.readLine();
+                if (message != null) {
+                    System.out.println(username + "/" + message);
+                    broadcastMessage(String.format("%s/%s", username, message), username);
                 }
             }
 
