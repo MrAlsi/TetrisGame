@@ -25,7 +25,7 @@ public class Griglia {
         }
     }
 
-    public void controlloRighe(){
+    public int controlloRighe(){
         int combo = 0;              //Combo per le riga spazzatura
         boolean elimina = false;        //Se non entra mai nel if viene segnata come riga da eliminare
 
@@ -38,10 +38,12 @@ public class Griglia {
                 elimina=true;
             }
             if(elimina) {
+                combo++;
                 eliminaRiga(i);                 //Elimina le righe che gli passano
                 cadutaStruttura(i);             //Fa cadere la struttura di righe che ha eliminato
             }
         }
+        return combo;
     }
 
     public void eliminaRiga(int riga){
