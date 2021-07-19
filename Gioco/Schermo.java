@@ -21,9 +21,8 @@ public class Schermo {
     private Pezzo pezzoScelto;
     Random sceltaPezzo = new Random();
 
-    private int brickDropDelay = 1000;
+    private final int brickDropDelay = 1000;
     private Screen screen;
-
 
     public Schermo() throws IOException {
 
@@ -74,7 +73,9 @@ public class Schermo {
                 if(pezzoScelto.collisioneSotto()){               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     screen.refresh();                            //Refresh dello schermo
-                    campo.controlloRighe();                      //Controllo se ci sono righe piene
+                    int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
+                    if(combo >1)                                 //Combo serve per vedere se si sono liberate più righe
+                        righeSpazzatura(combo);                  //Richiamo il metodo per mandare le righe spaz. in base alla combo
                     screen.refresh();                            //Refresh dello schermo
                     if(campo.sconfitta()){
                         System.out.println("Partita finita");
@@ -153,7 +154,7 @@ public class Schermo {
         //down totale
         if(c1.equals(key.getCharacter())) {
             while(!pezzoScelto.collisioneSotto()){
-                System.out.println("In fondo");
+                //System.out.println("In fondo");
                 pezzoScelto.scendi(campo);
             }
             screen.refresh();
@@ -193,6 +194,16 @@ public class Schermo {
         // rotate right
         if(c3.equals(key.getCharacter())) {
             pezzoScelto.ruota(campo);
+        }
+    }
+
+    public void righeSpazzatura(int combo){
+        switch(combo){
+            //Prova per vedere se funziona, quando mettiamo le righe spazzatura useremo questo metodo
+            case 2 -> System.out.println("1 Riga spazzatura");
+            case 3 -> System.out.println("2 Riga spazzatura");
+            case 4 -> System.out.println("4 Riga spazzatura");
+            default -> System.out.println("6 Riga spazzatura");
         }
     }
 }
