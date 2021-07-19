@@ -33,11 +33,11 @@ public class Pezzo {
             return true;
         } else {
             for (int i = 0; i < 4; i++) {
-                pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), 0, 1);
+                pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
                 // System.out.println(pezzo[i].getStato());
             }
             for (int i = 0; i < 4; i++) {
-                pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), 0, 1);
+                pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), 0, 1, pezzo[i].colore);
                 pezzo[i].rigaGriglia = pezzo[i].getRiga() + 1;
                // System.out.println(pezzo[i].getStato());
             }
@@ -61,20 +61,20 @@ public class Pezzo {
         if(!collisioneLaterale(orizzontale)){ //deve ritornare false per entrare
             if(orizzontale==1){
                 for (int i = 3; i >= 0; i--) {
-                    pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0);
+                    pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
 
                 }
                 for (int i = 3; i >= 0; i--) {
-                    pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0);
+                    pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0, pezzo[i].colore);
                     pezzo[i].colonnaGriglia = pezzo[i].getColonna() + 1;
                 }
             } else {
                 for (int i = 0; i < 4; i++) {
-                    pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0);
+                    pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
 
                 }
                 for (int i = 0; i < 4; i++) {
-                    pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0);
+                    pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0, pezzo[i].colore);
                     pezzo[i].colonnaGriglia = pezzo[i].getColonna() - 1;
                 }
             }
