@@ -8,8 +8,8 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 public class BloccoPieno extends Blocco{
     public static int velocita = 1000;
 
-    public BloccoPieno(TextGraphics screen, int colTerminale, int rigTerminale) {
-        super(screen, colTerminale, rigTerminale, TextColor.ANSI.BLUE);
+    public BloccoPieno(TextGraphics screen, int colTerminale, int rigTerminale, TextColor colore) {
+        super(screen, colTerminale, rigTerminale, colore);
         stato=1;
     }
 
@@ -19,7 +19,6 @@ public class BloccoPieno extends Blocco{
     public void aumentaVelocita(){
         velocita=velocita-100;
     }
-
 
         //orizzontale: +1: sposta a destra  -1:sposta a sinistra
         //Verticale: +1 scende      -1:sale
