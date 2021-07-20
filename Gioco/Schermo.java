@@ -80,10 +80,12 @@ public class Schermo {
                     screen.refresh();                            //Refresh dello schermo
                     if(campo.sconfitta()){
                         System.out.println("Partita finita");
+                        GameOver sconfitta=new GameOver();
+                        sconfitta.run();
                         gameOver=true;
                         screen.stopScreen();
                     }
-                      pezzoScelto=prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
+                    pezzoScelto=prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
                 }
 
                 for(KeyStroke key : keyStrokes) {
