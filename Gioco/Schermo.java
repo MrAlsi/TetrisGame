@@ -2,7 +2,6 @@ package com.company.Gioco;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -10,6 +9,7 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -17,7 +17,9 @@ import java.util.Random;
 public class Schermo {
 
     public int delay = 1000 / 60;
+
     private Griglia campo;
+    private TextGraphics schermo;
     private Pezzo pezzoScelto;
     Random sceltaPezzo = new Random();
     private String azione;
@@ -27,29 +29,42 @@ public class Schermo {
 
     public Schermo() throws IOException {
 
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+
+        System.out.println(size);
+        System.out.println(size.getWidth());
+        System.out.println(size.getHeight());
+
+        // width will store the width of the screen
+        int width = (int)size.getWidth();
+
+        // height will store the height of the screen
+        int height = (int)size.getHeight();
+
+        int leftMargin = width/19;
+        int topMargin = height/50;
+
+        //codice per avere uno chermo
+        final int COLS = width/8;
+        final int ROWS = height/16;
+        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
+        defaultTerminalFactory.setInitialTerminalSize(new TerminalSize(COLS,ROWS));
+        Terminal terminal = defaultTerminalFactory.createTerminalEmulator();
+
+        screen = new TerminalScreen(terminal);
+        screen.startScreen();
+
+        //Creazione del campo da gioco
+        schermo = screen.newTextGraphics();
+
+        campo = new Griglia(schermo);
+        campo.creaCampo();
+        screen.refresh();
     }
 
-    public void run() throws IOException {
+    public synchronized void run() throws IOException {
         try {
             //Creazione terminale con dimensioni già fisse
-            final int COLS = 50;
-            final int ROWS = 50;
-
-            DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
-            defaultTerminalFactory.setInitialTerminalSize(new TerminalSize(COLS, ROWS));
-            Terminal terminal = defaultTerminalFactory.createTerminal();
-            BasicWindow window = new BasicWindow();
-            window.setFixedSize((new TerminalSize(100, 50)));
-
-            screen = new TerminalScreen(terminal);
-            screen.startScreen();
-
-            //Creazione del campo da gioco
-            TextGraphics schermo = screen.newTextGraphics();
-
-            campo = new Griglia(schermo);
-            campo.creaCampo();
-            screen.refresh();
 
             //Gioco
 
@@ -80,7 +95,7 @@ public class Schermo {
                     screen.refresh();                            //Refresh dello schermo
                     if(campo.sconfitta()){
                         System.out.println("Partita finita");
-                        GameOver sconfitta=new GameOver();
+                        GameOver sconfitta = new GameOver();
                         sconfitta.run();
                         gameOver=true;
                         screen.stopScreen();
@@ -221,7 +236,6 @@ public class Schermo {
             case 2 -> System.out.println("1 Riga spazzatura");
             case 3 -> System.out.println("2 Riga spazzatura");
             case 4 -> System.out.println("4 Riga spazzatura");
-            default -> System.out.println("6 Riga spazzatura");
         }
     }
 }

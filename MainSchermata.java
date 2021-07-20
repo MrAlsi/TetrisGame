@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.client.Client;
+import com.company.server.Server;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Button;
@@ -21,6 +23,7 @@ import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 //classe per la schermata di inizializzazione del gioco
 public class MainSchermata {
     public static void main(String[] args) throws IOException {
+
         //organizzazione della schermata
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -48,7 +51,6 @@ public class MainSchermata {
         final Screen screen = new TerminalScreen(terminal);
         screen.startScreen();
 
-
         // Creo pannello
         final Panel panel = new Panel();
         panel.setLayoutManager(
@@ -57,10 +59,10 @@ public class MainSchermata {
                         .setRightMarginSize(0)
                         .setTopMarginSize(topMargin));
         panel.setFillColorOverride(BLACK);
+
         panel.addComponent(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
         // richiamo metodo per avviare la grafica
         Schermata(panel);
-
 
         BasicWindow window = new BasicWindow();
         // importante
@@ -68,8 +70,6 @@ public class MainSchermata {
         //window.setFixedSize((new TerminalSize(10,20)));
 
         window.setComponent(panel);
-
-
 
         MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(BLACK));
         gui.addWindowAndWait(window);
@@ -144,7 +144,7 @@ public class MainSchermata {
                         panel.setFillColorOverride(BLACK);
                         //richiamo codice client
 
-                        com.company.client.Client client=new com.company.client.Client(name, IP, PORT, panel, coloreLabel);
+                        Client client=new Client(name, IP, PORT, panel, coloreLabel);
                         client.StartClient(client);
 
                     }
@@ -201,7 +201,7 @@ public class MainSchermata {
                         panel.setFillColorOverride(BLACK);
                         //richiamo il codice del server
 
-                        com.company.server.Server server = new com.company.server.Server(name, SERVERPORT, panel, coloreLabel);
+                        Server server = new Server(name, SERVERPORT, panel, coloreLabel);
                         server.StartServer(server);
 
 

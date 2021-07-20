@@ -17,7 +17,6 @@ public class Griglia {
     }
 
     public void creaCampo() {
-        Boolean chess = false;  //Si può togliere?
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 24; j++) {
                 griglia[i][j] = new BloccoVuoto(screen, i, j);

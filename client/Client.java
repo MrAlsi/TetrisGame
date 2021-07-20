@@ -108,7 +108,7 @@ public class Client implements Runnable {
         }
 
         // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
-        while (message != null && !message.equals("["+ serverName + "]: /quit")) {
+        while (message != null && !message.equals("/quit")) {
             try {
 
                 // Leggi un messaggio inviato dal server
@@ -118,12 +118,12 @@ public class Client implements Runnable {
                 ex.printStackTrace();
             }
             // Se il server invia un comando /quit mi disconnetto dal server
-            if(message.equals("["+ serverName + "]: /quit")){
+            if(message.equals("/quit")){
                 Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
                         .setForegroundColor(coloreLabel);
                 panel.addComponent(successo);
                 break;
-            }else if(message.equals("["+ serverName + "]: /start")){
+            }else if(message.equals("/start")){
 
                 panel.removeAllComponents();
                 panel.setVisible(false);

@@ -8,7 +8,6 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
@@ -23,7 +22,7 @@ public class GameOver implements Runnable{
 
         try {
             final int COLS = 50;
-            final int ROWS = 8;
+            final int ROWS = 10;
             DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
             defaultTerminalFactory.setInitialTerminalSize(new
 
