@@ -14,9 +14,14 @@ import java.util.Arrays;
 import static com.googlecode.lanterna.TextColor.ANSI.*;
 
 //classe per la schermata di inizializzazione del gioco
-public class YouWin {
-    public static void main(String[] args) throws IOException {
+public class YouWin implements Runnable{
+    public YouWin() {
+    }
 
+    @Override
+    public void run() {
+        
+        try {
         final int COLS = 42;
         final int ROWS = 18;
         DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
@@ -37,7 +42,7 @@ public class YouWin {
                         .setRightMarginSize(0)
                         .setTopMarginSize(topMargin)); */
         panel.setFillColorOverride(BLACK);
-          panel.addComponent(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
+        panel.addComponent(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
         // richiamo metodo per avviare la grafica
         Schermata(panel);
 
@@ -53,6 +58,9 @@ public class YouWin {
 
         MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(BLACK));
         gui.addWindowAndWait(window);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     //codice scritta colorata you win
     public static void provaWin(Panel panel){
@@ -94,8 +102,6 @@ public class YouWin {
         panel.addComponent(provaWin10);
         panel.addComponent(provaWin11);
         panel.addComponent(provaWin12);
-
-
     }
 
     // separatore di dimensioni pari a size
@@ -108,10 +114,5 @@ public class YouWin {
         final TextColor coloreLabel=TextColor.ANSI.GREEN_BRIGHT;
 
         provaWin(panel);
-
-
-
-
     }
-
 }
