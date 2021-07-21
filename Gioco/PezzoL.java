@@ -43,8 +43,8 @@ public class PezzoL extends Pezzo {
                 pezzo[0].rigaGriglia = pezzo[0].getRiga() - 1;
 
                 rotazione = 1;
-
-                break;
+            }
+            break;
 
             case 1:
                 pezzo[3].rimuovi(campo, pezzo[3].getColonna(), pezzo[3].getRiga());
@@ -69,7 +69,7 @@ public class PezzoL extends Pezzo {
                 pezzo[0].rigaGriglia = pezzo[0].getRiga() - 1;
 
                 rotazione = 2;
-            }
+            
             break;
 
         case 2:
