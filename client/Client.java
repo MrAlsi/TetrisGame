@@ -10,6 +10,9 @@ import com.googlecode.lanterna.gui2.Panel;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -22,6 +25,8 @@ public class Client implements Runnable {
     private Thread runningThread;
     public static Socket socket;
     private String serverName;
+    private String playersData;
+    public static String[] nick;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
@@ -119,45 +124,62 @@ public class Client implements Runnable {
             }
             // Se il server invia un comando /quit mi disconnetto dal server
             if(message.equals("/quit")){
+
                 Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
                         .setForegroundColor(coloreLabel);
                 panel.addComponent(successo);
                 break;
-            }else if(message.equals("/start")){
 
-                panel.removeAllComponents();
-                panel.setVisible(false);
-                Schermo schermo = null;
+            }else if(message.equals("/start")){
                 try {
-                    schermo = new Schermo();
-                    schermo.run();
+                    // Leggo i nick di tutti i giocatori
+                    playersData = fromServer.readLine();
+                    nick  = playersData.split("-");
+                    System.out.println(Arrays.toString(nick));
+
+                    Schermo schermo = new Schermo(toServer, name);
+                    Thread gameThread = new Thread(schermo);
+                    gameThread.start();
+
+                    while(!Schermo.gameOver){
+                        try {
+
+                            playersData = fromServer.readLine();
+
+                            // Elimino giocatori che hanno perso dall'array nick
+                                List<String> list = new ArrayList<String>(Arrays.asList(nick));
+                                for(String i : list){
+                                    if(playersData.equals(i + "-lost")){
+                                        Label lab_clientPerso = new Label(i + " ha perso").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                        panel.addComponent(lab_clientPerso);
+                                        System.out.println(i + " ha perso");
+                                        list.remove(i);
+                                    }
+                                }
+                            nick = list.toArray(new String[0]);
+
+                            Label lab_clientData = new Label(playersData).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_clientData);
+                            System.out.println(playersData);
+
+                        } catch (IOException e) {
+
+                            e.printStackTrace();
+
+                        }
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //break;
-                //qui parte il gioco
 
             }else{
                 //Se il messaggio non è nullo lo stampo
                 Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientMsg);
                 System.out.println(message);
-                /*System.out.println("break");
-                break;*/
             }
-          /*  if (message != null && !message.equals("/start")) {
-
-                //Se il messaggio non è nullo lo stampo
-                Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                panel.addComponent(lab_clientMsg);
-                System.out.println(message);*/
-
-
         }
-
-
-
         try {
             socket.close(); //Chiudi la connessione
             senderThread.interrupt();

@@ -27,7 +27,7 @@ public class Server  implements Runnable{
     public static Thread serverThread;
     public static Thread senderThread;
     public static Thread listenerThread;
-    public static Boolean gameStarted;
+    public static Boolean gameStarted = false;
 
     // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread
     // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
@@ -87,9 +87,15 @@ public class Server  implements Runnable{
 
             Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
             panel.addComponent(lab_serverOn);
-            while(serverThread.isAlive()){
+
+            while(!gameStarted){
 
             }
+            while(gameStarted){
+
+            }
+
+
         } catch (Exception e) {
 
             e.printStackTrace();

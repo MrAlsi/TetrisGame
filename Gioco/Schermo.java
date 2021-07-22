@@ -1,5 +1,6 @@
 package com.company.Gioco;
 
+import com.company.client.Client;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -11,10 +12,11 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.awt.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Random;
 
-public class Schermo {
+public class Schermo implements Runnable{
 
     public int delay = 1000 / 60;
 
@@ -23,11 +25,18 @@ public class Schermo {
     private Pezzo pezzoScelto;
     Random sceltaPezzo = new Random();
     private String azione;
+    public static boolean gameOver;
+    public static String datas;
+    private String username;
 
+    public PrintWriter pw;
     private final int brickDropDelay = 1000;
     private Screen screen;
 
-    public Schermo() throws IOException {
+    public Schermo(PrintWriter toServer, String name) throws IOException {
+
+        pw = toServer;
+        username = name;
 
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -62,7 +71,7 @@ public class Schermo {
         screen.refresh();
     }
 
-    public synchronized void run() throws IOException {
+    public synchronized void run(){
         try {
             //Creazione terminale con dimensioni già fisse
 
@@ -78,9 +87,17 @@ public class Schermo {
 
             pezzoScelto=prossimoPezzo(schermo);
 
-            boolean gameOver = false;
+            gameOver = false;
             // run game loop
             while(!gameOver) {
+
+                if(Client.nick.length == 1 && Client.nick[0].equals(username)){
+                    System.out.println("Partita finita");
+                    YouWin vittoria = new YouWin();
+                    vittoria.run();
+                    gameOver=true;
+                    screen.stopScreen();
+                }
 
                 Thread.sleep(delay);
                 screen.refresh();
@@ -90,11 +107,13 @@ public class Schermo {
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
-                    if(combo >1)                                 //Combo serve per vedere se si sono liberate più righe
+                    if(combo > 1)                                //Combo serve per vedere se si sono liberate più righe
                         righeSpazzatura(combo);                  //Richiamo il metodo per mandare le righe spaz. in base alla combo
                     screen.refresh();                            //Refresh dello schermo
                     if(campo.sconfitta()){
                         System.out.println("Partita finita");
+                        String msg_sconfitta = username + "-lost";
+                        invia(msg_sconfitta, pw);
                         GameOver sconfitta = new GameOver();
                         sconfitta.run();
                         gameOver=true;
@@ -113,6 +132,8 @@ public class Schermo {
                 if(brickDropTimer.getDropBrick()) {
                     screen.refresh();
                     pezzoScelto.scendi(campo);
+                    datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                    invia(datas, pw);
                 }
             }
 
@@ -168,6 +189,7 @@ public class Schermo {
         Character c1 = ' ';
         Character c2 = 'z';
         Character c3 = 'x';
+        datas = "";
 
         //down totale
         if(c1.equals(key.getCharacter())) {
@@ -175,9 +197,8 @@ public class Schermo {
                 //System.out.println("In fondo");
                 pezzoScelto.scendi(campo);
             }
-            azione = "";
-            azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-            System.out.println(azione);
+            datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+            invia(datas, pw);
             screen.refresh();
         }
 
@@ -185,9 +206,8 @@ public class Schermo {
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
             if(!pezzoScelto.collisioneSotto()){
                 pezzoScelto.scendi(campo);
-                azione = "";
-                azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                System.out.println(azione);
+                datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -197,9 +217,8 @@ public class Schermo {
             //if(p1.getRiga())
             if(!pezzoScelto.collisioneLaterale(-1)) {
                 pezzoScelto.muovi(campo, -1);
-                azione = "";
-                azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                System.out.println(azione);
+                datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -208,9 +227,8 @@ public class Schermo {
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
             if(!pezzoScelto.collisioneLaterale(1)) {
                 pezzoScelto.muovi(campo, 1);
-                azione = "";
-                azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                System.out.println(azione);
+                datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -223,11 +241,15 @@ public class Schermo {
         // rotate right
         if(c3.equals(key.getCharacter())) {
             pezzoScelto.ruota(campo);
-            azione = "";
-            azione = pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-            System.out.println(azione);
+            datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+            invia(datas, pw);
             screen.refresh();
         }
+    }
+
+    public void invia(String s, PrintWriter pw){
+        pw.println(s);
+        pw.flush();
     }
 
     public void righeSpazzatura(int combo){

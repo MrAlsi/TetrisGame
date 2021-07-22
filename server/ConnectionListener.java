@@ -18,6 +18,7 @@ public class ConnectionListener implements Runnable {
     private TextColor coloreLabel;
     public static Thread handlerThread;
     private int SERVERPORT;
+    private String players = "";
 
     public ConnectionListener(Panel panel, int SERVERPORT, TextColor coloreLabel, HashMap connectedClients) {
         this.panel=panel;
@@ -31,7 +32,7 @@ public class ConnectionListener implements Runnable {
             ServerSocket listener = null;
             listener = new ServerSocket(SERVERPORT);
             listener.setReuseAddress(true);
-            while(true){
+            while(connectedClients.size() <= 4){
                 Socket socket = listener.accept();
 
                 // Per ogni client che si connette al server creo un thread handlerThread,
@@ -47,6 +48,17 @@ public class ConnectionListener implements Runnable {
                 // Aggiorno i vari client che un nuovo giocatore si è connesso al server
                 System.out.println("Connected clients: " + (connectedClients.size()) + "/4");
                 broadcastServerMessage("[SERVER]: Connected clients: " + (connectedClients.size()) + "/4");
+                if(connectedClients.size() == 4){
+                    Server.gameStarted = true;
+                    broadcastServerMessage("/start");
+                    for (Map.Entry<String, PrintWriter> pair : connectedClients.entrySet()) {
+                        players = players + pair.getKey() + "-";
+                    }
+                    broadcastServerMessage(players);
+                    Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                    panel.addComponent(lab_serverMsg);
+                    break;
+                }
             }
         } catch(Exception e) {
             e.printStackTrace();

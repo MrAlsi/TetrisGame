@@ -18,6 +18,7 @@ public class ServerSender implements Runnable{
     private Panel panel;
     private TextColor coloreLabel;
     public static String name;
+    private String players = "";
 
     public ServerSender(Panel panel, TextColor coloreLabel, HashMap connectedClients, String name) {
         this.name=name;
@@ -43,79 +44,51 @@ public class ServerSender implements Runnable{
                 //userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
                 //toOther.println(userMessage); //... e invialo al server
 
-
-                if(!messaggio.getText().equals("")) {
+                if (!messaggio.getText().equals("")) {
                     String messaggioString = messaggio.getText();
 
                     // Se il server invia il messaggio "/start" il gioco ccerca di partire
-                    if(messaggioString.equals("/start")){
+                    if (messaggioString.equals("/start")) {
                         //controllo il numero dei giocatori
-                        if (connectedClients.size()+1<2) {
+                        if (connectedClients.size() < 2) {
                             // se con il server (quindi +1) siamo meno di 2 non può iniziare il gioco
-                            Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente." ).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
 
-                        }else {
+                        } else {
                             //svuoto il pannello e avverto i client
-                            panel.removeAllComponents();
-                            panel.setVisible(false);
                             broadcastServerMessage(messaggioString);
+                            for (Map.Entry<String, PrintWriter> pair : connectedClients.entrySet()) {
+                                players = players + pair.getKey() + "-";
+                            }
+                            broadcastServerMessage(players);
                             Server.gameStarted = true;
+                            Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_serverMsg);
 
                         }
+                    } else if (messaggioString.equals("/quit")) {
+                        Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
+                                .setForegroundColor(coloreLabel);
+                        broadcastServerMessage("[SERVER]: " + serverClosed);
+                        panel.addComponent(serverClosed);
+                        Label uscita = new Label("\nLeaving the server...").setBackgroundColor(BLACK)
+                                .setForegroundColor(coloreLabel);
+                        broadcastServerMessage("[SERVER]: " + uscita);
+                        panel.addComponent(uscita);
 
+                    } else {
+                        // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
+                        Label lab_serverMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(lab_serverMsg);
 
-                    } else if(messaggioString.equals("/quit")) {
-                            Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
-                                    .setForegroundColor(coloreLabel);
-                            broadcastServerMessage("[SERVER]: " + serverClosed);
-                            panel.addComponent(serverClosed);
-                            Label uscita = new Label("\nLeaving the server...").setBackgroundColor(BLACK)
-                                    .setForegroundColor(coloreLabel);
-                            broadcastServerMessage("[SERVER]: " + uscita);
-                            panel.addComponent(uscita);
+                        broadcastServerMessage("[" + name + "]: " + messaggioString);
 
-
-                            } else{
-                            // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
-                            Label lab_serverMsg = new Label("["+name+"]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            panel.addComponent(lab_serverMsg);
-
-                            broadcastServerMessage("["+name+"]: " + messaggioString);
-
-                            }
+                    }
 
                     // Una volta inviato il messaggio pulisco la textbox
                     messaggio.setText("");
                 }
-
-
-
-/*
-                if(!messaggio.getText().equals("")) {
-                    String messaggioString = messaggio.getText();
-
-                    if(messaggioString.equals("/start")){
-                        if(connectedClients.size()>=2) {
-                            panel.removeAllComponents();
-                            panel.setVisible(false);
-
-
-                        }
-                        else{
-                            Label lab_serverMsg = new Label("["+name+"]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            panel.addComponent(lab_serverMsg);
-
-                            broadcastServerMessage("[Server]: Non siete abbastanza giocatori.");
-                        }
-                    } else{
-                        Label lab_serverMsg = new Label("["+name+"]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        panel.addComponent(lab_serverMsg);
-
-                        broadcastServerMessage("["+name+"]: " + messaggioString);
-                    }
-                    messaggio.setText("");
-                }*/
             }
         }).addTo(panel);
     }

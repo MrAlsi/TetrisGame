@@ -78,7 +78,7 @@ public  class ClientHandler implements Runnable {
         try {
         
             String message = "";
-            while (message != null || Server.serverThread.isAlive() && !Server.gameStarted) {
+            while ((message != null || Server.serverThread.isAlive()) && !Server.gameStarted) {
 
                 // Quando un client invia un messaggio viene ricevuto dal server qui 
                 message = fromClient.readLine(); 
@@ -93,15 +93,15 @@ public  class ClientHandler implements Runnable {
 
                     System.out.println("[" + username + "]: " + message);
                     broadcastMessage(String.format("[%s]: %s", username, message), username);
-
+                    System.out.println(Server.gameStarted);
                 }
             }
 
             while(Server.gameStarted){
                 message = fromClient.readLine();
                 if (message != null) {
-                    System.out.println(username + "/" + message);
-                    broadcastMessage(String.format("%s/%s", username, message), username);
+                    System.out.println(message);
+                    broadcastMessage(String.format("%s",message), username);
                 }
             }
 
