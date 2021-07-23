@@ -85,18 +85,19 @@ public class Schermo implements Runnable{
             InputKey keyInput = new InputKey((TerminalScreen) screen);
             keyInput.start();
 
-            pezzoScelto=prossimoPezzo(schermo);
+            pezzoScelto = prossimoPezzo(schermo);
 
             gameOver = false;
             // run game loop
             while(!gameOver) {
 
-                if(Client.nick.length == 1 && Client.nick[0].equals(username)){
+                if(Client.winner == true){
                     System.out.println("Partita finita");
                     YouWin vittoria = new YouWin();
-                    vittoria.run();
+                    Thread vittoriaThread = new Thread(vittoria);
+                    vittoriaThread.start();
                     gameOver=true;
-                    screen.stopScreen();
+                    screen.close();
                 }
 
                 Thread.sleep(delay);
@@ -115,9 +116,10 @@ public class Schermo implements Runnable{
                         String msg_sconfitta = username + "-lost";
                         invia(msg_sconfitta, pw);
                         GameOver sconfitta = new GameOver();
-                        sconfitta.run();
+                        Thread sconfittaThread = new Thread(sconfitta);
+                        sconfittaThread.start();
                         gameOver=true;
-                        screen.stopScreen();
+                        screen.close();
                     }
                     pezzoScelto=prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
                 }

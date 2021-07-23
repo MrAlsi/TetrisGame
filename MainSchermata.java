@@ -22,6 +22,9 @@ import java.util.Arrays;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 //classe per la schermata di inizializzazione del gioco
 public class MainSchermata {
+
+    public static Screen screen;
+
     public static void main(String[] args) throws IOException {
 
         //organizzazione della schermata
@@ -48,7 +51,7 @@ public class MainSchermata {
         Terminal terminal = defaultTerminalFactory.createTerminal();
 
         //Terminal terminal = new DefaultTerminalFactory().createTerminal();
-        final Screen screen = new TerminalScreen(terminal);
+        screen = new TerminalScreen(terminal);
         screen.startScreen();
 
         // Creo pannello

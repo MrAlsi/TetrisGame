@@ -55,7 +55,7 @@ public class ConnectionListener implements Runnable {
                         players = players + pair.getKey() + "-";
                     }
                     broadcastServerMessage(players);
-                    Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                    Label lab_serverMsg = new Label("[SERVER]: The game has started!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                     panel.addComponent(lab_serverMsg);
                     break;
                 }

@@ -10,9 +10,6 @@ import com.googlecode.lanterna.gui2.Panel;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -27,6 +24,7 @@ public class Client implements Runnable {
     private String serverName;
     private String playersData;
     public static String[] nick;
+    public static Boolean winner = false;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
@@ -132,35 +130,25 @@ public class Client implements Runnable {
 
             }else if(message.equals("/start")){
                 try {
-                    // Leggo i nick di tutti i giocatori
-                    playersData = fromServer.readLine();
-                    nick  = playersData.split("-");
-                    System.out.println(Arrays.toString(nick));
 
+                    // Leggo i nick di tutti i giocatori
                     Schermo schermo = new Schermo(toServer, name);
                     Thread gameThread = new Thread(schermo);
                     gameThread.start();
+                    MainSchermata.screen.close();
 
                     while(!Schermo.gameOver){
+
                         try {
 
                             playersData = fromServer.readLine();
 
-                            // Elimino giocatori che hanno perso dall'array nick
-                                List<String> list = new ArrayList<String>(Arrays.asList(nick));
-                                for(String i : list){
-                                    if(playersData.equals(i + "-lost")){
-                                        Label lab_clientPerso = new Label(i + " ha perso").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                                        panel.addComponent(lab_clientPerso);
-                                        System.out.println(i + " ha perso");
-                                        list.remove(i);
-                                    }
-                                }
-                            nick = list.toArray(new String[0]);
-
-                            Label lab_clientData = new Label(playersData).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            panel.addComponent(lab_clientData);
+                            if(playersData.equals("[" + name + "]-winner")){
+                                winner = true;
+                                senderThread.interrupt();
+                            }
                             System.out.println(playersData);
+
 
                         } catch (IOException e) {
 
@@ -187,9 +175,5 @@ public class Client implements Runnable {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-
-
-
     }
 }

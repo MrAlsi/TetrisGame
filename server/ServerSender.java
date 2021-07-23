@@ -58,10 +58,6 @@ public class ServerSender implements Runnable{
                         } else {
                             //svuoto il pannello e avverto i client
                             broadcastServerMessage(messaggioString);
-                            for (Map.Entry<String, PrintWriter> pair : connectedClients.entrySet()) {
-                                players = players + pair.getKey() + "-";
-                            }
-                            broadcastServerMessage(players);
                             Server.gameStarted = true;
                             Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);

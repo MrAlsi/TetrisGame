@@ -54,16 +54,12 @@ public  class ClientHandler implements Runnable {
             }
             // Appena il seguente client si connette al server lo comunico a tutti nella
             // chat pre-partita
-            Label lab_newClient = new Label("New client connected: " + username + " ["
+            Label lab_newClient = new Label("[SERVER]: " + "New client connected: " + username + " ["
                     + clientSocket.getInetAddress().getHostAddress()
                     + "]").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
             panel.addComponent(lab_newClient);
 
-            System.out.println("New client connected: " + username + " ["
-                    + clientSocket.getInetAddress().getHostAddress()
-                    + "]");
-
-            broadcastServerMessage("New client connected: " + username + " ["
+            broadcastServerMessage("[SERVER]: " + "New client connected: " + username + " ["
                     + clientSocket.getInetAddress().getHostAddress()
                     + "]");
 
@@ -82,7 +78,7 @@ public  class ClientHandler implements Runnable {
 
                 // Quando un client invia un messaggio viene ricevuto dal server qui 
                 message = fromClient.readLine(); 
-                if (message != null) {
+                if (message != null && !Server.gameStarted) {
 
                     // Se il messaggio ricevuto dal client è /quit il server esce dal ciclo e finisce nel "finally"
                     if (message.toLowerCase().equals("/quit")) break;
@@ -98,8 +94,41 @@ public  class ClientHandler implements Runnable {
             }
 
             while(Server.gameStarted){
+
                 message = fromClient.readLine();
+
                 if (message != null) {
+
+                    if(connectedClients.size() == 1){
+
+                        Label lab_clientPerso = new Label("[SERVER]: " + username + " is the winner!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(lab_clientPerso);
+                        broadcastServerMessage(connectedClients.keySet() + "-winner");
+
+                    }
+
+                    for(String i : connectedClients.keySet()){
+
+                        if(message.equals(i + "-lost")){
+
+                            Label lab_clientPerso = new Label("[SERVER]: " + i + " lost!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_clientPerso);
+
+                            if((connectedClients.size() - 1) > 1) {
+
+                                Label lab_clientPerso2 = new Label("[SERVER]: " + (connectedClients.size() - 1)  + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                panel.addComponent(lab_clientPerso2);
+
+                            }else {
+
+                                Label lab_clientPerso3 = new Label("[SERVER]: " + (connectedClients.size() - 1)  + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                panel.addComponent(lab_clientPerso3);
+
+                            }
+                            connectedClients.remove(i);
+                        }
+                    }
+
                     System.out.println(message);
                     broadcastMessage(String.format("%s",message), username);
                 }
@@ -114,17 +143,15 @@ public  class ClientHandler implements Runnable {
 
                 // Quando un giocatore invia il comando /quit si disconnette dal server
                 // Viene quindi mandato un messaggio di aggiornamento a tutti i client
-                if (true) System.out.println(username + " is leaving");
+                if (true) System.out.println("[SERVER]: " + username + " is leaving");
                 connectedClients.remove(username);
 
-                Label lab_clientLeft = new Label(username + " has left").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label lab_clientLeft = new Label("[SERVER]: " + username + " has left").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientLeft);
-                Label lab_clientTot = new Label("Connected clients: " + connectedClients.size() + "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label lab_clientTot = new Label("[SERVER]: " + "Connected clients: " + connectedClients.size() + "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientTot);
 
-                System.out.println(username + " has left");
-                System.out.println("Connected clients: " + connectedClients.size() + "/4");
-                broadcastServerMessage(username + " has left");
+                broadcastServerMessage("[SERVER]: " + username + " has left");
                 broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/4");
             }
         }
