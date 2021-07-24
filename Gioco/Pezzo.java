@@ -43,29 +43,16 @@ public class Pezzo {
     }
 
     public boolean scendi(Griglia campo) {
-        //System.out.println(pezzo[0].getPosizioneGrigliaColonna()+"  --  "+ pezzo[0].getPosizioneGrigliaRiga());
-        if (collisioneSotto()) {
-            for (int i = 0; i < 4; i++) {
-                int y = pezzo[i].getRiga();
-                int x = pezzo[i].getColonna();
-                campo.griglia[x][y] = new BloccoStruttura(campo.screen, x, y);
-                //pezzo[i] = new BloccoStruttura(campo.screen, x, y);
-                //pezzo[i].setStato();
-            }
-            return true;
-        } else {
-            for (int i = 0; i < 4; i++) {
-                pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
-                // System.out.println(pezzo[i].getStato());
-            }
-            for (int i = 0; i < 4; i++) {
-                pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), 0, 1, pezzo[i].colore);
-                pezzo[i].rigaGriglia = pezzo[i].getRiga() + 1;
-               // System.out.println(pezzo[i].getStato());
-            }
-
-            return false;
+        for (int i = 0; i < 4; i++) {
+            pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
+            // System.out.println(pezzo[i].getStato());
         }
+        for (int i = 0; i < 4; i++) {
+            pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), 0, 1, pezzo[i].colore);
+            pezzo[i].rigaGriglia = pezzo[i].getRiga() + 1;
+           // System.out.println(pezzo[i].getStato());
+        }
+        return false;
     }
 
     public void setStruttura(){

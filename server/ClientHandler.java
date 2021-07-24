@@ -16,7 +16,7 @@ import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 // Per ogni client che si connetterà al server creo un Thread handlerThread che si occupa
 // di gestire singolarmente i client uno a uno
-public  class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable {
     public static Socket clientSocket;
     private String username;
     private BufferedReader fromClient;
@@ -70,20 +70,20 @@ public  class ClientHandler implements Runnable {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
+
         try {
-        
             String message = "";
             while ((message != null || Server.serverThread.isAlive()) && !Server.gameStarted) {
 
-                // Quando un client invia un messaggio viene ricevuto dal server qui 
-                message = fromClient.readLine(); 
+                // Quando un client invia un messaggio viene ricevuto dal server qui
+                message = fromClient.readLine();
                 if (message != null && !Server.gameStarted) {
 
                     // Se il messaggio ricevuto dal client è /quit il server esce dal ciclo e finisce nel "finally"
                     if (message.toLowerCase().equals("/quit")) break;
 
-                    // Il server si occupa poi di trasmettere il messaggio agli altri client 
+                    // Il server si occupa poi di trasmettere il messaggio agli altri client
                     Label lab_clientMsg = new Label("[" + username + "]: " + message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                     panel.addComponent(lab_clientMsg);
 
@@ -93,54 +93,52 @@ public  class ClientHandler implements Runnable {
                 }
             }
 
-            while(Server.gameStarted){
+            while (Server.gameStarted) {
 
                 message = fromClient.readLine();
 
                 if (message != null) {
 
-                    if(connectedClients.size() == 1){
+                    if (connectedClients.size() == 1 && Server.gameStarted) {
 
                         Label lab_clientPerso = new Label("[SERVER]: " + username + " is the winner!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(lab_clientPerso);
                         broadcastServerMessage(connectedClients.keySet() + "-winner");
-
+                        Server.gameStarted = false;
                     }
+                    synchronized (this) {
+                        for (String i : connectedClients.keySet()) {
 
-                    for(String i : connectedClients.keySet()){
+                            if (message.equals(i + "-lost")) {
 
-                        if(message.equals(i + "-lost")){
+                                Label lab_clientPerso = new Label("[SERVER]: " + i + " lost!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                panel.addComponent(lab_clientPerso);
 
-                            Label lab_clientPerso = new Label("[SERVER]: " + i + " lost!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            panel.addComponent(lab_clientPerso);
+                                if ((connectedClients.size() - 1) > 1) {
 
-                            if((connectedClients.size() - 1) > 1) {
+                                    Label lab_clientPerso2 = new Label("[SERVER]: " + (connectedClients.size() - 1) + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                    panel.addComponent(lab_clientPerso2);
 
-                                Label lab_clientPerso2 = new Label("[SERVER]: " + (connectedClients.size() - 1)  + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                                panel.addComponent(lab_clientPerso2);
+                                } else {
 
-                            }else {
+                                    Label lab_clientPerso3 = new Label("[SERVER]: " + (connectedClients.size() - 1) + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                    panel.addComponent(lab_clientPerso3);
 
-                                Label lab_clientPerso3 = new Label("[SERVER]: " + (connectedClients.size() - 1)  + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                                panel.addComponent(lab_clientPerso3);
-
+                                }
+                                connectedClients.remove(i);
                             }
-                            connectedClients.remove(i);
                         }
                     }
-
-                    System.out.println(message);
-                    broadcastMessage(String.format("%s",message), username);
+                    broadcastMessage(String.format("%s", message), username);
                 }
             }
-
+            System.out.println(username + " si è spento!");
             clientSocket.close(); //Interrompi la connessione
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (username != null) {
-
                 // Quando un giocatore invia il comando /quit si disconnette dal server
                 // Viene quindi mandato un messaggio di aggiornamento a tutti i client
                 if (true) System.out.println("[SERVER]: " + username + " is leaving");
@@ -156,7 +154,6 @@ public  class ClientHandler implements Runnable {
             }
         }
     }
-
 
     public void broadcastServerMessage(String message) {
 

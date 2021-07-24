@@ -24,6 +24,7 @@ import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 public class MainSchermata {
 
     public static Screen screen;
+    public static Thread clientThread;
 
     public static void main(String[] args) throws IOException {
 
@@ -146,9 +147,9 @@ public class MainSchermata {
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
                         //richiamo codice client
-
                         Client client=new Client(name, IP, PORT, panel, coloreLabel);
-                        client.StartClient(client);
+                        clientThread = new Thread(client);
+                        clientThread.start();
 
                     }
                 }).addTo(panel);

@@ -43,8 +43,8 @@ public class ServerSender implements Runnable{
                 //Finché non ricevi un comando "quit" dall'utente...
                 //userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
                 //toOther.println(userMessage); //... e invialo al server
-
                 if (!messaggio.getText().equals("")) {
+
                     String messaggioString = messaggio.getText();
 
                     // Se il server invia il messaggio "/start" il gioco ccerca di partire
@@ -61,8 +61,8 @@ public class ServerSender implements Runnable{
                             Server.gameStarted = true;
                             Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
-
                         }
+
                     } else if (messaggioString.equals("/quit")) {
                         Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
                                 .setForegroundColor(coloreLabel);
@@ -79,7 +79,6 @@ public class ServerSender implements Runnable{
                         panel.addComponent(lab_serverMsg);
 
                         broadcastServerMessage("[" + name + "]: " + messaggioString);
-
                     }
 
                     // Una volta inviato il messaggio pulisco la textbox

@@ -1,12 +1,15 @@
 package com.company.Gioco;
 
+import com.company.MainSchermata;
+import com.company.client.Client;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -18,8 +21,20 @@ import java.util.Arrays;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 //classe per la schermata di inizializzazione del gioco
 public class GameOver implements Runnable{
-    public GameOver(){
 
+    private String username;
+    private String IP;
+    private int PORT;
+    private Panel panel;
+    private TextColor coloreLabel;
+    private Screen screen;
+
+    public GameOver(String name, String IP, int PORT, Panel panel, TextColor coloreLabel){
+        this.IP = IP;
+        this.PORT = PORT;
+        this.panel = panel;
+        this.coloreLabel = coloreLabel;
+        username = name;
     }
     @Override
     public void run() {
@@ -42,11 +57,10 @@ public class GameOver implements Runnable{
             defaultTerminalFactory.setInitialTerminalSize(new TerminalSize(COLS, ROWS));
             Terminal terminal = defaultTerminalFactory.createTerminal();
 
-            final Screen screen = new TerminalScreen(terminal);
+            screen = new TerminalScreen(terminal);
             screen.startScreen();
 
             // Creo pannello
-            final Panel panel = new Panel();
             panel.setLayoutManager(
                     new GridLayout(1)
                             .setLeftMarginSize(leftMargin)
@@ -76,7 +90,7 @@ public class GameOver implements Runnable{
         }
     }
     //codice scritta colorata gameover
-    public static void GameOver(Panel panel) {
+    public void GameOver(Panel panel) {
         Label gameover1 = new Label("\n  ____ ____ _  _ ____    ____ _  _ ____ ____  \n").setBackgroundColor(BLACK).setForegroundColor
                 (TextColor.ANSI.RED);
         Label gameover2 = new Label("  | __ |__| |\\/| |___    |  | |  | |___ |__/ \n").setBackgroundColor(BLACK).setForegroundColor
@@ -89,6 +103,19 @@ public class GameOver implements Runnable{
         panel.addComponent(gameover2);
         panel.addComponent(gameover3);
         //  panel.addComponent(gameover4);
+
+        new Button("Play again",new Runnable(){
+            @Override
+            public void run(){
+                //svuoto la schermo
+                panel.removeAllComponents();
+                panel.setFillColorOverride(BLACK);
+                //richiamo schermata inziale
+                Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel);
+                MainSchermata.clientThread = new Thread(client);
+                MainSchermata.clientThread.start();
+            }
+        }).addTo(panel);
     }
 
     // separatore di dimensioni pari a size
@@ -97,7 +124,7 @@ public class GameOver implements Runnable{
     }
 
     //codice home
-    public static void Schermata(final Panel panel) {
+    public void Schermata(final Panel panel) {
         final TextColor coloreLabel = TextColor.ANSI.GREEN_BRIGHT;
 
         GameOver(panel);

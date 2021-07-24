@@ -25,6 +25,10 @@ public class Client implements Runnable {
     private String playersData;
     public static String[] nick;
     public static Boolean winner = false;
+    public Thread clientThread;
+    public static Thread gameThread;
+    private String message = "";
+    public static Boolean wait = true;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
@@ -33,10 +37,6 @@ public class Client implements Runnable {
         this.PORT = Integer.parseInt(PORT);
         this.panel = panel;
         this.coloreLabel = coloreLabel;
-    }
-
-    public void StartClient(Client client){
-        new Thread(client).start();
     }
 
     public void run() {
@@ -54,7 +54,7 @@ public class Client implements Runnable {
                 .setForegroundColor(coloreLabel);
         panel.addComponent(lab);
         panel.addComponent(connessione);
-        Socket socket = null; //Creazione socket, connessione a localhost:1555
+        socket = null; //Creazione socket, connessione a localhost:1555
 
         try {
             socket = new Socket(IP, PORT);
@@ -99,7 +99,7 @@ public class Client implements Runnable {
         Sender clientSender = new Sender(toServer,panel,coloreLabel,name);
         Thread senderThread = new Thread(clientSender);
 
-        String message = name;
+        message = name;
         toServer.println(message);
         toServer.flush();
         senderThread.start();
@@ -131,24 +131,27 @@ public class Client implements Runnable {
             }else if(message.equals("/start")){
                 try {
 
+                    panel.removeAllComponents();
+                    panel.setFillColorOverride(BLACK);
                     // Leggo i nick di tutti i giocatori
-                    Schermo schermo = new Schermo(toServer, name);
-                    Thread gameThread = new Thread(schermo);
-                    gameThread.start();
                     MainSchermata.screen.close();
+                    Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel);
+                    gameThread = new Thread(schermo);
+                    gameThread.start();
+
+                    Schermo.gameOver = false;
 
                     while(!Schermo.gameOver){
-
                         try {
 
                             playersData = fromServer.readLine();
 
                             if(playersData.equals("[" + name + "]-winner")){
-                                winner = true;
-                                senderThread.interrupt();
-                            }
-                            System.out.println(playersData);
 
+                                winner = true;
+                                Schermo.gameOver = true;
+
+                            }
 
                         } catch (IOException e) {
 
@@ -165,7 +168,6 @@ public class Client implements Runnable {
                 //Se il messaggio non è nullo lo stampo
                 Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientMsg);
-                System.out.println(message);
             }
         }
         try {

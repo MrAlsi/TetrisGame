@@ -23,6 +23,10 @@ public class CadutaBlocco extends Thread {
         this.delay = delay;
     }
 
+    public void setTrue(){
+        this.dropBrick = true;
+    }
+
 
     public void run() {
         while(true) {

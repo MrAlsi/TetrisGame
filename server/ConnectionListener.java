@@ -32,9 +32,9 @@ public class ConnectionListener implements Runnable {
             ServerSocket listener = null;
             listener = new ServerSocket(SERVERPORT);
             listener.setReuseAddress(true);
+
             while(connectedClients.size() <= 4){
                 Socket socket = listener.accept();
-
                 // Per ogni client che si connette al server creo un thread handlerThread,
                 // a lato server, per ogni client così che possano essere gestiti singolarmente dal server
                 ClientHandler clientSock = new ClientHandler(socket, "",panel,coloreLabel,connectedClients);
@@ -42,11 +42,10 @@ public class ConnectionListener implements Runnable {
                 handlerThread = new Thread(clientSock);
                 handlerThread.start();
 
-                Label lab_clientJoin=new Label("Connected clients: " + (connectedClients.size())+ "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label lab_clientJoin=new Label("[SERVER]: Connected clients: " + (connectedClients.size())+ "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientJoin);
 
                 // Aggiorno i vari client che un nuovo giocatore si è connesso al server
-                System.out.println("Connected clients: " + (connectedClients.size()) + "/4");
                 broadcastServerMessage("[SERVER]: Connected clients: " + (connectedClients.size()) + "/4");
                 if(connectedClients.size() == 4){
                     Server.gameStarted = true;
@@ -57,6 +56,9 @@ public class ConnectionListener implements Runnable {
                     broadcastServerMessage(players);
                     Label lab_serverMsg = new Label("[SERVER]: The game has started!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                     panel.addComponent(lab_serverMsg);
+                    while(Server.gameStarted){
+
+                    }
                     break;
                 }
             }

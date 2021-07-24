@@ -1,7 +1,10 @@
 package com.company.Gioco;
 
+import com.company.MainSchermata;
+import com.company.client.Client;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
@@ -19,7 +22,20 @@ import static com.googlecode.lanterna.TextColor.ANSI.*;
 
 //classe per la schermata di inizializzazione del gioco
 public class YouWin implements Runnable{
-    public YouWin() {
+
+    private String username;
+    private String IP;
+    private int PORT;
+    private Panel panel;
+    private TextColor coloreLabel;
+    private Screen screen;
+
+    public YouWin(String name, String IP, int PORT, Panel panel, TextColor coloreLabel) {
+        this.IP = IP;
+        this.PORT = PORT;
+        this.panel = panel;
+        this.coloreLabel = coloreLabel;
+        username = name;
     }
 
     @Override
@@ -43,11 +59,10 @@ public class YouWin implements Runnable{
             defaultTerminalFactory.setInitialTerminalSize(new TerminalSize(COLS, ROWS));
             Terminal terminal = defaultTerminalFactory.createTerminal();
 
-            final Screen screen = new TerminalScreen(terminal);
+            screen = new TerminalScreen(terminal);
             screen.startScreen();
 
             // Creo pannello
-            final Panel panel = new Panel();
             panel.setLayoutManager(
                     new GridLayout(1)
                             .setLeftMarginSize(leftMargin)
@@ -71,12 +86,13 @@ public class YouWin implements Runnable{
 
         MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(BLACK));
         gui.addWindowAndWait(window);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     //codice scritta colorata you win
-    public static void provaWin(Panel panel){
+    public void provaWin(Panel panel){
 
         Label provaWin1=new Label("\n           '._==_==_=_.'      \n").setBackgroundColor(BLACK).setForegroundColor
                 (TextColor.ANSI.YELLOW_BRIGHT);
@@ -115,6 +131,19 @@ public class YouWin implements Runnable{
         panel.addComponent(provaWin10);
         panel.addComponent(provaWin11);
         panel.addComponent(provaWin12);
+
+        new Button("Play again",new Runnable(){
+            @Override
+            public void run(){
+                //svuoto la schermo
+                panel.removeAllComponents();
+                panel.setFillColorOverride(BLACK);
+                //richiamo schermata inziale
+                Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel);
+                MainSchermata.clientThread = new Thread(client);
+                MainSchermata.clientThread.start();
+            }
+        }).addTo(panel);
     }
 
     // separatore di dimensioni pari a size
@@ -123,7 +152,7 @@ public class YouWin implements Runnable{
     }
 
     //codice home
-    public static void Schermata(final Panel panel){
+    public void Schermata(final Panel panel){
         final TextColor coloreLabel=TextColor.ANSI.GREEN_BRIGHT;
 
         provaWin(panel);

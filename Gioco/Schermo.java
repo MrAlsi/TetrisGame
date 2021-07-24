@@ -2,7 +2,9 @@ package com.company.Gioco;
 
 import com.company.client.Client;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
+import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -25,16 +27,25 @@ public class Schermo implements Runnable{
     private Pezzo pezzoScelto;
     Random sceltaPezzo = new Random();
     private String azione;
-    public static boolean gameOver;
+    public static boolean gameOver = false;
     public static String datas;
-    private String username;
+    private CadutaBlocco brickDropTimer;
+    private Boolean barra = false;
 
     public PrintWriter pw;
+    private String username;
+    private String IP;
+    private int PORT;
+    private Panel panel;
+    private TextColor coloreLabel;
     private final int brickDropDelay = 1000;
     private Screen screen;
 
-    public Schermo(PrintWriter toServer, String name) throws IOException {
-
+    public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel) throws IOException {
+        this.IP = IP;
+        this.PORT = PORT;
+        this.panel = panel;
+        this.coloreLabel = coloreLabel;
         pw = toServer;
         username = name;
 
@@ -78,7 +89,7 @@ public class Schermo implements Runnable{
             //Gioco
 
             // start brick move treads
-            CadutaBlocco brickDropTimer = new CadutaBlocco();
+            brickDropTimer = new CadutaBlocco();
             brickDropTimer.setDelay(brickDropDelay);
             brickDropTimer.start();
 
@@ -86,25 +97,29 @@ public class Schermo implements Runnable{
             keyInput.start();
 
             pezzoScelto = prossimoPezzo(schermo);
-
-            gameOver = false;
             // run game loop
             while(!gameOver) {
 
+                screen.refresh();
+
                 if(Client.winner == true){
+                    Client.winner = false;
                     System.out.println("Partita finita");
-                    YouWin vittoria = new YouWin();
+                    YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel);
                     Thread vittoriaThread = new Thread(vittoria);
                     vittoriaThread.start();
-                    gameOver=true;
-                    screen.close();
+                    break;
                 }
 
-                Thread.sleep(delay);
-                screen.refresh();
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
-                if(pezzoScelto.collisioneSotto()){               //Avviene una collisione: TRUE
+                for(KeyStroke key : keyStrokes) {
+                    screen.refresh();
+                    processKeyInput(key);
+                }
+
+                if((pezzoScelto.collisioneSotto() && brickDropTimer.getDropBrick()) || barra){
+                    barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
@@ -115,20 +130,13 @@ public class Schermo implements Runnable{
                         System.out.println("Partita finita");
                         String msg_sconfitta = username + "-lost";
                         invia(msg_sconfitta, pw);
-                        GameOver sconfitta = new GameOver();
+                        GameOver sconfitta = new GameOver(username, IP, PORT, panel, coloreLabel);
                         Thread sconfittaThread = new Thread(sconfitta);
                         sconfittaThread.start();
-                        gameOver=true;
-                        screen.close();
+                        gameOver = true;
+                        break;
                     }
-                    pezzoScelto=prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-                }
-
-                for(KeyStroke key : keyStrokes) {
-                    if(!pezzoScelto.collisioneSotto()) {
-                        screen.refresh();
-                        processKeyInput(key);
-                    }
+                    pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
                 }
 
                 if(brickDropTimer.getDropBrick()) {
@@ -138,8 +146,10 @@ public class Schermo implements Runnable{
                     invia(datas, pw);
                 }
             }
+            screen.close();
+            Thread.currentThread().interrupt();
 
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             System.out.println("Problema con il terminale");
             e.printStackTrace();
         }
@@ -199,6 +209,7 @@ public class Schermo implements Runnable{
                 //System.out.println("In fondo");
                 pezzoScelto.scendi(campo);
             }
+            barra = true;
             datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
             invia(datas, pw);
             screen.refresh();
