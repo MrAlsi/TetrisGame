@@ -28,7 +28,8 @@ public class YouWin implements Runnable{
     private int PORT;
     private Panel panel;
     private TextColor coloreLabel;
-    private Screen screen;
+    public static Screen screen;
+    public static Boolean nextGame = false;
 
     public YouWin(String name, String IP, int PORT, Panel panel, TextColor coloreLabel) {
         this.IP = IP;
@@ -138,6 +139,7 @@ public class YouWin implements Runnable{
                 //svuoto la schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
+                nextGame = true;
                 //richiamo schermata inziale
                 Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel);
                 MainSchermata.clientThread = new Thread(client);

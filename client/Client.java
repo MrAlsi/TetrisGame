@@ -1,6 +1,8 @@
 package com.company.client;
 
+import com.company.Gioco.GameOver;
 import com.company.Gioco.Schermo;
+import com.company.Gioco.YouWin;
 import com.company.MainSchermata;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -135,6 +137,12 @@ public class Client implements Runnable {
                     panel.setFillColorOverride(BLACK);
                     // Leggo i nick di tutti i giocatori
                     MainSchermata.screen.close();
+                    if(YouWin.nextGame){
+                        YouWin.screen.close();
+                    }
+                    if(GameOver.nextGame){
+                        GameOver.screen.close();
+                    }
                     Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel);
                     gameThread = new Thread(schermo);
                     gameThread.start();
