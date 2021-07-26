@@ -34,6 +34,7 @@ public class ConnectionListener implements Runnable {
             listener.setReuseAddress(true);
 
             while(connectedClients.size() <= 4){
+                System.out.println(connectedClients.size());
                 Socket socket = listener.accept();
                 // Per ogni client che si connette al server creo un thread handlerThread,
                 // a lato server, per ogni client così che possano essere gestiti singolarmente dal server

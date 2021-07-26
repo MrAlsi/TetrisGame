@@ -25,7 +25,7 @@ public class Griglia {
     }
 
     public int controlloRighe(){
-        int combo = 0;              //Combo per le riga spazzatura
+        int combo = 0;                  //Combo per le riga spazzatura
         boolean elimina = false;        //Se non entra mai nel if viene segnata come riga da eliminare
 
         for(int i = 0; i < 24; i++){
@@ -62,6 +62,34 @@ public class Griglia {
                     griglia[j][i + 1] = new BloccoStruttura(screen,
                                                             griglia[j][i + 1].colonnaGriglia,
                                                             griglia[j][i + 1].rigaGriglia);
+                }
+            }
+        }
+    }
+
+    public void aggiungiSpazzatura(int righeSpazzatura){
+
+        for(int i = 4; i < 24; i++){
+            for(int j = 0; j < 12; j++){
+                if(griglia[j][i].stato==2 && i >= righeSpazzatura - 1) {
+                    griglia[j][i - righeSpazzatura] = new BloccoStruttura(screen,
+                            griglia[j][i - righeSpazzatura].colonnaGriglia,
+                            griglia[j][i - righeSpazzatura].rigaGriglia);
+                }
+                if(griglia[j][i].stato==0 && i >= righeSpazzatura - 1) {
+                    griglia[j][i - righeSpazzatura] = new BloccoVuoto(screen,
+                            griglia[j][i - righeSpazzatura].colonnaGriglia,
+                            griglia[j][i - righeSpazzatura].rigaGriglia);
+                }
+                if(griglia[j][i].stato==3 && i >= righeSpazzatura - 1) {
+                    griglia[j][i - righeSpazzatura] = new BloccoSpazzatura(screen,
+                            griglia[j][i - righeSpazzatura].colonnaGriglia,
+                            griglia[j][i - righeSpazzatura].rigaGriglia);
+                }
+                if(i >= (23 - righeSpazzatura)){
+                    griglia[j][i] = new BloccoSpazzatura(screen,
+                            griglia[j][i].colonnaGriglia,
+                            griglia[j][i].rigaGriglia);
                 }
             }
         }

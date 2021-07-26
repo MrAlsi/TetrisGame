@@ -133,6 +133,8 @@ public class YouWin implements Runnable{
         panel.addComponent(provaWin11);
         panel.addComponent(provaWin12);
 
+        MainSchermata.Empty(panel, 1);
+
         new Button("Play again",new Runnable(){
             @Override
             public void run(){

@@ -21,16 +21,12 @@ public class Client implements Runnable {
     private int PORT;
     private Panel panel;
     private TextColor coloreLabel;
-    private Thread runningThread;
     public static Socket socket;
     private String serverName;
     private String playersData;
-    public static String[] nick;
     public static Boolean winner = false;
-    public Thread clientThread;
     public static Thread gameThread;
     private String message = "";
-    public static Boolean wait = true;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
@@ -57,12 +53,20 @@ public class Client implements Runnable {
         panel.addComponent(lab);
         panel.addComponent(connessione);
         socket = null; //Creazione socket, connessione a localhost:1555
-
+        InputStream socketInput = null;
+        OutputStream socketOutput = null;
         try {
+            System.out.println("Connessione alla socket: " + IP + PORT);
             socket = new Socket(IP, PORT);
+            System.out.println("Connessione eseguita!");
             Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
                     .setForegroundColor(coloreLabel);
             panel.addComponent(connesso);
+
+            socketInput = socket.getInputStream();
+
+            socketOutput = socket.getOutputStream();
+
         } catch (IOException ex) {
             ex.printStackTrace();
             Label nonconnesso = new Label("\n- - - - Connection failed try again - - - -\n").setBackgroundColor(BLACK)
@@ -75,21 +79,6 @@ public class Client implements Runnable {
 
         }
 
-        InputStream socketInput = null;
-
-        try {
-            socketInput = socket.getInputStream();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        OutputStream socketOutput = null;
-
-        try {
-            socketOutput = socket.getOutputStream();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
 
         InputStreamReader socketReader = new InputStreamReader(socketInput);
         OutputStreamWriter socketWriter = new OutputStreamWriter(socketOutput);
@@ -161,6 +150,18 @@ public class Client implements Runnable {
 
                             }
 
+                            if(playersData.equals("spazzatura-"  + name + "-2")) {
+                                Schermo.aggiungiSpazzatura = 1;
+                                System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                            }
+                            if(playersData.equals("spazzatura-"  + name + "-3")) {
+                                Schermo.aggiungiSpazzatura = 2;
+                                System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                            }
+                            if(playersData.equals("spazzatura-"  + name + "-4")) {
+                                Schermo.aggiungiSpazzatura = 4;
+                                System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                            }
                         } catch (IOException e) {
 
                             e.printStackTrace();

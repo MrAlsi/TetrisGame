@@ -31,6 +31,8 @@ public class Schermo implements Runnable{
     public static String datas;
     private CadutaBlocco brickDropTimer;
     private Boolean barra = false;
+    public static String usernameDestinatario = "palma";
+    public static int aggiungiSpazzatura = 0;
 
     public PrintWriter pw;
     private String username;
@@ -123,8 +125,12 @@ public class Schermo implements Runnable{
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
-                    if(combo > 1)                                //Combo serve per vedere se si sono liberate più righe
-                        righeSpazzatura(combo);                  //Richiamo il metodo per mandare le righe spaz. in base alla combo
+                    if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
+                        righeSpazzatura(combo);
+                        datas = "spazzatura" + "-" + usernameDestinatario + "-" + combo;
+                        invia(datas, pw);
+                    }
+                    //Richiamo il metodo per mandare le righe spaz. in base alla combo
                     screen.refresh();                            //Refresh dello schermo
                     if(campo.sconfitta()){
                         System.out.println("Partita finita");
@@ -137,6 +143,11 @@ public class Schermo implements Runnable{
                         break;
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
+                }
+
+                if(aggiungiSpazzatura != 0){
+                    campo.aggiungiSpazzatura(aggiungiSpazzatura);
+                    aggiungiSpazzatura = 0;
                 }
 
                 if(brickDropTimer.getDropBrick()) {

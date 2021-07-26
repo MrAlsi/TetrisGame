@@ -103,7 +103,8 @@ public class GameOver implements Runnable{
         panel.addComponent(gameover1);
         panel.addComponent(gameover2);
         panel.addComponent(gameover3);
-        //  panel.addComponent(gameover4);
+
+        MainSchermata.Empty(panel, 1);
 
         new Button("Play again",new Runnable(){
             @Override
