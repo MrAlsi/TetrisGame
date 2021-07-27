@@ -1,6 +1,7 @@
 package com.company.client;
 
 import com.company.Gioco.GameOver;
+import com.company.Gioco.Restart;
 import com.company.Gioco.Schermo;
 import com.company.Gioco.YouWin;
 import com.company.MainSchermata;
@@ -27,6 +28,7 @@ public class Client implements Runnable {
     public static Boolean winner = false;
     public static Thread gameThread;
     private String message = "";
+    private Boolean pause = false;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
@@ -132,6 +134,9 @@ public class Client implements Runnable {
                     if(GameOver.nextGame){
                         GameOver.screen.close();
                     }
+                    if(Restart.nextGame){
+                        Restart.screen.close();
+                    }
                     Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel);
                     gameThread = new Thread(schermo);
                     gameThread.start();
@@ -142,6 +147,25 @@ public class Client implements Runnable {
                         try {
 
                             playersData = fromServer.readLine();
+
+                            if(playersData.contains("/pause") && !pause){
+                                pause = true;
+                                gameThread.suspend();
+                            }
+
+                            if(playersData.contains("/resume") && pause){
+                                pause = false;
+                                gameThread.resume();
+                            }
+
+                            if(playersData.contains("/restart") && !pause){
+                                Schermo.gameOver = true;
+                                Client.winner = false;
+                                System.out.println("Partita ricominciata");
+                                Restart ricomincia = new Restart(name, IP, PORT, panel, coloreLabel);
+                                Thread ricominciaThread = new Thread(ricomincia);
+                                ricominciaThread.start();
+                            }
 
                             if(playersData.equals("[" + name + "]-winner")){
 
