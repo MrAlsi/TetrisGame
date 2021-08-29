@@ -10,8 +10,8 @@ import java.io.PrintWriter;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
-// La classe Sender si occupa dell'invio di messaggi verso il server che poi si occuperà di inoltrarli
-// agli altri client connessi
+// La classe Sender si occupa dell'invio di messaggi verso il com.company.server che poi si occuperà di inoltrarli
+// agli altri com.company.client connessi
 public class Sender implements Runnable {
     private String name;
     private Panel panel;
@@ -37,7 +37,7 @@ public class Sender implements Runnable {
             @Override
             public void run(){
 
-                // Quando premo il pulsante stampo il messaggio e lo invio al server
+                // Quando premo il pulsante stampo il messaggio e lo invio al com.company.server
                 if(!messaggio.getText().equals("")) {
                     String messaggioString = messaggio.getText();
 
@@ -56,7 +56,7 @@ public class Sender implements Runnable {
             @Override
             public void run(){
 
-                // Una volta premuto spengo il server e torno alla home
+                // Una volta premuto spengo il com.company.server e torno alla home
                 // Da sistemare
                 try {
 

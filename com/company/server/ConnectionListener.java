@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
-// Questa classe si occupa di rimanere in attesa di nuove connessioni da parte dei client
+// Questa classe si occupa di rimanere in attesa di nuove connessioni da parte dei com.company.client
 public class ConnectionListener implements Runnable {
     private HashMap<String, PrintWriter> connectedClients;
     private Panel panel;
@@ -26,6 +26,7 @@ public class ConnectionListener implements Runnable {
         this.coloreLabel=coloreLabel;
         this.connectedClients=connectedClients;
     }
+
     @Override
     public void run() {
         try{
@@ -36,8 +37,8 @@ public class ConnectionListener implements Runnable {
             while(connectedClients.size() <= 4){
                 System.out.println(connectedClients.size());
                 Socket socket = listener.accept();
-                // Per ogni client che si connette al server creo un thread handlerThread,
-                // a lato server, per ogni client così che possano essere gestiti singolarmente dal server
+                // Per ogni com.company.client che si connette al com.company.server creo un thread handlerThread,
+                // a lato com.company.server, per ogni com.company.client così che possano essere gestiti singolarmente dal com.company.server
                 ClientHandler clientSock = new ClientHandler(socket, "",panel,coloreLabel,connectedClients);
                 clientSock.clientHandler();
                 handlerThread = new Thread(clientSock);
@@ -46,7 +47,7 @@ public class ConnectionListener implements Runnable {
                 Label lab_clientJoin=new Label("[SERVER]: Connected clients: " + (connectedClients.size())+ "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 panel.addComponent(lab_clientJoin);
 
-                // Aggiorno i vari client che un nuovo giocatore si è connesso al server
+                // Aggiorno i vari com.company.client che un nuovo giocatore si è connesso al com.company.server
                 broadcastServerMessage("[SERVER]: Connected clients: " + (connectedClients.size()) + "/4");
                 if(connectedClients.size() == 4){
                     Server.gameStarted = true;

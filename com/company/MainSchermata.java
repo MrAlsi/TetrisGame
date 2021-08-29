@@ -116,7 +116,7 @@ public class MainSchermata {
         Empty(panel, 1);
 
 
-        //bottone client
+        //bottone com.company.client
         new Button("Find Game", new Runnable() {
             @Override
             public void run() {
@@ -128,12 +128,12 @@ public class MainSchermata {
 
                 //registrazione utente
                 Label user=new Label("\ninserisci il tuo nome: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                final TextBox textUserClient=new TextBox();// nome nuovo client
+                final TextBox textUserClient=new TextBox();// nome nuovo com.company.client
                 Empty(panel, 1);
                 Label IP=new Label("\nServer IP: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                final TextBox textIP=new TextBox();//indirizzo IP del server a cui voglio collegarmi
+                final TextBox textIP=new TextBox();//indirizzo IP del com.company.server a cui voglio collegarmi
                 Label PORT=new Label("\nServer PORT: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                final TextBox textPORT=new TextBox();//porta del server a cui voglio collegarmi
+                final TextBox textPORT=new TextBox();//porta del com.company.server a cui voglio collegarmi
 
                 panel.addComponent(user);
                 panel.addComponent(textUserClient);
@@ -143,7 +143,7 @@ public class MainSchermata {
                 panel.addComponent(textPORT);
 
                 Empty(panel, 1);
-                //bottone per startare il codice del client
+                //bottone per startare il codice del com.company.client
                 new Button("Start Client",new Runnable(){
                     @Override
                     public void run(){
@@ -153,7 +153,7 @@ public class MainSchermata {
                         String PORT = textPORT.getText();
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
-                        //richiamo codice client
+                        //richiamo codice com.company.client
 
                         Client client=new Client(name, IP, PORT, panel, coloreLabel, new LinkedList<>());
                         clientThread = new Thread(client);
@@ -178,7 +178,7 @@ public class MainSchermata {
 
         Empty(panel, 1);
 
-        //bottone per accedere come server
+        //bottone per accedere come com.company.server
         new Button("Host Game", new Runnable() {
 
             public void run() {
@@ -190,11 +190,11 @@ public class MainSchermata {
                 //metodo per la scritta tetris
                 Tetris(panel);
 
-                //registro il nome del server
+                //registro il nome del com.company.server
                 Label user = new Label("\nName: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                 final TextBox textUser = new TextBox();
                 Label SERVERPORT=new Label("\nServer PORT: ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                final TextBox textSERVERPORT=new TextBox();//porta del server a cui voglio collegarmi
+                final TextBox textSERVERPORT=new TextBox();//porta del com.company.server a cui voglio collegarmi
 
                 panel.addComponent(user);
                 panel.addComponent(textUser);
@@ -202,7 +202,7 @@ public class MainSchermata {
                 panel.addComponent(textSERVERPORT);
 
                 Empty(panel, 1);
-                //bottone per strtare il server
+                //bottone per strtare il com.company.server
                 new Button("Start Server",new Runnable(){
                     @Override
                     public void run(){
@@ -211,7 +211,7 @@ public class MainSchermata {
                         //svuoto lo schermo
                         panel.removeAllComponents();
                         panel.setFillColorOverride(BLACK);
-                        //richiamo il codice del server
+                        //richiamo il codice del com.company.server
 
                         Server server = new Server(name, SERVERPORT, panel, coloreLabel);
                         server.StartServer(server);

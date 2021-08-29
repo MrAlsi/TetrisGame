@@ -13,6 +13,7 @@ import com.googlecode.lanterna.gui2.Panel;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -29,19 +30,21 @@ public class Client implements Runnable {
     public static Thread gameThread;
     private String message = "";
     private Boolean pause = false;
+    private List<String> connectedClients;
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
-    public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel) {
+    public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) {
         this.name = name;
         this.IP = IP;
         this.PORT = Integer.parseInt(PORT);
         this.panel = panel;
         this.coloreLabel = coloreLabel;
+        this.connectedClients=connectedClients;
     }
 
     public void run() {
 
-        // Inizializzo la chat pre-partita del client
+        // Inizializzo la chat pre-partita del com.company.client
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
         panel.setPosition(new TerminalPosition(0, 0));
@@ -50,7 +53,7 @@ public class Client implements Runnable {
         panel.setFillColorOverride(BLACK);
         Label lab = new Label("\nYour nickname: " + name).setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
-        Label connessione = new Label("\nConnecting to the server...").setBackgroundColor(BLACK)
+        Label connessione = new Label("\nConnecting to the com.company.server...").setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
         panel.addComponent(lab);
         panel.addComponent(connessione);
@@ -103,17 +106,17 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
 
-        // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
+        // Finché il com.company.server non chiude la connessione o non ricevi un messaggio "/quit"...
         while (message != null && !message.equals("/quit")) {
             try {
 
-                // Leggi un messaggio inviato dal server
+                // Leggi un messaggio inviato dal com.company.server
                 message = fromServer.readLine();
 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            // Se il server invia un comando /quit mi disconnetto dal server
+            // Se il com.company.server invia un comando /quit mi disconnetto dal com.company.server
             if(message.equals("/quit")){
 
                 Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
@@ -137,7 +140,12 @@ public class Client implements Runnable {
                     if(Restart.nextGame){
                         Restart.screen.close();
                     }
-                    Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel);
+                    String playersStringMessage = fromServer.readLine();
+                    for (String playerUser : playersStringMessage.split("-"))
+                    {
+                        connectedClients.add(playerUser);
+                    }
+                    Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel,connectedClients);
                     gameThread = new Thread(schermo);
                     gameThread.start();
 
@@ -162,7 +170,7 @@ public class Client implements Runnable {
                                 Schermo.gameOver = true;
                                 Client.winner = false;
                                 System.out.println("Partita ricominciata");
-                                Restart ricomincia = new Restart(name, IP, PORT, panel, coloreLabel);
+                                Restart ricomincia = new Restart(name, IP, PORT, panel, coloreLabel,connectedClients);
                                 Thread ricominciaThread = new Thread(ricomincia);
                                 ricominciaThread.start();
                             }

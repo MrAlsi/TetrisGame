@@ -12,13 +12,13 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
+import java.lang.String;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 
 
 public class Server  implements Runnable{
-    private HashMap<String, PrintWriter> connectedClients = new HashMap();
+    //private HashMap<String, PrintWriter> connectedClients = new HashMap();
     private ConnectionListener connectionListener;
     public String name;
     private int SERVERPORT;
@@ -28,26 +28,28 @@ public class Server  implements Runnable{
     public static Thread senderThread;
     public static Thread listenerThread;
     public static Boolean gameStarted = false;
+    private static HashMap<String, PrintWriter> connectedClients;
 
     // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread
-    // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
+    // che si occupa di restare in ascolto per le connessioni dei com.company.client che vorranno collegarsi al com.company.server
     public Server(String name, String SERVERPORT, Panel panel, TextColor coloreLabel) {
         this.name = name;
         this.SERVERPORT = Integer.parseInt(SERVERPORT);
         this.panel= panel;
         this.coloreLabel= coloreLabel;
+        this.connectedClients= new HashMap<String, PrintWriter>();
         connectionListener = new ConnectionListener(panel, this.SERVERPORT, coloreLabel, connectedClients);
         listenerThread = new Thread(connectionListener);
 
     }
 
-    // Metodo che richiamo subito e serve per far partire il thread dedicato al server
+    // Metodo che richiamo subito e serve per far partire il thread dedicato al com.company.server
     public void StartServer(Server server) {
         serverThread = new Thread(server);
         serverThread.start();
     }
 
-    // Inizializzo la schermata del server
+    // Inizializzo la schermata del com.company.server
     public void run(){
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
@@ -75,11 +77,11 @@ public class Server  implements Runnable{
 
         try {
 
-            // Il server si mette in ascolto per eventuali client che tentano di connettersi
+            // Il com.company.server si mette in ascolto per eventuali com.company.client che tentano di connettersi
             listenerThread.start();
 
-            // Creo il thread di comunicazione del server e lo avvio
-            // Questo thread permette al server di mandare messaggi a tutti i client
+            // Creo il thread di comunicazione del com.company.server e lo avvio
+            // Questo thread permette al com.company.server di mandare messaggi a tutti i com.company.client
             // durante il pre-partita
             ServerSender serverSender = new ServerSender(panel, coloreLabel, connectedClients, name);
             senderThread = new Thread(serverSender);
@@ -103,13 +105,15 @@ public class Server  implements Runnable{
 
     }
 
-    // Metodo per la trasmissione di un messaggio inviato dal server agli altri client
-    public void broadcastServerMessage(String message) {
+    // Metodo per la trasmissione di un messaggio inviato dal com.company.server agli altri com.company.client
+    public static void broadcastServerMessage(String message) {
 
-        for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
+        for(Entry <String, PrintWriter> e: connectedClients.entrySet()) {
 
             e.getValue().println(message);
             e.getValue().flush();
         }
     }
+
+
 }

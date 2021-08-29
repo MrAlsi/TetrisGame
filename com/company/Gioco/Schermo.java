@@ -98,7 +98,7 @@ public class Schermo implements Runnable{
         campo.creaCampo();
         //creo minicampi
         //for in base al numero di giocatori
-        //prendo la dimensione per sapere i client connessi
+        //prendo la dimensione per sapere i com.company.client connessi
         int dim = connectedClients.size();
         //creo bottoni in base al numero dei giocatori
         int posverticale=height/27;
@@ -149,7 +149,7 @@ public class Schermo implements Runnable{
         try {
             //Creazione terminale con dimensioni già fisse
 
-            //Gioco
+            //com.company.Gioco
 
             // start brick move treads
             brickDropTimer = new CadutaBlocco();
