@@ -58,6 +58,7 @@ public class MainSchermata {
         Terminal terminal = defaultTerminalFactory.createTerminal();
 
         //Terminal terminal = new DefaultTerminalFactory().createTerminal();
+        //
         screen = new TerminalScreen(terminal);
         screen.startScreen();
 
