@@ -4,7 +4,11 @@ import com.company.client.Client;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.Window;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -12,15 +16,24 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
+import javax.management.StringValueExp;
+import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.lang.String;
+
+import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 public class Schermo implements Runnable{
 
     public int delay = 1000 / 60;
+
+    Mini_Griglia[] miniCampo = new Mini_Griglia[3];
 
     private Griglia campo;
     private TextGraphics schermo;
@@ -33,6 +46,7 @@ public class Schermo implements Runnable{
     private Boolean barra = false;
     public static String usernameDestinatario = "palma";
     public static int aggiungiSpazzatura = 0;
+    private List<String> connectedClients;
 
     public PrintWriter pw;
     private String username;
@@ -43,11 +57,12 @@ public class Schermo implements Runnable{
     private final int brickDropDelay = 1000;
     private Screen screen;
 
-    public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel) throws IOException {
+    public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
         this.IP = IP;
         this.PORT = PORT;
         this.panel = panel;
         this.coloreLabel = coloreLabel;
+        this.connectedClients=connectedClients;
         pw = toServer;
         username = name;
 
@@ -81,8 +96,54 @@ public class Schermo implements Runnable{
 
         campo = new Griglia(schermo);
         campo.creaCampo();
+        //creo minicampi
+        //for in base al numero di giocatori
+        //prendo la dimensione per sapere i client connessi
+        int dim = connectedClients.size();
+        //creo bottoni in base al numero dei giocatori
+        int posverticale=height/27;
+        int pos1=width/19;
+        int pos2=width/12;
+        int pos3=width/9;
+        String dimm= String.valueOf(dim);
+        schermo.putString(pos1, posverticale,dimm).setBackgroundColor(BLACK);
+        int j = 0;
+        for (String nome : connectedClients) {
+            //controllo che il nome sia diverso dal mio
+            if (!nome.equals(name)) {
+                miniCampo[j] = new Mini_Griglia(schermo, j, nome);
+                miniCampo[j].creaCampo();
+                String stampanome = " " + (j+1) + "-->'" + nome + "'";
+                screen.refresh();
+                if (j == 0) {
+                    schermo.putString(pos1, posverticale, stampanome).setBackgroundColor(BLACK);
+                } else if (j == 1) {
+                    schermo.putString(pos2, posverticale, stampanome).setBackgroundColor(BLACK);
+                } else {
+                    schermo.putString(pos3, posverticale, stampanome).setBackgroundColor(BLACK);
+                }
+                j++;
+            }
+
+        }
+/*
+        miniCampo[0]=new Mini_Griglia(schermo,0,name);
+        miniCampo[0].creaCampo();
+        String nome1="1-->'alsi'";
+
+        schermo.putString(width/19,height/27,nome1).setBackgroundColor(BLACK);
+        miniCampo[1]=new Mini_Griglia(schermo,1,name);
+        miniCampo[1].creaCampo();
+        String nome2="2-->'totta'";
+        schermo.putString(width/12,height/27,nome2).setBackgroundColor(BLACK);
+        miniCampo[2]=new Mini_Griglia(schermo,2,name);
+        miniCampo[2].creaCampo();
+        String nome3="3-->'gabri'";
+        schermo.putString(width/9,height/27,nome3).setBackgroundColor(BLACK);
+*/
         screen.refresh();
     }
+
 
     public synchronized void run(){
         try {
@@ -107,7 +168,7 @@ public class Schermo implements Runnable{
                 if(Client.winner == true){
                     Client.winner = false;
                     System.out.println("Partita finita");
-                    YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel);
+                    YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel,connectedClients);
                     Thread vittoriaThread = new Thread(vittoria);
                     vittoriaThread.start();
                     break;
@@ -136,7 +197,7 @@ public class Schermo implements Runnable{
                         System.out.println("Partita finita");
                         String msg_sconfitta = username + "-lost";
                         invia(msg_sconfitta, pw);
-                        GameOver sconfitta = new GameOver(username, IP, PORT, panel, coloreLabel);
+                        GameOver sconfitta = new GameOver(username, IP, PORT, panel, coloreLabel,connectedClients);
                         Thread sconfittaThread = new Thread(sconfitta);
                         sconfittaThread.start();
                         gameOver = true;
@@ -279,9 +340,10 @@ public class Schermo implements Runnable{
     public void righeSpazzatura(int combo){
         switch(combo){
             //Prova per vedere se funziona, quando mettiamo le righe spazzatura useremo questo metodo
-            case 2 -> System.out.println("1 Riga spazzatura");
-            case 3 -> System.out.println("2 Riga spazzatura");
-            case 4 -> System.out.println("4 Riga spazzatura");
+            case 2 : System.out.println("1 Riga spazzatura");
+            case 3 : System.out.println("2 Riga spazzatura");
+            case 4 : System.out.println("4 Riga spazzatura");
+            break;
         }
     }
 }
