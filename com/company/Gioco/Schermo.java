@@ -94,22 +94,24 @@ public class Schermo implements Runnable{
         campo = new Griglia(schermo);
         campo.creaCampo();
         //creo minicampi
-        //for in base al numero di giocatori
+
         //prendo la dimensione per sapere i com.company.client connessi
         int dim = connectedClients.size();
-        //creo bottoni in base al numero dei giocatori
-        int posverticale=height/27;
+        int posverticale=height/25;
+        //posizioni per mettere i nomi sotto ai campi
         int pos1=width/19;
         int pos2=width/12;
         int pos3=width/9;
         String dimm= String.valueOf(dim);
         schermo.putString(pos1, posverticale,dimm).setBackgroundColor(BLACK);
+        //for in base al numero di giocatori
         int j = 0;
         for (String nome : connectedClients) {
             //controllo che il nome sia diverso dal mio
             if (!nome.equals(name)) {
                 miniCampo[j] = new Mini_Griglia(schermo, j, nome);
                 miniCampo[j].creaCampo();
+                //assegno un numero ad ogni giocatore
                 String stampanome = " " + (j+1) + "-->'" + nome + "'";
                 screen.refresh();
                 if (j == 0) {
@@ -123,24 +125,9 @@ public class Schermo implements Runnable{
             }
 
         }
-/*
-        miniCampo[0]=new Mini_Griglia(schermo,0,name);
-        miniCampo[0].creaCampo();
-        String nome1="1-->'alsi'";
-
-        schermo.putString(width/19,height/27,nome1).setBackgroundColor(BLACK);
-        miniCampo[1]=new Mini_Griglia(schermo,1,name);
-        miniCampo[1].creaCampo();
-        String nome2="2-->'totta'";
-        schermo.putString(width/12,height/27,nome2).setBackgroundColor(BLACK);
-        miniCampo[2]=new Mini_Griglia(schermo,2,name);
-        miniCampo[2].creaCampo();
-        String nome3="3-->'gabri'";
-        schermo.putString(width/9,height/27,nome3).setBackgroundColor(BLACK);
-*/
         screen.refresh();
     }
-
+/*
     public Schermo() throws IOException {
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -183,7 +170,7 @@ public class Schermo implements Runnable{
         miniCampo[2].creaCampo();
 
         screen.refresh();
-    }
+    }*/
 
     public synchronized void run(){
         try {
@@ -208,7 +195,7 @@ public class Schermo implements Runnable{
 
                 //evidenzia(0);
                 traduciGrigliaToString(campo);
-                traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                 screen.refresh();
 
                 if(Client.winner == true){
@@ -218,7 +205,7 @@ public class Schermo implements Runnable{
                     Thread vittoriaThread = new Thread(vittoria);
                     vittoriaThread.start();
                     traduciGrigliaToString(campo);
-                    traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     break;
                 }
 
@@ -226,7 +213,7 @@ public class Schermo implements Runnable{
 
                 for(KeyStroke key : keyStrokes) {
                     traduciGrigliaToString(campo);
-                    traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     screen.refresh();
                     processKeyInput(key);
 
@@ -236,7 +223,7 @@ public class Schermo implements Runnable{
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     traduciGrigliaToString(campo);
-                    traduciStringToGriglia(miaGriglia, miniCampo[1]);               //Aggiorna il proprio stato la griglia
+                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);              //Aggiorna il proprio stato la griglia
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
@@ -258,12 +245,13 @@ public class Schermo implements Runnable{
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
                     traduciGrigliaToString(campo);
-                    traduciStringToGriglia(miaGriglia, miniCampo[1]);                }
+                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                    }
 
                 if(aggiungiSpazzatura != 0){
                     campo.aggiungiSpazzatura(aggiungiSpazzatura);
                     traduciGrigliaToString(campo);
-                    traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     aggiungiSpazzatura = 0;
                 }
 
@@ -271,13 +259,13 @@ public class Schermo implements Runnable{
                     screen.refresh();
                     pezzoScelto.scendi(campo);
                     traduciGrigliaToString(campo);
-                    traduciStringToGriglia(miaGriglia, miniCampo[1]);
-                    //Pezzettino1.scendi(miniCampo[1], 1);
+                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
                     invia(datas, pw);
                 }
-                traduciGrigliaToString(campo);
-                traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                /*traduciGrigliaToString(campo);
+                traduciStringToGriglia(miaGriglia, miniCampo[1]);*/
+                screen.refresh();
             }
             screen.close();
             Thread.currentThread().interrupt();
@@ -288,7 +276,7 @@ public class Schermo implements Runnable{
         }
     }
 
-    public void stampaGriglia(Griglia campo) {
+    /*public void stampaGriglia(Griglia campo) {
         System.out.println("-------------------------------------");
         for (int i = 0; i < 12; i++) {
             for (int e = 0; e < 24; e++) {
@@ -297,7 +285,7 @@ public class Schermo implements Runnable{
             System.out.println("");
         }
         System.out.println("-------------------------------------");
-    }
+    }*/
 
     //Restituisce il prossimo pezzo che cadrà
     public Pezzo prossimoPezzo(TextGraphics schermo){
@@ -336,9 +324,10 @@ public class Schermo implements Runnable{
         Character c1 = ' ';
         Character c2 = 'z';
         Character c3 = 'x';
+        /*
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
-        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)
+        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)*/
         datas = "";
 
         //down totale
@@ -396,7 +385,7 @@ public class Schermo implements Runnable{
             invia(datas, pw);
             screen.refresh();
         }
-
+/*
         if(uno.equals(key.getCharacter())){
             evidenzia(0);
         }
@@ -405,7 +394,7 @@ public class Schermo implements Runnable{
         }
         if(tre.equals(key.getCharacter())){
             evidenzia(2);
-        }
+        }*/
     }
 
     public void invia(String s, PrintWriter pw){
@@ -425,11 +414,11 @@ public class Schermo implements Runnable{
         }
     }
 
-    public void evidenzia(int campo){
+   /* public void evidenzia(int campo){
         campo=campo*40+60-1;
         schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
                 Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
-    }
+    }*/
 
     public void traduciGrigliaToString(Griglia griglia){
         for(int i=0; i<griglia.griglia.length; i++){
@@ -445,7 +434,7 @@ public class Schermo implements Runnable{
             }
         }
     }
-
+/*
     public void traduciStringToGriglia(int[][] griglia, Mini_Griglia miniGriglia){
         for(int i=0; i<griglia.length; i++){
             for(int e=0; e<griglia[i].length; e++){
@@ -459,5 +448,5 @@ public class Schermo implements Runnable{
                 }
             }
         }
-    }
+    }*/
 }
