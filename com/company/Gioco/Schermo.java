@@ -31,7 +31,6 @@ public class Schermo implements Runnable{
     private Griglia campo;
     private TextGraphics schermo;
     private Pezzo pezzoScelto;
-    private Mini_Pezzo Pezzettino1;
     Random sceltaPezzo = new Random();
     private String azione;
     public static boolean gameOver = false;
@@ -306,27 +305,27 @@ public class Schermo implements Runnable{
 
         //Creatore di pezzi randomici
         switch(sceltaPezzo.nextInt(7)) {
-            case 0:
+            case 0:{
                 pezzo = new PezzoLungo(schermo, campo);
-                break;
-            case 1:
+                break;}
+            case 1:{
                 pezzo = new PezzoT(schermo, campo);
-                break;
-            case 2:
+                break;}
+            case 2:{
                 pezzo = new PezzoL(schermo, campo);
-                break;
-            case 3:
+                break;}
+            case 3:{
                 pezzo = new PezzoJ(schermo, campo);
-                break;
-            case 4:
+                break;}
+            case 4:{
                 pezzo = new PezzoS(schermo, campo);
-                break;
-            case 5:
+                break;}
+            case 5:{
                 pezzo = new PezzoZ(schermo, campo);
-                break;
-            case 6:
+                break;}
+            case 6:{
                 pezzo = new PezzoQuadrato(schermo, campo);
-                break;
+                break;}
         }
         return pezzo;
     }
@@ -409,17 +408,20 @@ public class Schermo implements Runnable{
         }
     }
 
-    /*public void invia(String s, PrintWriter pw){
+    public void invia(String s, PrintWriter pw){
         pw.println(s);
         pw.flush();
-    }*/
+    }
 
     public void righeSpazzatura(int combo){
         switch(combo){
             //Prova per vedere se funziona, quando mettiamo le righe spazzatura useremo questo metodo
-            case 2 -> System.out.println("1 Riga spazzatura");
-            case 3 -> System.out.println("2 Riga spazzatura");
-            case 4 -> System.out.println("4 Riga spazzatura");
+            case 2 :{System.out.println("1 Riga spazzatura");
+            break;}
+            case 3 :{System.out.println("2 Riga spazzatura");
+            break;}
+            case 4 :{System.out.println("4 Riga spazzatura");
+            break;}
         }
     }
 
@@ -433,9 +435,12 @@ public class Schermo implements Runnable{
         for(int i=0; i<griglia.griglia.length; i++){
             for(int e=0; e<griglia.griglia[i].length; e++){
                 switch (griglia.griglia[i][e].getStato()) {
-                    case 0 -> miaGriglia[i][e]=0;
-                    case 1 -> miaGriglia[i][e]=1;
-                    case 2 -> miaGriglia[i][e]=2;
+                    case 0 :{miaGriglia[i][e]=0;
+                    break;}
+                    case 1 :{miaGriglia[i][e]=1;
+                    break;}
+                    case 2 :{miaGriglia[i][e]=2;
+                    break;}
                 }
             }
         }
@@ -445,9 +450,12 @@ public class Schermo implements Runnable{
         for(int i=0; i<griglia.length; i++){
             for(int e=0; e<griglia[i].length; e++){
                 switch (griglia[i][e]) {
-                    case 0 -> miniGriglia.griglia[i][e]=new Mini_BloccoVuoto(schermo, i, e, 1);
-                    case 1 -> miniGriglia.griglia[i][e]=new Mini_BloccoPieno(schermo, i, e, TextColor.ANSI.WHITE_BRIGHT);
-                    case 2 -> miniGriglia.griglia[i][e]=new Mini_BloccoStruttura(schermo, i, e);
+                    case 0: {miniGriglia.griglia[i][e]=new Mini_BloccoVuoto(schermo, i, e, 1);
+                    break;}
+                    case 1: {miniGriglia.griglia[i][e]=new Mini_BloccoPieno(schermo, i, e, TextColor.ANSI.WHITE_BRIGHT);
+                    break;}
+                    case 2: {miniGriglia.griglia[i][e]=new Mini_BloccoStruttura(schermo, i, e);
+                    break;}
                 }
             }
         }
