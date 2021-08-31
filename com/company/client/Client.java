@@ -161,12 +161,12 @@ public class Client implements Runnable {
                                 gameThread.suspend();
                             }
 
-                            if(playersData.contains("/resume") && pause){
+                            else if(playersData.contains("/resume") && pause){
                                 pause = false;
                                 gameThread.resume();
                             }
 
-                            if(playersData.contains("/restart") && !pause){
+                            else if(playersData.contains("/restart") && !pause){
                                 Schermo.gameOver = true;
                                 Client.winner = false;
                                 System.out.println("Partita ricominciata");
@@ -175,24 +175,30 @@ public class Client implements Runnable {
                                 ricominciaThread.start();
                             }
 
-                            if(playersData.equals("[" + name + "]-winner")){
+                            else if(playersData.equals("[" + name + "]-winner")){
 
                                 winner = true;
                                 Schermo.gameOver = true;
 
                             }
 
-                            if(playersData.equals("spazzatura-"  + name + "-2")) {
+                            else if(playersData.equals("spazzatura-"  + name + "-2")) {
                                 Schermo.aggiungiSpazzatura = 1;
                                 System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
                             }
-                            if(playersData.equals("spazzatura-"  + name + "-3")) {
+                            else if(playersData.equals("spazzatura-"  + name + "-3")) {
                                 Schermo.aggiungiSpazzatura = 2;
                                 System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
                             }
-                            if(playersData.equals("spazzatura-"  + name + "-4")) {
+                            else if(playersData.equals("spazzatura-"  + name + "-4")) {
                                 Schermo.aggiungiSpazzatura = 4;
                                 System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                            }
+                            else {
+                                //Schermo.campoAvv=playersData;
+                                Traduttore t = new Traduttore(playersData);
+                                t.run();
+                                //Schermo.traduciStringToInt(playersData);
                             }
                         } catch (IOException e) {
 
