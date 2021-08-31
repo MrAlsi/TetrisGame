@@ -3,6 +3,8 @@ package com.Gioco;
 import com.Gioco.Mini.*;
 import com.Gioco.Pezzi.*;
 import com.client.Client;
+import com.googlecode.lanterna.Symbols;
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+import static com.googlecode.lanterna.TextColor.ANSI.YELLOW_BRIGHT;
 
 public class Schermo implements Runnable{
 
@@ -320,10 +323,10 @@ public class Schermo implements Runnable{
         Character c1 = ' ';
         Character c2 = 'z';
         Character c3 = 'x';
-        /*
+
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
-        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)*/
+        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)
         datas = "";
 
         //down totale
@@ -354,7 +357,7 @@ public class Schermo implements Runnable{
             if(!pezzoScelto.collisioneLaterale(-1)) {
                 pezzoScelto.muovi(campo, -1);
                 //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-               // invia(datas, pw);
+                // invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -380,6 +383,26 @@ public class Schermo implements Runnable{
             //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
             //invia(datas, pw);
             screen.refresh();
+        }
+        int dim=connectedClients.size();
+        if(dim==2){
+            evidenzia(0);
+        }
+        else{
+            if (uno.equals(key.getCharacter())) {
+                evidenzia(0);
+                for(int i=0;i<dim-1;i++) {
+                    noEvidenzia(i + 1);
+                }
+            }
+            else if(due.equals(key.getCharacter())) {
+                evidenzia(1);
+                for (int i = 0; i < dim-1; i++) {
+                    if (i != 1) {
+                        noEvidenzia(i + 2 - 2);
+                    }
+                }
+            }
         }
 /*
         if(uno.equals(key.getCharacter())){
@@ -410,11 +433,16 @@ public class Schermo implements Runnable{
         }
     }
 
-   /* public void evidenzia(int campo){
+    public void evidenzia(int campo){
         campo=campo*40+60-1;
         schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
-    }*/
+                Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT).setBackgroundColor(YELLOW_BRIGHT);
+    }
+    public void noEvidenzia(int campo){
+        campo=campo*40+60-1;
+        schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
+                Symbols.BLOCK_SOLID).setBackgroundColor(BLACK).setForegroundColor(BLACK);
+    }
 
     public void traduciGrigliaToInt(Griglia griglia){
         for(int i=0; i<griglia.griglia.length; i++){
