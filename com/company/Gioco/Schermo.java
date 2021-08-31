@@ -1,10 +1,8 @@
-package com.company.Gioco;
+package com.Gioco;
 
-import com.company.Gioco.Mini.*;
-import com.company.Gioco.Pezzi.*;
-import com.company.client.Client;
-import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalPosition;
+import com.Gioco.Mini.*;
+import com.Gioco.Pezzi.*;
+import com.client.Client;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -29,7 +27,7 @@ public class Schermo implements Runnable{
     public int delay = 1000 / 60;
 
     private Griglia campo;
-    private TextGraphics schermo;
+    public static TextGraphics schermo;
     private Pezzo pezzoScelto;
     Random sceltaPezzo = new Random();
     private String azione;
@@ -51,8 +49,9 @@ public class Schermo implements Runnable{
     private Screen screen;
 
     private int miaGriglia[][] = new int[12][24];
+    public static String campoAvv;
 
-    public Mini_Griglia[] miniCampo = new Mini_Griglia[3];
+    public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];
 
     public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
         this.IP = IP;
@@ -188,13 +187,10 @@ public class Schermo implements Runnable{
 
             pezzoScelto = prossimoPezzo(schermo);
 
-            //Pezzettino1 = new Mini_PezzoLungo(schermo, miniCampo[1]);
-            //Mini_PezzoLungo pezzettino = new Mini_PezzoLungo(schermo, miniCampo[1]);
             // run game loop
             while(!gameOver) {
 
-                //evidenzia(0);
-                traduciGrigliaToString(campo);
+                traduciGrigliaToInt(campo);
                 //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                 screen.refresh();
 
@@ -204,7 +200,7 @@ public class Schermo implements Runnable{
                     YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel, connectedClients);
                     Thread vittoriaThread = new Thread(vittoria);
                     vittoriaThread.start();
-                    traduciGrigliaToString(campo);
+                    traduciGrigliaToInt(campo);
                     //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     break;
                 }
@@ -212,7 +208,7 @@ public class Schermo implements Runnable{
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
                 for(KeyStroke key : keyStrokes) {
-                    traduciGrigliaToString(campo);
+                    traduciGrigliaToInt(campo);
                     //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     screen.refresh();
                     processKeyInput(key);
@@ -222,7 +218,7 @@ public class Schermo implements Runnable{
                 if((pezzoScelto.collisioneSotto() && brickDropTimer.getDropBrick()) || barra){
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
-                    traduciGrigliaToString(campo);
+                    traduciGrigliaToInt(campo);
                     //traduciStringToGriglia(miaGriglia, miniCampo[1]);              //Aggiorna il proprio stato la griglia
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
@@ -244,13 +240,13 @@ public class Schermo implements Runnable{
                         break;
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-                    traduciGrigliaToString(campo);
+                    traduciGrigliaToInt(campo);
                     //traduciStringToGriglia(miaGriglia, miniCampo[1]);
-                    }
+                }
 
                 if(aggiungiSpazzatura != 0){
                     campo.aggiungiSpazzatura(aggiungiSpazzatura);
-                    traduciGrigliaToString(campo);
+                    traduciGrigliaToInt(campo);
                     //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     aggiungiSpazzatura = 0;
                 }
@@ -258,10 +254,10 @@ public class Schermo implements Runnable{
                 if(brickDropTimer.getDropBrick()) {
                     screen.refresh();
                     pezzoScelto.scendi(campo);
-                    traduciGrigliaToString(campo);
+                    traduciGrigliaToInt(campo);
                     //traduciStringToGriglia(miaGriglia, miniCampo[1]);
-                    datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                    invia(datas, pw);
+                    //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                    //invia(datas, pw);
                 }
                 /*traduciGrigliaToString(campo);
                 traduciStringToGriglia(miaGriglia, miniCampo[1]);*/
@@ -337,8 +333,8 @@ public class Schermo implements Runnable{
                 pezzoScelto.scendi(campo);
             }
             barra = true;
-            datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-            invia(datas, pw);
+            //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+            //invia(datas, pw);
             screen.refresh();
         }
 
@@ -346,8 +342,8 @@ public class Schermo implements Runnable{
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
             if(!pezzoScelto.collisioneSotto()){
                 pezzoScelto.scendi(campo);
-                datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                invia(datas, pw);
+                //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                //invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -357,8 +353,8 @@ public class Schermo implements Runnable{
             //if(p1.getRiga())
             if(!pezzoScelto.collisioneLaterale(-1)) {
                 pezzoScelto.muovi(campo, -1);
-                datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                invia(datas, pw);
+                //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+               // invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -367,8 +363,8 @@ public class Schermo implements Runnable{
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
             if(!pezzoScelto.collisioneLaterale(1)) {
                 pezzoScelto.muovi(campo, 1);
-                datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                invia(datas, pw);
+                //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+                //invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -381,8 +377,8 @@ public class Schermo implements Runnable{
         // rotate right
         if(c3.equals(key.getCharacter())) {
             pezzoScelto.ruota(campo);
-            datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-            invia(datas, pw);
+            //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
+            //invia(datas, pw);
             screen.refresh();
         }
 /*
@@ -406,11 +402,11 @@ public class Schermo implements Runnable{
         switch(combo){
             //Prova per vedere se funziona, quando mettiamo le righe spazzatura useremo questo metodo
             case 2 :{System.out.println("1 Riga spazzatura");
-            break;}
+                break;}
             case 3 :{System.out.println("2 Riga spazzatura");
-            break;}
+                break;}
             case 4 :{System.out.println("4 Riga spazzatura");
-            break;}
+                break;}
         }
     }
 
@@ -420,33 +416,31 @@ public class Schermo implements Runnable{
                 Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
     }*/
 
-    public void traduciGrigliaToString(Griglia griglia){
+    public void traduciGrigliaToInt(Griglia griglia){
         for(int i=0; i<griglia.griglia.length; i++){
             for(int e=0; e<griglia.griglia[i].length; e++){
                 switch (griglia.griglia[i][e].getStato()) {
                     case 0 :{miaGriglia[i][e]=0;
-                    break;}
+                        break;}
                     case 1 :{miaGriglia[i][e]=1;
-                    break;}
+                        break;}
                     case 2 :{miaGriglia[i][e]=2;
-                    break;}
+                        break;}
                 }
             }
         }
+        traduciInttoString(miaGriglia);
     }
-/*
-    public void traduciStringToGriglia(int[][] griglia, Mini_Griglia miniGriglia){
-        for(int i=0; i<griglia.length; i++){
-            for(int e=0; e<griglia[i].length; e++){
-                switch (griglia[i][e]) {
-                    case 0: {miniGriglia.griglia[i][e]=new Mini_BloccoVuoto(schermo, i, e, 1);
-                    break;}
-                    case 1: {miniGriglia.griglia[i][e]=new Mini_BloccoPieno(schermo, i, e, TextColor.ANSI.WHITE_BRIGHT);
-                    break;}
-                    case 2: {miniGriglia.griglia[i][e]=new Mini_BloccoStruttura(schermo, i, e);
-                    break;}
-                }
+
+    public void traduciInttoString(int[][] mat){
+        String stringa= username + ":";
+        for(int i=0; i<12; i++){
+            for(int e=0; e<24; e++){
+                stringa=stringa+(mat[i][e]);
             }
         }
-    }*/
+        //System.out.println(stringa);
+        invia(stringa, pw); //Non so se va bene
+
+    }
 }
