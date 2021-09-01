@@ -1,10 +1,7 @@
-package com.company.client;
+package com.client;
 
-import com.company.Gioco.GameOver;
-import com.company.Gioco.Restart;
-import com.company.Gioco.Schermo;
-import com.company.Gioco.YouWin;
-import com.company.MainSchermata;
+import com.Gioco.*;
+import com.MainSchermata;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -84,7 +81,6 @@ public class Client implements Runnable {
 
         }
 
-
         InputStreamReader socketReader = new InputStreamReader(socketInput);
         OutputStreamWriter socketWriter = new OutputStreamWriter(socketOutput);
 
@@ -105,7 +101,7 @@ public class Client implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        Traduttore t = new Traduttore(playersData);
         // Finché il com.company.server non chiude la connessione o non ricevi un messaggio "/quit"...
         while (message != null && !message.equals("/quit")) {
             try {
@@ -156,6 +152,12 @@ public class Client implements Runnable {
 
                             playersData = fromServer.readLine();
 
+                            if(playersData.contains(":")){
+                                //Schermo.campoAvv=playersData;
+                                t.run(playersData);
+
+                                //Schermo.traduciStringToInt(playersData);
+                            }
                             if(playersData.contains("/pause") && !pause){
                                 pause = true;
                                 gameThread.suspend();
@@ -193,12 +195,6 @@ public class Client implements Runnable {
                             else if(playersData.equals("spazzatura-"  + name + "-4")) {
                                 Schermo.aggiungiSpazzatura = 4;
                                 System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
-                            }
-                            else {
-                                //Schermo.campoAvv=playersData;
-                                Traduttore t = new Traduttore(playersData);
-                                t.run();
-                                //Schermo.traduciStringToInt(playersData);
                             }
                         } catch (IOException e) {
 
