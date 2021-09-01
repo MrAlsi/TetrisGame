@@ -1,27 +1,25 @@
 package com.Gioco;
 
-import com.Gioco.Mini.Mini_BloccoPieno;
-import com.Gioco.Mini.Mini_BloccoStruttura;
-import com.Gioco.Mini.Mini_BloccoVuoto;
+import com.Gioco.Mini.*;
 import com.googlecode.lanterna.TextColor;
 
 import static com.Gioco.Schermo.miniCampo;
 import static com.Gioco.Schermo.schermo;
 
 
-public class Traduttore implements Runnable{
+public class Traduttore extends Thread{
     public String stringa;
 
     public Traduttore(String stringa){
         this.stringa=stringa;
     }
 
-    @Override
-    public void run() {
+
+    public synchronized void run(String stringa) {
         traduciStringToInt(stringa);
     }
 
-    public static void traduciStringToInt (String stringa){
+    public synchronized void traduciStringToInt (String stringa){
             String[] s = stringa.split(":");
             String[] blocchi = s[1].split("");
             int index = 0;
@@ -33,21 +31,17 @@ public class Traduttore implements Runnable{
                     index++;
                 }
             }
-
             traduciIntToMiniGriglia(campoAvv, s[0]);
-
     }
 
-    public static void traduciIntToMiniGriglia(int[][] campo, String nome) {
+    public synchronized void traduciIntToMiniGriglia(int[][] campo, String nome) {
         int id = 0;
-        try {
-            for (int i = 0; i < miniCampo.length; i++) {
-                if (nome.equals(miniCampo[i].nome)) {
-                    id = i;
-                }
-            }
-        } catch (Exception e) {
 
+        for (int i = 0; i < miniCampo.length; i++) {
+            if (nome.equals(miniCampo[i].nome)) {
+                id = i;
+                break;
+            }
         }
 
         for (int i = 0; i < campo.length; i++) {
@@ -65,6 +59,7 @@ public class Traduttore implements Runnable{
                         miniCampo[id].griglia[i][e] = new Mini_BloccoStruttura(schermo, i, e, id);
                         break;
                     }
+                    case 3 -> miniCampo[id].griglia[i][e] = new Mini_BloccoSpazzatura(schermo, i, e, id);
                 }
             }
         }
