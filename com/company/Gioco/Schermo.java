@@ -3,8 +3,6 @@ package com.Gioco;
 import com.Gioco.Mini.*;
 import com.Gioco.Pezzi.*;
 import com.client.Client;
-import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -23,7 +21,6 @@ import java.util.List;
 import java.util.Random;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
-import static com.googlecode.lanterna.TextColor.ANSI.YELLOW_BRIGHT;
 
 public class Schermo implements Runnable{
 
@@ -43,7 +40,7 @@ public class Schermo implements Runnable{
     private List<String> connectedClients;
 
     public PrintWriter pw = null;
-    private String username;
+    private static String username;
     private String IP;
     private int PORT;
     private Panel panel;
@@ -55,6 +52,8 @@ public class Schermo implements Runnable{
     public static String campoAvv;
 
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];
+
+    public int flag=0;
 
     public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
         this.IP = IP;
@@ -80,7 +79,7 @@ public class Schermo implements Runnable{
         int leftMargin = width/19;
         int topMargin = height/50;
 
-        //codice per avere uno chermo
+        //codice per avere uno schermo
         final int COLS = width/8;
         final int ROWS = height/16;
         DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
@@ -129,50 +128,6 @@ public class Schermo implements Runnable{
         }
         screen.refresh();
     }
-/*
-    public Schermo() throws IOException {
-        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-
-        System.out.println(size);
-        System.out.println(size.getWidth());
-        System.out.println(size.getHeight());
-
-        // width will store the width of the screen
-        int width = (int)size.getWidth();
-
-        // height will store the height of the screen
-        int height = (int)size.getHeight();
-
-        int leftMargin = width/19;
-        int topMargin = height/50;
-
-        //codice per avere uno chermo
-        final int COLS = width/8;
-        final int ROWS = height/16;
-        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
-        defaultTerminalFactory.setInitialTerminalSize(new TerminalSize(COLS,ROWS));
-        Terminal terminal = defaultTerminalFactory.createTerminalEmulator();
-
-        screen = new TerminalScreen(terminal);
-        screen.startScreen();
-
-        //Creazione del campo da gioco
-        schermo = screen.newTextGraphics();
-
-        campo = new Griglia(schermo);
-        campo.creaCampo();
-
-        miniCampo[0] = new Mini_Griglia(schermo, 0,"a");
-        miniCampo[0].creaCampo();
-
-        miniCampo[1] = new Mini_Griglia(schermo, 1,"b");
-        miniCampo[1].creaCampo();
-
-        miniCampo[2] = new Mini_Griglia(schermo, 2,"c");
-        miniCampo[2].creaCampo();
-
-        screen.refresh();
-    }*/
 
     public synchronized void run(){
         try {
@@ -189,40 +144,41 @@ public class Schermo implements Runnable{
             keyInput.start();
 
             pezzoScelto = prossimoPezzo(schermo);
+            InviaStato IS = new InviaStato(username, pw);
 
             // run game loop
             while(!gameOver) {
-
-                traduciGrigliaToInt(campo);
-                //traduciStringToGriglia(miaGriglia, miniCampo[1]);
+               /*if(flag==9) {
+                    IS.run(campo);
+                    flag=0;
+                } else {
+                    flag++;
+                }*/
+                //traduciGrigliaToInt(campo);
                 screen.refresh();
 
-                if(Client.winner == true){
+                if(Client.winner){
                     Client.winner = false;
                     System.out.println("Partita finita");
                     YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel, connectedClients);
                     Thread vittoriaThread = new Thread(vittoria);
                     vittoriaThread.start();
-                    traduciGrigliaToInt(campo);
-                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     break;
                 }
 
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
                 for(KeyStroke key : keyStrokes) {
-                    traduciGrigliaToInt(campo);
-                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                 // traduciGrigliaToInt(campo);
                     screen.refresh();
                     processKeyInput(key);
-
+                    IS.run(campo);
                 }
 
                 if((pezzoScelto.collisioneSotto() && brickDropTimer.getDropBrick()) || barra){
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
-                    traduciGrigliaToInt(campo);
-                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);              //Aggiorna il proprio stato la griglia
+                   // traduciGrigliaToInt(campo);                //Aggiorna il proprio stato la griglia
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
@@ -231,7 +187,7 @@ public class Schermo implements Runnable{
                         invia(datas, pw);
                     }
                     //Richiamo il metodo per mandare le righe spaz. in base alla combo
-                    screen.refresh();                            //Refresh dello schermo
+                    //screen.refresh();                            //Refresh dello schermo
                     if(campo.sconfitta()){
                         System.out.println("Partita finita");
                         String msg_sconfitta = username + "-lost";
@@ -243,13 +199,13 @@ public class Schermo implements Runnable{
                         break;
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-                    traduciGrigliaToInt(campo);
-                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
+                    IS.run(campo);
+                    //traduciGrigliaToInt(campo);
                 }
 
                 if(aggiungiSpazzatura != 0){
                     campo.aggiungiSpazzatura(aggiungiSpazzatura);
-                    traduciGrigliaToInt(campo);
+                    //traduciGrigliaToInt(campo);
                     //traduciStringToGriglia(miaGriglia, miniCampo[1]);
                     aggiungiSpazzatura = 0;
                 }
@@ -257,13 +213,10 @@ public class Schermo implements Runnable{
                 if(brickDropTimer.getDropBrick()) {
                     screen.refresh();
                     pezzoScelto.scendi(campo);
-                    traduciGrigliaToInt(campo);
-                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
-                    //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                    //invia(datas, pw);
+                    IS.run(campo);
+                    //traduciGrigliaToInt(campo);
                 }
-                /*traduciGrigliaToString(campo);
-                traduciStringToGriglia(miaGriglia, miniCampo[1]);*/
+                //traduciGrigliaToInt(campo);
                 screen.refresh();
             }
             screen.close();
@@ -323,10 +276,10 @@ public class Schermo implements Runnable{
         Character c1 = ' ';
         Character c2 = 'z';
         Character c3 = 'x';
-
+        /*
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
-        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)
+        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)*/
         datas = "";
 
         //down totale
@@ -357,7 +310,7 @@ public class Schermo implements Runnable{
             if(!pezzoScelto.collisioneLaterale(-1)) {
                 pezzoScelto.muovi(campo, -1);
                 //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                // invia(datas, pw);
+               // invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -384,26 +337,6 @@ public class Schermo implements Runnable{
             //invia(datas, pw);
             screen.refresh();
         }
-        int dim=connectedClients.size();
-        if(dim==2){
-            evidenzia(0);
-        }
-        else{
-            if (uno.equals(key.getCharacter())) {
-                evidenzia(0);
-                for(int i=0;i<dim-1;i++) {
-                    noEvidenzia(i + 1);
-                }
-            }
-            else if(due.equals(key.getCharacter())) {
-                evidenzia(1);
-                for (int i = 0; i < dim-1; i++) {
-                    if (i != 1) {
-                        noEvidenzia(i + 2 - 2);
-                    }
-                }
-            }
-        }
 /*
         if(uno.equals(key.getCharacter())){
             evidenzia(0);
@@ -416,7 +349,7 @@ public class Schermo implements Runnable{
         }*/
     }
 
-    public void invia(String s, PrintWriter pw){
+    public static void invia(String s, PrintWriter pw){
         pw.println(s);
         pw.flush();
     }
@@ -433,42 +366,10 @@ public class Schermo implements Runnable{
         }
     }
 
-    public void evidenzia(int campo){
+   /* public void evidenzia(int campo){
         campo=campo*40+60-1;
         schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT).setBackgroundColor(YELLOW_BRIGHT);
-    }
-    public void noEvidenzia(int campo){
-        campo=campo*40+60-1;
-        schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                Symbols.BLOCK_SOLID).setBackgroundColor(BLACK).setForegroundColor(BLACK);
-    }
+                Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
+    }*/
 
-    public void traduciGrigliaToInt(Griglia griglia){
-        for(int i=0; i<griglia.griglia.length; i++){
-            for(int e=0; e<griglia.griglia[i].length; e++){
-                switch (griglia.griglia[i][e].getStato()) {
-                    case 0 :{miaGriglia[i][e]=0;
-                        break;}
-                    case 1 :{miaGriglia[i][e]=1;
-                        break;}
-                    case 2 :{miaGriglia[i][e]=2;
-                        break;}
-                }
-            }
-        }
-        traduciInttoString(miaGriglia);
-    }
-
-    public void traduciInttoString(int[][] mat){
-        String stringa= username + ":";
-        for(int i=0; i<12; i++){
-            for(int e=0; e<24; e++){
-                stringa=stringa+(mat[i][e]);
-            }
-        }
-        //System.out.println(stringa);
-        invia(stringa, pw); //Non so se va bene
-
-    }
 }
