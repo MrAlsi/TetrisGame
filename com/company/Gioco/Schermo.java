@@ -3,6 +3,8 @@ package com.Gioco;
 import com.Gioco.Mini.*;
 import com.Gioco.Pezzi.*;
 import com.client.Client;
+import com.googlecode.lanterna.Symbols;
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -47,6 +49,7 @@ public class Schermo implements Runnable{
     private TextColor coloreLabel;
     private final int brickDropDelay = 1000;
     private Screen screen;
+    public int dim;
 
     private int miaGriglia[][] = new int[12][24];
     public static String campoAvv;
@@ -97,7 +100,7 @@ public class Schermo implements Runnable{
         //creo minicampi
 
         //prendo la dimensione per sapere i com.company.client connessi
-        int dim = connectedClients.size();
+        dim = connectedClients.size();
         int posverticale=height/25;
         //posizioni per mettere i nomi sotto ai campi
         int pos1=width/19;
@@ -125,6 +128,9 @@ public class Schermo implements Runnable{
                 j++;
             }
 
+        }
+        if (dim==2){
+            evidenzia(0);
         }
         screen.refresh();
     }
@@ -169,7 +175,7 @@ public class Schermo implements Runnable{
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
                 for(KeyStroke key : keyStrokes) {
-                 // traduciGrigliaToInt(campo);
+                    // traduciGrigliaToInt(campo);
                     screen.refresh();
                     processKeyInput(key);
                     IS.run(campo);
@@ -180,7 +186,7 @@ public class Schermo implements Runnable{
                 if((pezzoScelto.collisioneSotto() && brickDropTimer.getDropBrick()) || barra){
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
-                   // traduciGrigliaToInt(campo);                //Aggiorna il proprio stato la griglia
+                    // traduciGrigliaToInt(campo);                //Aggiorna il proprio stato la griglia
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
@@ -201,9 +207,9 @@ public class Schermo implements Runnable{
                         break;
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-                     IS.run(campo);
-                     ci++;
-                     System.out.println(ci);
+                    IS.run(campo);
+                    ci++;
+                    System.out.println(ci);
                     //traduciGrigliaToInt(campo);
                 }
 
@@ -251,27 +257,27 @@ public class Schermo implements Runnable{
 
         //Creatore di pezzi randomici
         switch(sceltaPezzo.nextInt(7)) {
-            case 0:{
+            case 0:
                 pezzo = new PezzoLungo(schermo, campo);
-                break;}
-            case 1:{
+                break;
+            case 1:
                 pezzo = new PezzoT(schermo, campo);
-                break;}
-            case 2:{
+                break;
+            case 2:
                 pezzo = new PezzoL(schermo, campo);
-                break;}
-            case 3:{
+                break;
+            case 3:
                 pezzo = new PezzoJ(schermo, campo);
-                break;}
-            case 4:{
+                break;
+            case 4:
                 pezzo = new PezzoS(schermo, campo);
-                break;}
-            case 5:{
+                break;
+            case 5:
                 pezzo = new PezzoZ(schermo, campo);
-                break;}
-            case 6:{
+                break;
+            case 6:
                 pezzo = new PezzoQuadrato(schermo, campo);
-                break;}
+                break;
         }
         return pezzo;
     }
@@ -283,10 +289,10 @@ public class Schermo implements Runnable{
         Character c2 = 'z';
         Character c3 = 'x';
         Character c4 = 's';
-        /*
+
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
-        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)*/
+        Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)
         datas = "";
 
         //down totale
@@ -317,7 +323,7 @@ public class Schermo implements Runnable{
             if(!pezzoScelto.collisioneLaterale(-1)) {
                 pezzoScelto.muovi(campo, -1);
                 //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-               // invia(datas, pw);
+                // invia(datas, pw);
                 screen.refresh();
             }
         }
@@ -347,16 +353,31 @@ public class Schermo implements Runnable{
         if(c4.equals(key.getCharacter())){
             campo.aggiungiSpazzatura(1);
         }
-/*
-        if(uno.equals(key.getCharacter())){
+        //1
+        if (uno.equals(key.getCharacter())&& dim>2) {
             evidenzia(0);
+            for(int i=0;i<dim-1;i++) {
+                noEvidenzia(i + 1);
+            }
         }
-        if(due.equals(key.getCharacter())){
+        //2
+        if(due.equals(key.getCharacter())&& dim>2) {
             evidenzia(1);
+            for (int i = 0; i < dim-1; i++) {
+                if (i != 1) {
+                    noEvidenzia(i + 2 - 2);
+                }
+            }
         }
-        if(tre.equals(key.getCharacter())){
-            evidenzia(2);
-        }*/
+        //3
+        if(tre.equals(key.getCharacter())&& dim>2) {
+            if(dim==4) {
+                evidenzia(2);
+                for (int i = 0; i < dim - 2; i++) {
+                    noEvidenzia(i);
+                }
+            }
+        }
     }
 
     public static void invia(String s, PrintWriter pw){
@@ -373,13 +394,20 @@ public class Schermo implements Runnable{
                 break;}
             case 4 :{System.out.println("4 Riga spazzatura");
                 break;}
+
         }
     }
 
-   /* public void evidenzia(int campo){
+    public void evidenzia(int campo){
         campo=campo*40+60-1;
         schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
                 Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
-    }*/
-
+    }
+    public void noEvidenzia(int campo){
+        campo=campo*40+60-1;
+        schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
+                Symbols.BLOCK_SOLID).setBackgroundColor(BLACK).setForegroundColor(BLACK);
+    }
 }
+
+
