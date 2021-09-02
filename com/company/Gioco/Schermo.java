@@ -145,16 +145,16 @@ public class Schermo implements Runnable{
 
             pezzoScelto = prossimoPezzo(schermo);
             InviaStato IS = new InviaStato(username, pw);
-
+            int ci = 0;
             // run game loop
             while(!gameOver) {
-               /*if(flag==9) {
+                /*if(flag==150) {
                     IS.run(campo);
                     flag=0;
                 } else {
                     flag++;
                 }*/
-                //traduciGrigliaToInt(campo);
+
                 screen.refresh();
 
                 if(Client.winner){
@@ -173,6 +173,8 @@ public class Schermo implements Runnable{
                     screen.refresh();
                     processKeyInput(key);
                     IS.run(campo);
+                    ci++;
+                    System.out.println(ci);
                 }
 
                 if((pezzoScelto.collisioneSotto() && brickDropTimer.getDropBrick()) || barra){
@@ -199,21 +201,25 @@ public class Schermo implements Runnable{
                         break;
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-                    IS.run(campo);
+                     IS.run(campo);
+                     ci++;
+                     System.out.println(ci);
                     //traduciGrigliaToInt(campo);
                 }
 
                 if(aggiungiSpazzatura != 0){
                     campo.aggiungiSpazzatura(aggiungiSpazzatura);
-                    //traduciGrigliaToInt(campo);
-                    //traduciStringToGriglia(miaGriglia, miniCampo[1]);
+
                     aggiungiSpazzatura = 0;
                 }
 
                 if(brickDropTimer.getDropBrick()) {
                     screen.refresh();
                     pezzoScelto.scendi(campo);
+                    flag=150;
                     IS.run(campo);
+                    ci++;
+                    System.out.println(ci);
                     //traduciGrigliaToInt(campo);
                 }
                 //traduciGrigliaToInt(campo);
@@ -276,6 +282,7 @@ public class Schermo implements Runnable{
         Character c1 = ' ';
         Character c2 = 'z';
         Character c3 = 'x';
+        Character c4 = 's';
         /*
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
@@ -336,6 +343,9 @@ public class Schermo implements Runnable{
             //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
             //invia(datas, pw);
             screen.refresh();
+        }
+        if(c4.equals(key.getCharacter())){
+            campo.aggiungiSpazzatura(1);
         }
 /*
         if(uno.equals(key.getCharacter())){
