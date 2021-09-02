@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+import static com.googlecode.lanterna.TextColor.ANSI.YELLOW_BRIGHT;
 
 public class Schermo implements Runnable{
 
@@ -107,7 +108,7 @@ public class Schermo implements Runnable{
         int pos2=width/12;
         int pos3=width/9;
         String dimm= String.valueOf(dim);
-        schermo.putString(pos1, posverticale,dimm).setBackgroundColor(BLACK);
+        schermo.putString(pos2, posverticale,dimm).setBackgroundColor(BLACK);
         //for in base al numero di giocatori
         int j = 0;
         for (String nome : connectedClients) {
@@ -399,14 +400,16 @@ public class Schermo implements Runnable{
     }
 
     public void evidenzia(int campo){
+        schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
         campo=campo*40+60-1;
         schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                Symbols.BLOCK_SOLID).setForegroundColor(TextColor.ANSI.YELLOW_BRIGHT);
+                Symbols.BLOCK_SOLID);
     }
     public void noEvidenzia(int campo){
+        schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
         campo=campo*40+60-1;
         schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                Symbols.BLOCK_SOLID).setBackgroundColor(BLACK).setForegroundColor(BLACK);
+                Symbols.BLOCK_SOLID);
     }
 }
 
