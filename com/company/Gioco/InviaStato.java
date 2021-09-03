@@ -31,6 +31,8 @@ public class InviaStato implements Runnable{
                         break;}
                     case 2 :{miaGriglia[i][e]=2;
                         break;}
+                    case 3 : {miaGriglia[i][e] = 3;
+                        break;}
                 }
             }
         }
