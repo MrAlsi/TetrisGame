@@ -1,4 +1,4 @@
-package com.Gioco.Mini;
+package com.company.Gioco.Mini;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;

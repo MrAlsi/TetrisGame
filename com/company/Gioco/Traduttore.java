@@ -1,10 +1,10 @@
-package com.Gioco;
+package com.company.Gioco;
 
-import com.Gioco.Mini.*;
+import com.company.Gioco.Mini.*;
 import com.googlecode.lanterna.TextColor;
 
-import static com.Gioco.Schermo.miniCampo;
-import static com.Gioco.Schermo.schermo;
+import static com.company.Gioco.Schermo.miniCampo;
+import static com.company.Gioco.Schermo.schermo;
 
 
 public class Traduttore extends Thread{

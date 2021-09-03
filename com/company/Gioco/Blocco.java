@@ -14,8 +14,8 @@ public class Blocco {
     private int coefRiga = 2; // Numero di quadratini che formano l'altezza di un Blocco nel terminale
 
     TextColor colore;
-    int colonnaGriglia;
-    int rigaGriglia;
+    public int colonnaGriglia;
+    public int rigaGriglia;
     int stato = 3; // 0=Vuoto - 1=Pezzo che sta scendendo - 2=Struttura  - 3=Spazzattura
 
     public Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore) {

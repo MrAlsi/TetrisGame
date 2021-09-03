@@ -14,8 +14,8 @@ import java.util.Map.Entry;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
-// Per ogni com.company.client che si connetterà al com.company.server creo un Thread handlerThread che si occupa
-// di gestire singolarmente i com.company.client uno a uno
+// Per ogni client che si connetterà al server creo un Thread handlerThread che si occupa
+// di gestire singolarmente i client uno a uno
 public class ClientHandler implements Runnable {
     public static Socket clientSocket;
     private String username;
@@ -52,14 +52,14 @@ public class ClientHandler implements Runnable {
                     e.getValue().flush();
                 }
             }
-            // Appena il seguente com.company.client si connette al com.company.server lo comunico a tutti nella
+            // Appena il seguente client si connette al server lo comunico a tutti nella
             // chat pre-partita
-            Label lab_newClient = new Label("[SERVER]: " + "New com.company.client connected: " + username + " ["
+            Label lab_newClient = new Label("[SERVER]: " + "New client connected: " + username + " ["
                     + clientSocket.getInetAddress().getHostAddress()
                     + "]").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
             panel.addComponent(lab_newClient);
 
-            broadcastServerMessage("[SERVER]: " + "New com.company.client connected: " + username + " ["
+            broadcastServerMessage("[SERVER]: " + "New client connected: " + username + " ["
                     + clientSocket.getInetAddress().getHostAddress()
                     + "]");
 
@@ -76,14 +76,14 @@ public class ClientHandler implements Runnable {
             String message = "";
             while ((message != null || Server.serverThread.isAlive()) && !Server.gameStarted) {
 
-                // Quando un com.company.client invia un messaggio viene ricevuto dal com.company.server qui
+                // Quando un client invia un messaggio viene ricevuto dal server qui
                 message = fromClient.readLine();
                 if (message != null && !Server.gameStarted) {
 
-                    // Se il messaggio ricevuto dal com.company.client è /quit il com.company.server esce dal ciclo e finisce nel "finally"
+                    // Se il messaggio ricevuto dal client è /quit il server esce dal ciclo e finisce nel "finally"
                     if (message.toLowerCase().equals("/quit")) break;
 
-                    // Il com.company.server si occupa poi di trasmettere il messaggio agli altri com.company.client
+                    // Il server si occupa poi di trasmettere il messaggio agli altri client
                     Label lab_clientMsg = new Label("[" + username + "]: " + message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                     panel.addComponent(lab_clientMsg);
 
@@ -139,8 +139,8 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         } finally {
             if (username != null) {
-                // Quando un giocatore invia il comando /quit si disconnette dal com.company.server
-                // Viene quindi mandato un messaggio di aggiornamento a tutti i com.company.client
+                // Quando un giocatore invia il comando /quit si disconnette dal server
+                // Viene quindi mandato un messaggio di aggiornamento a tutti i client
                 if (true) System.out.println("[SERVER]: " + username + " is leaving");
                 connectedClients.remove(username);
 
@@ -164,7 +164,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    // Questo metodo serve a trasmettere il messaggio di un com.company.client a tutti gli altri tranne a se stesso
+    // Questo metodo serve a trasmettere il messaggio di un client a tutti gli altri tranne a se stesso
     public  void broadcastMessage(String message, String username) {
 
         for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {

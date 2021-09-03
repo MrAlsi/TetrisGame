@@ -4,8 +4,8 @@ public class Pezzo {
 
     public Blocco[] pezzo;
     Griglia campo;
-    int tipoPezzo = 0; // 0 pezzoLungo, 1 pezzoT, 2 pezzoL , 3 pezzoJ,  4 pezzoS, 5 PezzoZ, 6 pezzoQuadrato
-    int rotazione = 0; // 0 posizione iniziale, successivamente in senso orario
+    public int tipoPezzo = 0; // 0 pezzoLungo, 1 pezzoT, 2 pezzoL , 3 pezzoJ,  4 pezzoS, 5 PezzoZ, 6 pezzoQuadrato
+    public int rotazione = 0; // 0 posizione iniziale, successivamente in senso orario
     int[] x;
     int[] y;
     String coord;

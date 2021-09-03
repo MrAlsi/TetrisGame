@@ -1,7 +1,7 @@
-package com.client;
+package com.company.client;
 
-import com.Gioco.*;
-import com.MainSchermata;
+import com.company.Gioco.*;
+import com.company.MainSchermata;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -41,7 +41,7 @@ public class Client implements Runnable {
 
     public void run() {
 
-        // Inizializzo la chat pre-partita del com.company.client
+        // Inizializzo la chat pre-partita del client
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
         panel.setPosition(new TerminalPosition(0, 0));
@@ -50,7 +50,7 @@ public class Client implements Runnable {
         panel.setFillColorOverride(BLACK);
         Label lab = new Label("\nYour nickname: " + name).setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
-        Label connessione = new Label("\nConnecting to the com.company.server...").setBackgroundColor(BLACK)
+        Label connessione = new Label("\nConnecting to the server...").setBackgroundColor(BLACK)
                 .setForegroundColor(coloreLabel);
         panel.addComponent(lab);
         panel.addComponent(connessione);
@@ -90,29 +90,33 @@ public class Client implements Runnable {
         //Creazione del thread di invio messaggi
         Sender clientSender = new Sender(toServer,panel,coloreLabel,name);
         Thread senderThread = new Thread(clientSender);
+        senderThread.start();
 
         message = name;
         toServer.println(message);
         toServer.flush();
-        senderThread.start();
 
         try {
             serverName = fromServer.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         Traduttore t = new Traduttore(playersData);
-        // Finché il com.company.server non chiude la connessione o non ricevi un messaggio "/quit"...
+        while(clientSender.shown){
+
+        }
+        // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
         while (message != null && !message.equals("/quit")) {
             try {
 
-                // Leggi un messaggio inviato dal com.company.server
+                // Leggi un messaggio inviato dal server
                 message = fromServer.readLine();
 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            // Se il com.company.server invia un comando /quit mi disconnetto dal com.company.server
+            // Se il server invia un comando /quit mi disconnetto dal server
             if(message.equals("/quit")){
 
                 Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)

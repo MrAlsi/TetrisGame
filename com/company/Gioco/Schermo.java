@@ -1,8 +1,8 @@
-package com.Gioco;
+package com.company.Gioco;
 
-import com.Gioco.Mini.*;
-import com.Gioco.Pezzi.*;
-import com.client.Client;
+import com.company.Gioco.Mini.*;
+import com.company.Gioco.Pezzi.*;
+import com.company.client.Client;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
