@@ -131,6 +131,8 @@ public class Client implements Runnable {
                     panel.setFillColorOverride(BLACK);
                     // Leggo i nick di tutti i giocatori
                     MainSchermata.screen.close();
+                    connectedClients.clear();
+
                     if(YouWin.nextGame){
                         YouWin.screen.close();
                     }
@@ -155,6 +157,8 @@ public class Client implements Runnable {
                         try {
 
                             playersData = fromServer.readLine();
+
+                            System.out.println(playersData);
 
                             if(playersData.contains(":")){
                                 //Schermo.campoAvv=playersData;
@@ -184,7 +188,7 @@ public class Client implements Runnable {
                             else if(playersData.equals("[" + name + "]-winner")){
 
                                 winner = true;
-                                Schermo.gameOver = true;
+                                break;
 
                             }
 
@@ -199,6 +203,9 @@ public class Client implements Runnable {
                             else if(playersData.equals("spazzatura-"  + name + "-4")) {
                                 Schermo.aggiungiSpazzatura = 4;
                                 System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                            }
+                            else if(Schermo.gameOver){
+                                break;
                             }
                         } catch (IOException e) {
 
@@ -223,6 +230,13 @@ public class Client implements Runnable {
 
         } catch (IOException ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                socket.close(); //Chiudi la connessione
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            senderThread.interrupt();
         }
     }
 }

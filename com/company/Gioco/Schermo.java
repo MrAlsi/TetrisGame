@@ -100,15 +100,17 @@ public class Schermo implements Runnable{
         campo.creaCampo();
         //creo minicampi
 
-        //prendo la dimensione per sapere i com.company.client connessi
+        //prendo la dimensione per sapere i client connessi
         dim = connectedClients.size();
         int posverticale=height/25;
+
         //posizioni per mettere i nomi sotto ai campi
         int pos1=width/19;
         int pos2=width/12;
         int pos3=width/9;
         String dimm= String.valueOf(dim);
         schermo.putString(pos2, posverticale,dimm).setBackgroundColor(BLACK);
+
         //for in base al numero di giocatori
         int j = 0;
         for (String nome : connectedClients) {
@@ -154,6 +156,7 @@ public class Schermo implements Runnable{
             InviaStato IS = new InviaStato(username, pw);
             int ci = 0;
             // run game loop
+
             while(!gameOver) {
                 /*if(flag==150) {
                     IS.run(campo);
@@ -165,6 +168,7 @@ public class Schermo implements Runnable{
                 screen.refresh();
 
                 if(Client.winner){
+                    gameOver = true;
                     Client.winner = false;
                     System.out.println("Partita finita");
                     YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel, connectedClients);

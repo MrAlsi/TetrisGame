@@ -62,6 +62,7 @@ public class ServerSender implements Runnable{
                                 players = players + pair.getKey() + "-";
                             }
                             broadcastServerMessage(players);
+                            players = "";
                             Server.gameStarted = true;
                             Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
