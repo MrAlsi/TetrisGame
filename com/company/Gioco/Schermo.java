@@ -38,7 +38,7 @@ public class Schermo implements Runnable{
     public static String datas = "e";
     private CadutaBlocco brickDropTimer;
     private Boolean barra = false;
-    public static String usernameDestinatario = "palma";
+    public static String usernameDestinatario = "";
     public static int aggiungiSpazzatura = 0;
     private List<String> connectedClients;
 
@@ -123,6 +123,11 @@ public class Schermo implements Runnable{
                 screen.refresh();
                 if (j == 0) {
                     schermo.putString(pos1, posverticale, stampanome).setBackgroundColor(BLACK);
+                    if(dim!=2) {
+                        schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
+                        evidenzia(0);
+                        usernameDestinatario=nome;
+                    }
                 } else if (j == 1) {
                     schermo.putString(pos2, posverticale, stampanome).setBackgroundColor(BLACK);
                 } else {
@@ -134,6 +139,7 @@ public class Schermo implements Runnable{
         }
         if (dim==2){
             evidenzia(0);
+            usernameDestinatario=miniCampo[0].nome;
         }
         screen.refresh();
     }
@@ -217,12 +223,12 @@ public class Schermo implements Runnable{
                     System.out.println(ci);
                     //traduciGrigliaToInt(campo);
                 }
-
+/*
                 if(aggiungiSpazzatura != 0){
                     campo.aggiungiSpazzatura(aggiungiSpazzatura);
 
                     aggiungiSpazzatura = 0;
-                }
+                }*/
 
                 if(brickDropTimer.getDropBrick()) {
                     screen.refresh();
@@ -293,7 +299,7 @@ public class Schermo implements Runnable{
         Character c1 = ' ';
         Character c2 = 'z';
         Character c3 = 'x';
-        Character c4 = 's';
+        //Character c4 = 's';
 
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
@@ -355,11 +361,11 @@ public class Schermo implements Runnable{
             //invia(datas, pw);
             screen.refresh();
         }
+        /*
         if(c4.equals(key.getCharacter())){
             campo.aggiungiSpazzatura(1);
         }
-        //nei metodi evidenzia e nonevidenzia vengono attivati di nuovo i colori, non cancellare questa 
-        //"ridondanza" di codice, è quello che elimina i bug
+         */
         //1
         if (uno.equals(key.getCharacter())&& dim>2) {
             schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
@@ -367,7 +373,9 @@ public class Schermo implements Runnable{
             for(int i=0;i<dim-1;i++) {
                 schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
                 noEvidenzia(i + 1);
+
             }
+            usernameDestinatario=miniCampo[1].nome;
         }
         //2
         if(due.equals(key.getCharacter())&& dim>2) {
@@ -379,6 +387,8 @@ public class Schermo implements Runnable{
                     noEvidenzia(i + 2 - 2);
                 }
             }
+            usernameDestinatario=miniCampo[2].nome;
+
         }
         //3
         if(tre.equals(key.getCharacter())&& dim>2) {
@@ -390,8 +400,9 @@ public class Schermo implements Runnable{
                     noEvidenzia(i);
                 }
             }
+            usernameDestinatario=miniCampo[3].nome;
+
         }
-        
     }
 
     public static void invia(String s, PrintWriter pw){
@@ -425,5 +436,3 @@ public class Schermo implements Runnable{
                 Symbols.BLOCK_SOLID);
     }
 }
-
-
