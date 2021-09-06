@@ -358,18 +358,24 @@ public class Schermo implements Runnable{
         if(c4.equals(key.getCharacter())){
             campo.aggiungiSpazzatura(1);
         }
+        //nei metodi evidenzia e nonevidenzia vengono attivati di nuovo i colori, non cancellare questa 
+        //"ridondanza" di codice, è quello che elimina i bug
         //1
         if (uno.equals(key.getCharacter())&& dim>2) {
+            schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
             evidenzia(0);
             for(int i=0;i<dim-1;i++) {
+                schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
                 noEvidenzia(i + 1);
             }
         }
         //2
         if(due.equals(key.getCharacter())&& dim>2) {
+            schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
             evidenzia(1);
             for (int i = 0; i < dim-1; i++) {
                 if (i != 1) {
+                    schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
                     noEvidenzia(i + 2 - 2);
                 }
             }
@@ -377,12 +383,15 @@ public class Schermo implements Runnable{
         //3
         if(tre.equals(key.getCharacter())&& dim>2) {
             if(dim==4) {
+                schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
                 evidenzia(2);
                 for (int i = 0; i < dim - 2; i++) {
+                    schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
                     noEvidenzia(i);
                 }
             }
         }
+        
     }
 
     public static void invia(String s, PrintWriter pw){
