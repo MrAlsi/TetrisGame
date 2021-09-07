@@ -374,7 +374,7 @@ public class Schermo implements Runnable{
                 noEvidenzia(i + 1);
 
             }
-            usernameDestinatario=miniCampo[1].nome;
+            usernameDestinatario=miniCampo[0].nome;
         }
         //2
         if(due.equals(key.getCharacter())&& dim>2) {
@@ -386,7 +386,7 @@ public class Schermo implements Runnable{
                     noEvidenzia(i + 2 - 2);
                 }
             }
-            usernameDestinatario=miniCampo[2].nome;
+            usernameDestinatario=miniCampo[1].nome;
 
         }
         //3
@@ -399,7 +399,7 @@ public class Schermo implements Runnable{
                     noEvidenzia(i);
                 }
             }
-            usernameDestinatario=miniCampo[3].nome;
+            usernameDestinatario=miniCampo[2].nome;
 
         }
     }
