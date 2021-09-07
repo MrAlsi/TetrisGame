@@ -1,5 +1,6 @@
 package com.company.server;
 
+import com.company.Gioco.Schermo;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
@@ -91,6 +92,7 @@ public class ClientHandler implements Runnable {
                     broadcastMessage(String.format("[%s]: %s", username, message), username);
                     System.out.println(Server.gameStarted);
                 }
+
             }
 
             while (Server.gameStarted) {
@@ -105,6 +107,17 @@ public class ClientHandler implements Runnable {
                         panel.addComponent(lab_clientPerso);
                         broadcastServerMessage(connectedClients.keySet() + "-winner");
                         Server.gameStarted = false;
+                    }
+                    //divido il messaggio, se la prima parola è spazzatura allora la mando al client interessato
+                    if(message.contains("spazzatura")) {
+                        String arr[] = message.split("-");
+                        for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
+                           if(arr[1].equals(connectedClients.get(username))) {
+                               e.getValue().println(message);
+                               e.getValue().flush();
+                               break; //essendoci un solo client con quel nome una volta trovato forzo l'uscita
+                           }
+                        }
                     }
                     synchronized (this) {
                         for (String i : connectedClients.keySet()) {
