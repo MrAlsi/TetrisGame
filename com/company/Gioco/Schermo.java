@@ -29,7 +29,7 @@ public class Schermo implements Runnable{
 
     public int delay = 1000 / 60;
 
-    private Griglia campo;
+    public Griglia campo;
     public static TextGraphics schermo;
     private Pezzo pezzoScelto;
     Random sceltaPezzo = new Random();
@@ -108,8 +108,6 @@ public class Schermo implements Runnable{
         int pos1=width/19;
         int pos2=width/12;
         int pos3=width/9;
-        String dimm= String.valueOf(dim);
-        schermo.putString(pos2, posverticale,dimm).setBackgroundColor(BLACK);
 
         //for in base al numero di giocatori
         int j = 0;
@@ -123,11 +121,11 @@ public class Schermo implements Runnable{
                 screen.refresh();
                 if (j == 0) {
                     schermo.putString(pos1, posverticale, stampanome).setBackgroundColor(BLACK);
-                    if(dim!=2) {
+                    //if(dim!=2) {
                         schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
                         evidenzia(0);
                         usernameDestinatario=nome;
-                    }
+                    //}
                 } else if (j == 1) {
                     schermo.putString(pos2, posverticale, stampanome).setBackgroundColor(BLACK);
                 } else {
@@ -137,11 +135,11 @@ public class Schermo implements Runnable{
             }
 
         }
-        if (dim==2){
+        /*if (dim==2){
             evidenzia(0);
             usernameDestinatario=miniCampo[0].nome;
         }
-        screen.refresh();
+        screen.refresh();*/
     }
 
     public synchronized void run(){
@@ -201,8 +199,8 @@ public class Schermo implements Runnable{
                     screen.refresh();                            //Refresh dello schermo
                     int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
-                        righeSpazzatura(combo);
-                        datas = "spazzatura" + "-" + usernameDestinatario + "-" + combo;
+                        //righeSpazzatura(combo);
+                        datas = "spazzatura-" + usernameDestinatario + "-" + combo;
                         invia(datas, pw);
                     }
                     //Richiamo il metodo per mandare le righe spaz. in base alla combo
@@ -223,12 +221,11 @@ public class Schermo implements Runnable{
                     System.out.println(ci);
                     //traduciGrigliaToInt(campo);
                 }
-/*
+
                 if(aggiungiSpazzatura != 0){
                     campo.aggiungiSpazzatura(aggiungiSpazzatura);
-
                     aggiungiSpazzatura = 0;
-                }*/
+                }
 
                 if(brickDropTimer.getDropBrick()) {
                     screen.refresh();
@@ -361,11 +358,13 @@ public class Schermo implements Runnable{
             //invia(datas, pw);
             screen.refresh();
         }
-        /*
-        if(c4.equals(key.getCharacter())){
-            campo.aggiungiSpazzatura(1);
-        }
-         */
+
+        /*if(c4.equals(key.getCharacter())){
+            //campo.aggiungiSpazzatura(1);
+            datas = "spazzatura- " + usernameDestinatario + " -2";
+            invia(datas, pw);
+        }*/
+
         //1
         if (uno.equals(key.getCharacter())&& dim>2) {
             schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
@@ -410,7 +409,7 @@ public class Schermo implements Runnable{
         pw.flush();
     }
 
-    public void righeSpazzatura(int combo){
+   /* public void righeSpazzatura(int combo){
         switch(combo){
             //Prova per vedere se funziona, quando mettiamo le righe spazzatura useremo questo metodo
             case 2 :{System.out.println("1 Riga spazzatura");
@@ -421,7 +420,7 @@ public class Schermo implements Runnable{
                 break;}
 
         }
-    }
+    }*/
 
     public void evidenzia(int campo){
         schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
