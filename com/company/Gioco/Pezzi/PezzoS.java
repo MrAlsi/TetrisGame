@@ -17,8 +17,33 @@ public class PezzoS extends Pezzo {
                 new BloccoPieno(schermo, 5, 0, TextColor.ANSI.BLUE_BRIGHT));
         tipoPezzo = 4;
         rotazione = 1;
+
+         maxRotazioni = 3;
+
+        spostamentoVerticale= new int[][]{​{​-1,0,-1,0}​, {​-1,0,1,2}​, {1,0,1,0}​, {​1,0,-1,-2}​}​;
+        spostamentoOrizzontale = new int[][]{​{-1,0,1,2}​, {​1,0,1,0}​, {​1,0,-1,-2}​, {​-1,0,-1,0}​}​;
+
     }
 
+    @Override
+    public void rotazione(Griglia campo, int rotazione, int verso){
+
+       for(int i=3; i>=0; i--){
+       pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
+        /* }
+        for(int i=3;i>=0;i--){*/
+       pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), spostamentoOrizzontale[rotazione][i], spostamentoVerticale[rotazione][i],  colore);
+       pezzo[i].colonnaGriglia = pezzo[i].getColonna() + spostamentoOrizzontale[rotazione][i];
+       pezzo[i].rigaGriglia = pezzo[i].getRiga() + spostamentoVerticale[rotazione][i];
+       }
+       if(rotazione!=maxRotazioni)
+         this.rotazione++;
+       else
+         this.rotazione=0;
+   
+ 
+    }
+/*
     @Override
     public void ruota(Griglia campo) {
         switch (rotazione) {
@@ -129,5 +154,5 @@ public class PezzoS extends Pezzo {
 
                 break;
         }
-    }
+    } */
 }
