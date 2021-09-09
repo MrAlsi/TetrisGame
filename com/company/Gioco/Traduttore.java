@@ -1,13 +1,13 @@
-package com.Gioco;
+package com.company.Gioco;
 
-import com.Gioco.Mini.Mini_BloccoPieno;
-import com.Gioco.Mini.Mini_BloccoSpazzatura;
-import com.Gioco.Mini.Mini_BloccoStruttura;
-import com.Gioco.Mini.Mini_BloccoVuoto;
+import com.company.Gioco.Mini.Mini_BloccoPieno;
+import com.company.Gioco.Mini.Mini_BloccoSpazzatura;
+import com.company.Gioco.Mini.Mini_BloccoStruttura;
+import com.company.Gioco.Mini.Mini_BloccoVuoto;
 import com.googlecode.lanterna.TextColor;
 
-import static com.Gioco.Schermo.miniCampo;
-import static com.Gioco.Schermo.schermo;
+import static com.company.Gioco.Schermo.miniCampo;
+import static com.company.Gioco.Schermo.schermo;
 
 
 public class Traduttore extends Thread{

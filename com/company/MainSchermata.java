@@ -147,13 +147,34 @@ public class MainSchermata {
                         String name = textUserClient.getText();
                         String IP = textIP.getText();
                         String PORT = textPORT.getText();
-                        panel.removeAllComponents();
-                        panel.setFillColorOverride(BLACK);
-                        //richiamo codice client
+                        String str = " !#$%&'()*+,-./:;<=>?@[]^_`{|}~";
+                        Boolean check = true;
 
-                        Client client=new Client(name, IP, PORT, panel, coloreLabel, new LinkedList<>());
-                        clientThread = new Thread(client);
-                        clientThread.start();
+                        char[] ch = new char[str.length()];
+
+                        for (int i = 0; i < str.length(); i++) {
+                            ch[i] = str.charAt(i);
+                        }
+
+                        for (char c : ch) {
+                            String s = Character.toString(c);
+                            if(name.contains(s)) {
+
+                                Label invalidName = new Label("\nNickname non valido. (Non utilizzare spazi o caratteri speciali)").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                panel.addComponent(invalidName);
+                                check = false;
+                                break;
+                            }
+                        }
+
+                        if(check) {
+                            panel.removeAllComponents();
+                            panel.setFillColorOverride(BLACK);
+                            //richiamo codice client
+                            Client client = new Client(name, IP, PORT, panel, coloreLabel, new LinkedList<>());
+                            clientThread = new Thread(client);
+                            clientThread.start();
+                        }
 
                     }
                 }).addTo(panel);

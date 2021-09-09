@@ -1,4 +1,4 @@
-package com.Gioco;
+package com.company.Gioco;
 
 import com.googlecode.lanterna.TextColor;
 

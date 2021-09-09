@@ -1,6 +1,6 @@
 package com.company.Gioco;
 
-import com.company.Gioco.Mini.*;
+import com.company.Gioco.Mini.Mini_Griglia;
 import com.company.Gioco.Pezzi.*;
 import com.company.client.Client;
 import com.googlecode.lanterna.Symbols;
