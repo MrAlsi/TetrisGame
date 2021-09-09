@@ -9,6 +9,9 @@ public class Pezzo {
     int[] x;
     int[] y;
     String coord;
+    public int maxRotazioni;
+    public int[][] spostamentoVerticale;
+    public int[][] spostamentoOrizzontale;
 
     public Pezzo(Griglia campo, BloccoPieno b0, BloccoPieno b1, BloccoPieno b2, BloccoPieno b3) {
         pezzo = new Blocco[4];
@@ -40,6 +43,9 @@ public class Pezzo {
 
     public void ruota(Griglia campo) {
 
+    }
+    public void rotazione(Griglia campo, int rotazione, int verso){
+        
     }
 
     public boolean scendi(Griglia campo) {
