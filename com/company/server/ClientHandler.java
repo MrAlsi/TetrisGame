@@ -54,6 +54,7 @@ public class ClientHandler implements Runnable {
 
                 }
             }
+
             if(usernameCheck) {
                 connectedClients.put(username, out);
 

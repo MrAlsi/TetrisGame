@@ -20,7 +20,7 @@ public class Traduttore extends Thread{
     }
 
     public synchronized void traduciStringToInt (String stringa){
-        String[] s = stringa.split("|");
+        String[] s = stringa.split(":");
         String[] blocchi = s[1].split("");
         int index = 0;
         int[][] campoAvv = new int[12][24];

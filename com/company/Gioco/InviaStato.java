@@ -46,13 +46,13 @@ public class InviaStato implements Runnable{
     }
 
     public synchronized void traduciInttoString(int[][] mat){
-        String stringa= username + "|";
+        String stringa= username + ":";
         for(int i=0; i<12; i++){
             for(int e=0; e<24; e++){
                 stringa=stringa+(mat[i][e]);
             }
         }
-        stringa=stringa+"|"+colore;
+        stringa=stringa+":"+colore;
         //System.out.println(stringa);
         Schermo.invia(stringa, pw);
 

@@ -158,6 +158,7 @@ public class Schermo implements Runnable{
 
             pezzoScelto = prossimoPezzo(schermo);
             InviaStato IS = new InviaStato(username, pw);
+
             int ci = 0;
             // run game loop
 
