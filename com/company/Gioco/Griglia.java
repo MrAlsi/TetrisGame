@@ -2,11 +2,12 @@ package com.company.Gioco;
 
 import com.googlecode.lanterna.graphics.TextGraphics;
 
-
-//NELLA GRIGLIA
-//Colonne  ||||
-//Righe    ====
-
+/**
+ * La classe griglia è la classe che crea e gestisce il campo da gioco, è costituita da una griglia 12x24 di @Blocco
+ * NELLA GRIGLIA
+ * Colonne  ||||
+ * Righe    ====
+ */
 public class Griglia {
     Blocco[][] griglia;
     TextGraphics screen;
@@ -16,6 +17,10 @@ public class Griglia {
         griglia = new Blocco[12][24];
     }
 
+
+    /**
+     * Metodo che crea un campo costituito da BlocchiVuoti
+     */
     public void creaCampo() {
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 24; j++) {
@@ -23,6 +28,17 @@ public class Griglia {
             }
         }
     }
+
+    /**
+     * Il metodo controlloRighe controlla tutte le righe partendo dal alto e se vede che sono tutti Blocchi della struttura
+     * la segna da eliminare (elimina=true).
+     * Entra nell'if dove:
+     * - Viene incrementata Combo, necessaria per le righe spazzatura
+     * - Elimina la riga
+     * - Fa cadere tutta la struttura sopra
+     *
+     * @return combo, ovvero il totale di righe eliminate
+     */
 
     public int controlloRighe(){
         int combo = 0;                  //Combo per le riga spazzatura
@@ -37,14 +53,18 @@ public class Griglia {
                 elimina=true;
             }
             if(elimina) {
-                combo++;
+                combo++;                        //Incrementa combo
                 eliminaRiga(i);                 //Elimina le righe che gli passano
-                cadutaStruttura(i);             //Fa cadere la struttura di righe che ha eliminato
+                cadutaStruttura(i);             //Fa cadere la struttura dalla riga che ha eliminato
             }
         }
         return combo;
     }
 
+    /**
+     * @param riga da eliminare
+     * Rende la riga tutta di blocchi vuoti
+     */
     public void eliminaRiga(int riga){
         for(int i=0; i<12; i++){
             griglia[i][riga] = new BloccoVuoto(screen, griglia[i][riga].colonnaGriglia, griglia[i][riga].rigaGriglia);
@@ -67,8 +87,10 @@ public class Griglia {
         }
     }
 
+    /**
+     * @param righeSpazzatura
+     */
     public void aggiungiSpazzatura(int righeSpazzatura){
-
         for(int i = 4; i < 24; i++){
             for(int j = 0; j < 12; j++){
                 if(griglia[j][i].stato==2 && i >= righeSpazzatura - 1) {
