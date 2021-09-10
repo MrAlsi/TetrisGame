@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 import static com.googlecode.lanterna.TextColor.ANSI.YELLOW_BRIGHT;
@@ -51,6 +52,8 @@ public class Schermo implements Runnable{
     private final int brickDropDelay = 1000;
     private Screen screen;
     public int dim;
+    public static Semaphore semaforoColore=new Semaphore(1);
+    private int selezionato;
 
     private int miaGriglia[][] = new int[12][24];
     public static String campoAvv;
@@ -121,11 +124,9 @@ public class Schermo implements Runnable{
                 screen.refresh();
                 if (j == 0) {
                     schermo.putString(pos1, posverticale, stampanome).setBackgroundColor(BLACK);
-                    //if(dim!=2) {
-                        schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
-                        evidenzia(0);
-                        usernameDestinatario=nome;
-                    //}
+                    evidenzia(0);
+                    selezionato=0;
+                    usernameDestinatario=nome;
                 } else if (j == 1) {
                     schermo.putString(pos2, posverticale, stampanome).setBackgroundColor(BLACK);
                 } else {
@@ -135,11 +136,7 @@ public class Schermo implements Runnable{
             }
 
         }
-        /*if (dim==2){
-            evidenzia(0);
-            usernameDestinatario=miniCampo[0].nome;
-        }
-        screen.refresh();*/
+        screen.refresh();
     }
 
     public synchronized void run(){
@@ -267,25 +264,25 @@ public class Schermo implements Runnable{
         //Creatore di pezzi randomici
         switch(sceltaPezzo.nextInt(7)) {
             case 0:
-                pezzo = new PezzoLungo(schermo, campo);
+                    pezzo = new PezzoLungo(schermo, campo);
                 break;
             case 1:
-                pezzo = new PezzoT(schermo, campo);
+                    pezzo = new PezzoT(schermo, campo);
                 break;
             case 2:
-                pezzo = new PezzoL(schermo, campo);
+                    pezzo = new PezzoL(schermo, campo);
                 break;
             case 3:
-                pezzo = new PezzoJ(schermo, campo);
+                    pezzo = new PezzoJ(schermo, campo);
                 break;
             case 4:
-                pezzo = new PezzoS(schermo, campo);
+                    pezzo = new PezzoS(schermo, campo);
                 break;
             case 5:
-                pezzo = new PezzoZ(schermo, campo);
+                    pezzo = new PezzoZ(schermo, campo);
                 break;
             case 6:
-                pezzo = new PezzoQuadrato(schermo, campo);
+                    pezzo = new PezzoQuadrato(schermo, campo);
                 break;
         }
         return pezzo;
@@ -360,48 +357,42 @@ public class Schermo implements Runnable{
             screen.refresh();
         }
 
-        /*if(c4.equals(key.getCharacter())){
-            //campo.aggiungiSpazzatura(1);
-            datas = "spazzatura- " + usernameDestinatario + " -2";
-            invia(datas, pw);
-        }*/
-
         //1
         if (uno.equals(key.getCharacter())&& dim>2) {
-            schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
-            evidenzia(0);
-            for(int i=0;i<dim-1;i++) {
-                schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
-                noEvidenzia(i + 1);
-
+            if(selezionato!=0) {
+                    evidenzia(0);
+                    selezionato=0;
+                    for (int i = 1; i < dim - 1; i++) {
+                        noEvidenzia(i);
+                    }
+                    usernameDestinatario = miniCampo[0].nome;
             }
-            usernameDestinatario=miniCampo[0].nome;
         }
         //2
-        if(due.equals(key.getCharacter())&& dim>2) {
-            schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
-            evidenzia(1);
-            for (int i = 0; i < dim-1; i++) {
-                if (i != 1) {
-                    schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
-                    noEvidenzia(i + 2 - 2);
-                }
-            }
-            usernameDestinatario=miniCampo[1].nome;
+        if((due.equals(key.getCharacter()))&& dim>2) {
+            if(selezionato!=1) {
+                    selezionato=1;
+                    evidenzia(1);
+                    for (int i = 0; i < dim - 1; i++) {
+                        if (i != 1) {
+                            noEvidenzia(i);
+                        }
+                    }
 
+            }
         }
         //3
-        if(tre.equals(key.getCharacter())&& dim>2) {
-            if(dim==4) {
-                schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
-                evidenzia(2);
-                for (int i = 0; i < dim - 2; i++) {
-                    schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
-                    noEvidenzia(i);
+        if((tre.equals(key.getCharacter()))&& dim>2) {
+            if (selezionato != 2) {
+                if (dim == 4) {
+                        evidenzia(2);
+                        selezionato=2;
+                        for (int i = 0; i < dim - 2; i++) {
+                            noEvidenzia(i);
+                        }
+                        usernameDestinatario = miniCampo[2].nome;
                 }
             }
-            usernameDestinatario=miniCampo[2].nome;
-
         }
     }
 
@@ -424,15 +415,29 @@ public class Schermo implements Runnable{
     }*/
 
     public void evidenzia(int campo){
-        schermo.setBackgroundColor(BLACK).setForegroundColor(YELLOW_BRIGHT);
-        campo=campo*40+60-1;
-        schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                Symbols.BLOCK_SOLID);
+        try {
+            semaforoColore.acquire();
+            schermo.setForegroundColor(YELLOW_BRIGHT);
+            campo=campo*40+60-1;
+            schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
+                    Symbols.BLOCK_SOLID);
+            semaforoColore.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
     public void noEvidenzia(int campo){
-        schermo.setBackgroundColor(BLACK).setForegroundColor(BLACK);
-        campo=campo*40+60-1;
-        schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                Symbols.BLOCK_SOLID);
+        try {
+            semaforoColore.acquire();
+            schermo.setForegroundColor(BLACK);
+            campo=campo*40+60-1;
+            schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
+                    Symbols.BLOCK_SOLID);
+            semaforoColore.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 }
