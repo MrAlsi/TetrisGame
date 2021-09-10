@@ -26,7 +26,7 @@ public class PezzoS extends Pezzo {
     }
 
     @Override
-    public void rotazione(Griglia campo, int rotazione, int verso){
+    public void ruota(Griglia campo, int rotazione, int verso){
 
        for(int i=3; i>=0; i--){
        pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
