@@ -19,7 +19,7 @@ public class PezzoT extends Pezzo{
 
          maxRotazioni = 3;
 
-        spostamentoVerticale= new int[][]{​{​1,-1,0-1}​, {​-1,-1,0,1}​, {​-1,1,0,-1}​, {​1,1,0,-1}​}​;
+        spostamentoVerticale= new int[][]{​{​1,-1,0, 1}​, {​-1,-1,0,1}​, {​-1,1,0,-1}​, {​1,1,0,-1}​}​;
         spostamentoOrizzontale = new int[][]{​{​-1,-1,0,1}​, {​-1,1,0,-1}​, {1,1,0,-1}​, {1,-1,0,1}​}​;
 
     }
@@ -29,8 +29,8 @@ public class PezzoT extends Pezzo{
 
        for(int i=3; i>=0; i--){
        pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
-        /* }
-        for(int i=3;i>=0;i--){*/
+         }
+        for(int i=3;i>=0;i--){
        pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), spostamentoOrizzontale[rotazione][i], spostamentoVerticale[rotazione][i],  colore);
        pezzo[i].colonnaGriglia = pezzo[i].getColonna() + spostamentoOrizzontale[rotazione][i];
        pezzo[i].rigaGriglia = pezzo[i].getRiga() + spostamentoVerticale[rotazione][i];
