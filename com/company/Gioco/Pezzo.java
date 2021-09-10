@@ -41,10 +41,8 @@ public class Pezzo {
     }
 
 
-    public void ruota(Griglia campo) {
-
-    }
-    public void rotazione(Griglia campo, int rotazione, int verso){
+   
+    public void ruota(Griglia campo, int rotazione, int verso){
         
     }
 
