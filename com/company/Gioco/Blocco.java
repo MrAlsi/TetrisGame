@@ -20,12 +20,18 @@ public class Blocco {
 
     public Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore) {
         this.schermo = schermo;
-        schermo.setForegroundColor(colore);
         this.colonnaGriglia = colonnaGriglia;
         this.rigaGriglia = rigaGriglia;
         this.colore = colore;
         // quadrato = schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
-        schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
+        try {
+            Schermo.semaforoColore.acquire();
+            schermo.setForegroundColor(colore);
+            schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
+            Schermo.semaforoColore.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void cambiaColore(TextColor colore) {
