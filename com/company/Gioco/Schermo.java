@@ -1,8 +1,8 @@
-package com.company.Gioco;
+package com.Gioco;
 
-import com.company.Gioco.Mini.Mini_Griglia;
-import com.company.Gioco.Pezzi.*;
-import com.company.client.Client;
+import com.Gioco.Mini.Mini_Griglia;
+import com.Gioco.Pezzi.*;
+import com.client.Client;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -28,22 +28,13 @@ import static com.googlecode.lanterna.TextColor.ANSI.YELLOW_BRIGHT;
 
 public class Schermo implements Runnable{
 
-    public int delay = 1000 / 60;
 
-    public Griglia campo;
-    public static TextGraphics schermo;
+    //Variabili private
+    private int numeroDiStampa = 0;
     private Pezzo pezzoScelto;
-    Random sceltaPezzo = new Random();
-    private String azione;
-    public static boolean gameOver = false;
-    public static String datas = "e";
     private CadutaBlocco brickDropTimer;
     private Boolean barra = false;
-    public static String usernameDestinatario = "";
-    public static int aggiungiSpazzatura = 0;
     private List<String> connectedClients;
-
-    public PrintWriter pw = null;
     private static String username;
     private String IP;
     private int PORT;
@@ -51,16 +42,21 @@ public class Schermo implements Runnable{
     private TextColor coloreLabel;
     private final int brickDropDelay = 1000;
     private Screen screen;
-    public int dim;
-    public static Semaphore semaforoColore=new Semaphore(1);
+    private Random sceltaPezzo = new Random();
     private int selezionato;
 
-    private int miaGriglia[][] = new int[12][24];
-    public static String campoAvv;
-
+    //Variabili publiche
+    public int delay = 1000 / 60;
+    public Griglia campo;
+    public static TextGraphics schermo;
+    public static boolean gameOver = false;
+    public static String datas = "e";
+    public static String usernameDestinatario = "";
+    public static int aggiungiSpazzatura = 0;
+    public PrintWriter pw = null;
+    public int dim;
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];
-
-    public int flag=0;
+    public static Semaphore semaforoColore=new Semaphore(1);
 
     public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
         this.IP = IP;
@@ -156,18 +152,8 @@ public class Schermo implements Runnable{
             pezzoScelto = prossimoPezzo(schermo);
             InviaStato IS = new InviaStato(username, pw);
 
-            int ci = 0;
             // run game loop
-
             while(!gameOver) {
-                /*if(flag==150) {
-                    IS.run(campo);
-                    flag=0;
-                } else {
-                    flag++;
-                }*/
-
-                screen.refresh();
 
                 if(Client.winner){
                     gameOver = true;
@@ -182,20 +168,16 @@ public class Schermo implements Runnable{
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
                 for(KeyStroke key : keyStrokes) {
-                    // traduciGrigliaToInt(campo);
                     screen.refresh();
                     processKeyInput(key);
-                    IS.run(campo);
-                    ci++;
-                    System.out.println(ci);
+                    //IS.run(campo);
                 }
 
                 if((pezzoScelto.collisioneSotto() && brickDropTimer.getDropBrick()) || barra){
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
-                    // traduciGrigliaToInt(campo);                //Aggiorna il proprio stato la griglia
+                    int combo = campo.controlloRighe();          //Controlla se ci sono righe piene e le elimina
                     screen.refresh();                            //Refresh dello schermo
-                    int combo = campo.controlloRighe();          //Controllo se ci sono righe piene
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
                         //righeSpazzatura(combo);
                         datas = "spazzatura-" + usernameDestinatario + "-" + combo;
@@ -214,10 +196,8 @@ public class Schermo implements Runnable{
                         break;
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-                    IS.run(campo);
-                    ci++;
-                    System.out.println(ci);
-                    //traduciGrigliaToInt(campo);
+                    //IS.run(campo);
+
                 }
 
                 if(aggiungiSpazzatura != 0){
@@ -228,13 +208,9 @@ public class Schermo implements Runnable{
                 if(brickDropTimer.getDropBrick()) {
                     screen.refresh();
                     pezzoScelto.scendi(campo);
-                    flag=150;
                     IS.run(campo);
-                    ci++;
-                    System.out.println(ci);
-                    //traduciGrigliaToInt(campo);
+
                 }
-                //traduciGrigliaToInt(campo);
                 screen.refresh();
             }
             screen.close();
@@ -257,35 +233,19 @@ public class Schermo implements Runnable{
         System.out.println("-------------------------------------");
     }*/
 
-    //Restituisce il prossimo pezzo che cadrà
+    //Creatore di pezzi randomici
     public Pezzo prossimoPezzo(TextGraphics schermo){
-        Pezzo pezzo=null;
-
-        //Creatore di pezzi randomici
+        //Restituisce il prossimo pezzo che cadrà
         switch(sceltaPezzo.nextInt(7)) {
-            case 0:
-                    pezzo = new PezzoLungo(schermo, campo);
-                break;
-            case 1:
-                    pezzo = new PezzoT(schermo, campo);
-                break;
-            case 2:
-                    pezzo = new PezzoL(schermo, campo);
-                break;
-            case 3:
-                    pezzo = new PezzoJ(schermo, campo);
-                break;
-            case 4:
-                    pezzo = new PezzoS(schermo, campo);
-                break;
-            case 5:
-                    pezzo = new PezzoZ(schermo, campo);
-                break;
-            case 6:
-                    pezzo = new PezzoQuadrato(schermo, campo);
-                break;
+            case 0: return new PezzoLungo(schermo, campo);
+            case 1: return new PezzoT(schermo, campo);
+            case 2: return new PezzoL(schermo, campo);
+            case 3: return new PezzoJ(schermo, campo);
+            case 4: return new PezzoS(schermo, campo);
+            case 5: return new PezzoZ(schermo, campo);
+            case 6: return new PezzoQuadrato(schermo, campo);
         }
-        return pezzo;
+        return null;
     }
 
     //Thread per i pulsati e movimento pezzo
@@ -304,33 +264,22 @@ public class Schermo implements Runnable{
         //down totale
         if(c1.equals(key.getCharacter())) {
             while(!pezzoScelto.collisioneSotto()){
-                //System.out.println("In fondo");
                 pezzoScelto.scendi(campo);
             }
             barra = true;
-            //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-            //invia(datas, pw);
-            screen.refresh();
         }
 
         // down
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
             if(!pezzoScelto.collisioneSotto()){
                 pezzoScelto.scendi(campo);
-                //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                //invia(datas, pw);
-                screen.refresh();
             }
         }
 
         // left
         if(key.getKeyType().equals(KeyType.ArrowLeft)) {
-            //if(p1.getRiga())
             if(!pezzoScelto.collisioneLaterale(-1)) {
                 pezzoScelto.muovi(campo, -1);
-                //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                // invia(datas, pw);
-                screen.refresh();
             }
         }
 
@@ -338,9 +287,6 @@ public class Schermo implements Runnable{
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
             if(!pezzoScelto.collisioneLaterale(1)) {
                 pezzoScelto.muovi(campo, 1);
-                //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-                //invia(datas, pw);
-                screen.refresh();
             }
         }
 
@@ -351,10 +297,7 @@ public class Schermo implements Runnable{
 
         // rotate right
         if(c3.equals(key.getCharacter())) {
-            pezzoScelto.ruota(campo);
-            //datas = username + "/" + pezzoScelto.tipoPezzo + pezzoScelto.getCoord();
-            //invia(datas, pw);
-            screen.refresh();
+            pezzoScelto.ruota(campo, pezzoScelto.rotazione, 1);
         }
 
         //1
@@ -438,6 +381,5 @@ public class Schermo implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 }
