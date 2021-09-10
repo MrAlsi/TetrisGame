@@ -1,6 +1,6 @@
 package com.company.Gioco.Mini;
 
-import com.company.Gioco.Blocco;
+import com.company.Gioco.Schermo;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -21,14 +21,23 @@ public class Mini_Blocco {
     public Mini_Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore, int scostamento) {
         //super(schermo, colonnaGriglia, rigaGriglia, colore);
         this.schermo = schermo;
-        schermo.setForegroundColor(colore);
         this.colonnaGriglia = colonnaGriglia;
         this.rigaGriglia = rigaGriglia;
         this.colore = colore;
         scostamento=scostamento*40+60;
-        schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna+scostamento, rigaGriglia * coefRiga+3),
-                new TerminalSize(coefColonna, coefRiga),
-                Symbols.BLOCK_SOLID);
+        try {
+            Schermo.semaforoColore.acquire();
+            schermo.setForegroundColor(colore);
+            schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna+scostamento, rigaGriglia * coefRiga+3),
+                    new TerminalSize(coefColonna, coefRiga),
+                    Symbols.BLOCK_SOLID);
+            Schermo.semaforoColore.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
 
