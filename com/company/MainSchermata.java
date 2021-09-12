@@ -168,14 +168,21 @@ public class MainSchermata {
                         }
 
                         if(check) {
-                            panel.removeAllComponents();
-                            panel.setFillColorOverride(BLACK);
-                            //richiamo codice client
-                            Client client = new Client(name, IP, PORT, panel, coloreLabel, new LinkedList<>());
-                            clientThread = new Thread(client);
-                            clientThread.start();
-                        }
+                            try {
+                                panel.removeAllComponents();
+                                panel.setFillColorOverride(BLACK);
+                                //richiamo codice client
+                                Client client = new Client(name, IP, PORT, panel, coloreLabel, new LinkedList<>());
+                                clientThread = new Thread(client);
+                                clientThread.start();
 
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                panel.removeAllComponents();
+                                panel.setFillColorOverride(BLACK);
+                                MainSchermata.Schermata(panel);
+                            }
+                        }
                     }
                 }).addTo(panel);
                 //bottone che mi riporta alla home
@@ -223,17 +230,24 @@ public class MainSchermata {
                 new Button("Start Server",new Runnable(){
                     @Override
                     public void run(){
-                        String name = textUser.getText();
-                        String SERVERPORT = textSERVERPORT.getText();
-                        //svuoto lo schermo
-                        panel.removeAllComponents();
-                        panel.setFillColorOverride(BLACK);
-                        //richiamo il codice del server
+                        try {
+                            String name = textUser.getText();
+                            String SERVERPORT = textSERVERPORT.getText();
+                            //svuoto lo schermo
+                            panel.removeAllComponents();
+                            panel.setFillColorOverride(BLACK);
+                            //richiamo il codice del server
 
-                        Server server = new Server(name, SERVERPORT, panel, coloreLabel);
-                        server.StartServer(server);
+                            Server server = new Server(name, SERVERPORT, panel, coloreLabel);
+                            server.StartServer(server);
+                        }catch (Exception ex) {
+                            ex.printStackTrace();
+                            panel.removeAllComponents();
+                            panel.setFillColorOverride(BLACK);
 
+                            MainSchermata.Schermata(panel);
 
+                        }
                     }
                 }).addTo(panel);
 
