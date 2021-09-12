@@ -28,7 +28,7 @@ public class Server  implements Runnable{
     public static Thread senderThread;
     public static Thread listenerThread;
     public static Boolean gameStarted = false;
-    private static HashMap<String, PrintWriter> connectedClients;
+    public static HashMap<String, PrintWriter> connectedClients;
 
     // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread
     // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
@@ -38,7 +38,7 @@ public class Server  implements Runnable{
         this.panel= panel;
         this.coloreLabel= coloreLabel;
         this.connectedClients= new HashMap<String, PrintWriter>();
-        connectionListener = new ConnectionListener(panel, this.SERVERPORT, coloreLabel, connectedClients);
+        connectionListener = new ConnectionListener(panel, this.SERVERPORT, coloreLabel);
         listenerThread = new Thread(connectionListener);
 
     }
@@ -83,7 +83,7 @@ public class Server  implements Runnable{
             // Creo il thread di comunicazione del server e lo avvio
             // Questo thread permette al server di mandare messaggi a tutti i client
             // durante il pre-partita
-            ServerSender serverSender = new ServerSender(panel, coloreLabel, connectedClients, name);
+            ServerSender serverSender = new ServerSender(panel, coloreLabel, name);
             senderThread = new Thread(serverSender);
             senderThread.start();
 
