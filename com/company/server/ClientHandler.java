@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map.Entry;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
@@ -22,15 +21,13 @@ public class ClientHandler implements Runnable {
     private BufferedReader fromClient;
     private Panel panel;
     private TextColor coloreLabel;
-    public HashMap<String, PrintWriter> connectedClients;
     private Boolean  usernameCheck = true;
 
-    public ClientHandler(Socket socket, String userName,Panel panel,TextColor coloreLabel, HashMap connectedClients) {
+    public ClientHandler(Socket socket, String userName,Panel panel,TextColor coloreLabel) {
         this.clientSocket = socket;
         this.username = userName;
         this.panel=panel;
         this.coloreLabel=coloreLabel;
-        this.connectedClients=connectedClients;
     }
 
     public void clientHandler() {
@@ -45,7 +42,7 @@ public class ClientHandler implements Runnable {
 
             username = fromClient.readLine();
 
-            for(Entry<String, PrintWriter> user : connectedClients.entrySet()){
+            for(Entry<String, PrintWriter> user : Server.connectedClients.entrySet()){
                 if(user.getKey().equals(username)){
                     System.out.println("entrato");
                     out.println("_terminate");
@@ -56,9 +53,9 @@ public class ClientHandler implements Runnable {
             }
 
             if(usernameCheck) {
-                connectedClients.put(username, out);
+                Server.connectedClients.put(username, out);
 
-                for (Entry<String, PrintWriter> e : connectedClients.entrySet()) {
+                for (Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
 
                     if (e.getKey().equals(username)) {
 
@@ -114,18 +111,18 @@ public class ClientHandler implements Runnable {
 
                     if (message != null) {
 
-                        if (connectedClients.size() == 1 && Server.gameStarted) {
+                        if (Server.connectedClients.size() == 1 && Server.gameStarted) {
 
                             Label lab_clientPerso = new Label("[SERVER]: " + username + " is the winner!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_clientPerso);
-                            broadcastServerMessage(connectedClients.keySet() + "-winner");
+                            broadcastServerMessage(Server.connectedClients.keySet() + "-winner");
                             Server.gameStarted = false;
                         }
                         //divido il messaggio, se la prima parola è spazzatura allora la mando al client interessato
                         if (message.contains("spazzatura")) {
                             String arr[] = message.split("-");
-                            for (Entry<String, PrintWriter> e : connectedClients.entrySet()) {
-                                if (arr[1].equals(connectedClients.get(username))) {
+                            for (Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
+                                if (arr[1].equals(Server.connectedClients.get(username))) {
                                     e.getValue().println(message);
                                     e.getValue().flush();
                                     break; //essendoci un solo client con quel nome una volta trovato forzo l'uscita
@@ -133,25 +130,25 @@ public class ClientHandler implements Runnable {
                             }
                         }
                         synchronized (this) {
-                            for (String i : connectedClients.keySet()) {
+                            for (String i : Server.connectedClients.keySet()) {
 
                                 if (message.equals(i + "-lost")) {
 
                                     Label lab_clientPerso = new Label("[SERVER]: " + i + " lost!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                                     panel.addComponent(lab_clientPerso);
 
-                                    if ((connectedClients.size() - 1) > 1) {
+                                    if ((Server.connectedClients.size() - 1) > 1) {
 
-                                        Label lab_clientPerso2 = new Label("[SERVER]: " + (connectedClients.size() - 1) + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                        Label lab_clientPerso2 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                                         panel.addComponent(lab_clientPerso2);
 
                                     } else {
 
-                                        Label lab_clientPerso3 = new Label("[SERVER]: " + (connectedClients.size() - 1) + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                        Label lab_clientPerso3 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                                         panel.addComponent(lab_clientPerso3);
 
                                     }
-                                    connectedClients.remove(i);
+                                    Server.connectedClients.remove(i);
                                 }
                             }
                         }
@@ -169,15 +166,15 @@ public class ClientHandler implements Runnable {
                     // Quando un giocatore invia il comando /quit si disconnette dal server
                     // Viene quindi mandato un messaggio di aggiornamento a tutti i client
                     if (true) System.out.println("[SERVER]: " + username + " is leaving");
-                    connectedClients.remove(username);
+                    Server.connectedClients.remove(username);
 
                     Label lab_clientLeft = new Label("[SERVER]: " + username + " has left").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                     panel.addComponent(lab_clientLeft);
-                    Label lab_clientTot = new Label("[SERVER]: " + "Connected clients: " + connectedClients.size() + "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                    Label lab_clientTot = new Label("[SERVER]: " + "Connected clients: " + Server.connectedClients.size() + "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                     panel.addComponent(lab_clientTot);
 
                     broadcastServerMessage("[SERVER]: " + username + " has left");
-                    broadcastServerMessage("[SERVER]: Connected clients: " + connectedClients.size() + "/4");
+                    broadcastServerMessage("[SERVER]: Connected clients: " + Server.connectedClients.size() + "/4");
                 }
             }
         }
@@ -186,7 +183,7 @@ public class ClientHandler implements Runnable {
 
     public void broadcastServerMessage(String message) {
 
-        for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
+        for(Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
 
             e.getValue().println(message);
             e.getValue().flush();
@@ -196,7 +193,7 @@ public class ClientHandler implements Runnable {
     // Questo metodo serve a trasmettere il messaggio di un client a tutti gli altri tranne a se stesso
     public  void broadcastMessage(String message, String username) {
 
-        for(Entry<String, PrintWriter> e : connectedClients.entrySet()) {
+        for(Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
 
             if(!e.getKey().equals(username)){
 
