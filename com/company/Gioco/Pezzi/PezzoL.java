@@ -25,23 +25,27 @@ public class PezzoL extends Pezzo {
 
     }
 
-    @Override
+   @Override
     public void ruota(Griglia campo, int rotazione, int verso){
 
-       for(int i=3; i>=0; i--){
-       pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
+        for(int i=3; i>=0; i--){
+            if ((pezzo[0].rigaGriglia > 1) && (pezzo[0].colonnaGriglia < 11) &&
+                (pezzo[1].rigaGriglia > 1) && (pezzo[1].colonnaGriglia < 11) && (pezzo[1].colonnaGriglia > 0)) {
+                    pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
         /* }
         for(int i=3;i>=0;i--){*/
-       pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), spostamentoOrizzontale[rotazione][i], spostamentoVerticale[rotazione][i],  colore);
-       pezzo[i].colonnaGriglia = pezzo[i].getColonna() + spostamentoOrizzontale[rotazione][i];
-       pezzo[i].rigaGriglia = pezzo[i].getRiga() + spostamentoVerticale[rotazione][i];
-       }
-       if(rotazione!=maxRotazioni)
-         this.rotazione++;
-       else
-         this.rotazione=0;
-   
- 
+                    pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), spostamentoOrizzontale[rotazione][i], spostamentoVerticale[rotazione][i], colore);
+                    pezzo[i].colonnaGriglia = pezzo[i].getColonna() + spostamentoOrizzontale[rotazione][i];
+                    pezzo[i].rigaGriglia = pezzo[i].getRiga() + spostamentoVerticale[rotazione][i];
+
+            }
+        }
+        if(rotazione!=maxRotazioni)
+            this.rotazione++;
+        else
+            this.rotazione=0;
+
+
     }
 /*
     @Override
