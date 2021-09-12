@@ -25,7 +25,7 @@ public class Blocco {
         this.colore = colore;
         // quadrato = schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
         try {
-            Schermo.semaforoColore.acquire();
+            Schermo.semaforoColore.acquire();//serve per gestire l'accesso a "schermo.setForegroundColor" essendo una risorsa condivsa
             schermo.setForegroundColor(colore);
             schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
             Schermo.semaforoColore.release();
