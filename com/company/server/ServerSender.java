@@ -7,25 +7,21 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 public class ServerSender implements Runnable{
 
-    public HashMap<String ,PrintWriter> connectedClients;
     private Panel panel;
     private TextColor coloreLabel;
     public static String name;
     private String players = "";
 
-    public ServerSender(Panel panel, TextColor coloreLabel, HashMap connectedClients, String name) {
+    public ServerSender(Panel panel, TextColor coloreLabel, String name) {
         this.name=name;
         this.panel=panel;
         this.coloreLabel=coloreLabel;
-        this.connectedClients=connectedClients;
-
     }
 
     public void run() {
@@ -51,14 +47,14 @@ public class ServerSender implements Runnable{
 
                     if (messaggioString.equals("/start")) {
                         //controllo il numero dei giocatori
-                        if (connectedClients.size() < 2) {
+                        if (Server.connectedClients.size() < 2) {
                             Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
 
                         } else {
                             //svuoto il pannello e avverto i client
                             broadcastServerMessage(messaggioString);
-                            for (Map.Entry<String, PrintWriter> pair : connectedClients.entrySet()) {
+                            for (Map.Entry<String, PrintWriter> pair : Server.connectedClients.entrySet()) {
                                 players = players + pair.getKey() + "-";
                             }
                             broadcastServerMessage(players);
@@ -94,7 +90,7 @@ public class ServerSender implements Runnable{
 
     public void broadcastServerMessage(String message) {
 
-        for(Map.Entry<String, PrintWriter> e : connectedClients.entrySet()) {
+        for(Map.Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
 
             e.getValue().println(message);
             e.getValue().flush();
