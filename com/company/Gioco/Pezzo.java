@@ -6,9 +6,7 @@ public class Pezzo {
     Griglia campo;
     public int tipoPezzo = 0; // 0 pezzoLungo, 1 pezzoT, 2 pezzoL , 3 pezzoJ,  4 pezzoS, 5 PezzoZ, 6 pezzoQuadrato
     public int rotazione = 0; // 0 posizione iniziale, successivamente in senso orario
-    int[] x;
-    int[] y;
-    String coord;
+    
     public int maxRotazioni;
     public int[][] spostamentoVerticale;
     public int[][] spostamentoOrizzontale;
@@ -20,27 +18,7 @@ public class Pezzo {
         pezzo[2] = b2;
         pezzo[3] = b3;
         this.campo = campo;
-        x = new int[4];
-        y = new int[4];
-        coord = "/";
     }
-
-    // Ritorna la posizione della colonna sullo schermo, coordinata * coefficente
-    public String getCoord() {
-        coord = "/";
-        for(int i = 0; i < 4; i++){
-            x[i] = pezzo[i].getColonna();
-        }
-        for(int i = 0; i < 4; i++){
-            y[i] = pezzo[i].getRiga();
-        }
-        for(int i = 0; i < 4; i++) {
-            coord = coord + x[i] + "," + y[i] + "/";
-        }
-        return coord;
-    }
-
-
    
     public void ruota(Griglia campo, int rotazione, int verso){
         
@@ -72,24 +50,13 @@ public class Pezzo {
 
     public void muovi(Griglia campo, int orizzontale){
         if(!collisioneLaterale(orizzontale)){ //deve ritornare false per entrare
-            if(orizzontale==1){
-                for (int i = 3; i >= 0; i--) {
-                    pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
+            for (int i = 3; i >= 0; i--) {
+                pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
 
-                }
-                for (int i = 3; i >= 0; i--) {
-                    pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0, pezzo[i].colore);
-                    pezzo[i].colonnaGriglia = pezzo[i].getColonna() + 1;
-                }
-            } else {
-                for (int i = 0; i < 4; i++) {
-                    pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
-
-                }
-                for (int i = 0; i < 4; i++) {
-                    pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0, pezzo[i].colore);
-                    pezzo[i].colonnaGriglia = pezzo[i].getColonna() - 1;
-                }
+            }
+            for (int i = 3; i >= 0; i--) {
+                pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0, pezzo[i].colore);
+                pezzo[i].colonnaGriglia = pezzo[i].getColonna() + orizzontale;
             }
         }
     }
