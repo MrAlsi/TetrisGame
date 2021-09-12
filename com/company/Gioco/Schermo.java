@@ -1,8 +1,8 @@
-package com.Gioco;
+package com.company.Gioco;
 
-import com.Gioco.Mini.Mini_Griglia;
-import com.Gioco.Pezzi.*;
-import com.client.Client;
+import com.company.Gioco.Mini.Mini_Griglia;
+import com.company.Gioco.Pezzi.*;
+import com.company.client.Client;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -43,7 +43,7 @@ public class Schermo implements Runnable{
     private final int brickDropDelay = 1000;
     private Screen screen;
     private Random sceltaPezzo = new Random();
-    private int selezionato;
+    private int selezionato; //servirà come variabile d'appoggio per controllare quale sia il campo evidenziato
 
     //Variabili publiche
     public int delay = 1000 / 60;
@@ -56,7 +56,7 @@ public class Schermo implements Runnable{
     public PrintWriter pw = null;
     public int dim;
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];
-    public static Semaphore semaforoColore=new Semaphore(1);
+    public static Semaphore semaforoColore=new Semaphore(1);// servirà per gestire l'accesso a "schermo.setForegroundColor"
 
     public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
         this.IP = IP;
@@ -120,6 +120,8 @@ public class Schermo implements Runnable{
                 screen.refresh();
                 if (j == 0) {
                     schermo.putString(pos1, posverticale, stampanome).setBackgroundColor(BLACK);
+                    //quando disegno il primo campo lo evidenzio sempre per avere fin da subito in maniera automatica un
+                    //campo a cui inviare le righe spazzatura
                     evidenzia(0);
                     selezionato=0;
                     usernameDestinatario=nome;
@@ -252,7 +254,6 @@ public class Schermo implements Runnable{
     private void processKeyInput(KeyStroke key) throws IOException {
         // drop
         Character c1 = ' ';
-        Character c2 = 'z';
         Character c3 = 'x';
         //Character c4 = 's';
 
@@ -290,11 +291,6 @@ public class Schermo implements Runnable{
             }
         }
 
-        // rotate left
-        if(c2.equals(key.getCharacter())) {
-            //Aggiungere rotazione
-        }
-
         // rotate right
         if(c3.equals(key.getCharacter())) {
             pezzoScelto.ruota(campo, pezzoScelto.rotazione, 1);
@@ -303,37 +299,37 @@ public class Schermo implements Runnable{
         //1
         if (uno.equals(key.getCharacter())&& dim>2) {
             if(selezionato!=0) {
-                    evidenzia(0);
-                    selezionato=0;
-                    for (int i = 1; i < dim - 1; i++) {
-                        noEvidenzia(i);
-                    }
-                    usernameDestinatario = miniCampo[0].nome;
+                evidenzia(0);
+                selezionato=0;
+                for (int i = 1; i < dim - 1; i++) {
+                    noEvidenzia(i);
+                }
+                usernameDestinatario = miniCampo[0].nome;
             }
         }
         //2
         if((due.equals(key.getCharacter()))&& dim>2) {
             if(selezionato!=1) {
-                    selezionato=1;
-                    evidenzia(1);
-                    for (int i = 0; i < dim - 1; i++) {
-                        if (i != 1) {
-                            noEvidenzia(i);
-                        }
+                selezionato=1;
+                evidenzia(1);
+                for (int i = 0; i < dim - 1; i++) {
+                    if (i != 1) {
+                        noEvidenzia(i);
                     }
-
+                }
+                usernameDestinatario = miniCampo[1].nome;
             }
         }
         //3
         if((tre.equals(key.getCharacter()))&& dim>2) {
             if (selezionato != 2) {
                 if (dim == 4) {
-                        evidenzia(2);
-                        selezionato=2;
-                        for (int i = 0; i < dim - 2; i++) {
-                            noEvidenzia(i);
-                        }
-                        usernameDestinatario = miniCampo[2].nome;
+                    evidenzia(2);
+                    selezionato=2;
+                    for (int i = 0; i < dim - 2; i++) {
+                        noEvidenzia(i);
+                    }
+                    usernameDestinatario = miniCampo[2].nome;
                 }
             }
         }
@@ -357,6 +353,16 @@ public class Schermo implements Runnable{
         }
     }*/
 
+    /**
+     * Il metodo Evidenzia serve per creare un rettangolo giallo attorno al campi selezionato, in questo modo quando
+     * si cambia persona a cui inviare le righe spazzatura si crea un rettangolo giallo attorno al nuovo campo a cui
+     * si vuole inviare le righe spazzatura.
+     * Al metodo viene passato come parametro il campo da "colorare".
+     * Il semaforo semaforoColore viene acquisito per evitare che qualche altro pezzo di codice acceda al colore
+     * contemporaneamente a questo metodo cambiando il colore richiesto, quindi acquisendo e rilasciando il semaforo
+     * dopo aver disegnato il rettangolo siamo tranquilli che verrà disegnato con il colore richiesto dal metodo e non
+     * di altri colori.
+     */
     public void evidenzia(int campo){
         try {
             semaforoColore.acquire();
@@ -370,6 +376,16 @@ public class Schermo implements Runnable{
         }
 
     }
+
+    /**
+     * Il metodo noEvidenzia serve per creare un rettangolo nero attorno ai campi non selezionati, in questo modo quando
+     * si cambia persona a cui inviare le righe spazzatura si "cancellerà" il rettangolo giallo precedentemente creato.
+     * Al metodo viene passato come parametro il campo da "decolorare".
+     * Il semaforo semaforoColore viene acquisito per evitare che qualche altro pezzo di codice acceda al colore
+     * contemporaneamente a questo metodo cambiando il colore richiesto, quindi acquisendo e rilasciando il semaforo
+     * dopo aver disegnato il rettangolo siamo tranquilli che verrà disegnato con il colore richiesto dal metodo e non
+     * di altri colori.
+     */
     public void noEvidenzia(int campo){
         try {
             semaforoColore.acquire();
