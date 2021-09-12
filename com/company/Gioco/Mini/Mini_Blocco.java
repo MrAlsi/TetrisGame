@@ -26,7 +26,7 @@ public class Mini_Blocco {
         this.colore = colore;
         scostamento=scostamento*40+60;
         try {
-            Schermo.semaforoColore.acquire();
+            Schermo.semaforoColore.acquire();// serve per gestire l'accesso a "schermo.setForegroundColor" essendo una risorsa condivsa
             schermo.setForegroundColor(colore);
             schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna+scostamento, rigaGriglia * coefRiga+3),
                     new TerminalSize(coefColonna, coefRiga),
