@@ -1,5 +1,8 @@
 package com.company.client;
 
+import com.company.MainSchermata;
+import com.company.server.ClientHandler;
+import com.company.server.Server;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Label;
@@ -34,27 +37,31 @@ public class Sender implements Runnable {
                 // Quando premo il pulsante stampo il messaggio e lo invio al server
                 if (!messaggio.getText().equals("")) {
                     String messaggioString = messaggio.getText();
-
-                    Label lab_clientMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                    panel.addComponent(lab_clientMsg);
-
+                    //se scrivi quit ti scolleghi dal server ma torni alla schermata iniziale con la possibilità di ricollegarti
+                    //allo stesso server o uno diverso
+                    if(messaggio.getText().equals("/quit")){
+                        panel.removeAllComponents();
+                        MainSchermata.Schermata(panel);
+                    }
+                    else {
+                        Label lab_clientMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(lab_clientMsg);
+                        messaggio.setText("");
+                    }
                     toOther.println(messaggioString);
                     toOther.flush();
-                    messaggio.setText("");
-
                 }
             }
         }).addTo(panel);
 
+        //se schiacci close chiudi il tuo client ma anche la possibilità di collegarti a un altro client
         new Button("Close", new Runnable() {
             @Override
             public void run() {
                 shown = false;
-                // Una volta premuto spengo il server e torno alla home
-                // Da sistemare
                 try {
                     System.exit(0);
-
+                    panel.removeAllComponents();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -63,7 +70,6 @@ public class Sender implements Runnable {
     }
 
     public void run() {
-
         TextBox messaggio = new TextBox();
         panel.addComponent(messaggio);
         inviaMessaggio(messaggio);
