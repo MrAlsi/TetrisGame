@@ -24,12 +24,4 @@ public class Mini_Griglia {
             }
         }
     }
-
-    /*
-    @Override
-    public void run() {
-
-    }
-*/
-
 }
