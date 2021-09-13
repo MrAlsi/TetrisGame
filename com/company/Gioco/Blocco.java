@@ -18,16 +18,15 @@ public class Blocco {
     public int rigaGriglia;
     int stato = 3; // 0=Vuoto - 1=Pezzo che sta scendendo - 2=Struttura  - 3=Spazzattura
 
-    public Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore) {
+    public Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore, char simbolo) {
         this.schermo = schermo;
         this.colonnaGriglia = colonnaGriglia;
         this.rigaGriglia = rigaGriglia;
         this.colore = colore;
-        // quadrato = schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
         try {
-            Schermo.semaforoColore.acquire();//serve per gestire l'accesso a "schermo.setForegroundColor" essendo una risorsa condivsa
+            Schermo.semaforoColore.acquire(); //serve per gestire l'accesso a "schermo.setForegroundColor" essendo una risorsa condivsa
             schermo.setForegroundColor(colore);
-            schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), Symbols.BLOCK_SOLID);
+            schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), simbolo);
             Schermo.semaforoColore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -60,7 +59,6 @@ public class Blocco {
     }
 
     public boolean collisioneSotto(Griglia campo) {
-        //Non capisco perché funzioni con 1, potrebbe dare problemi in futuro ma al momento funziona
         if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga()+1].getStato() > 1) {
             return true;
         } else {
@@ -69,14 +67,11 @@ public class Blocco {
         }
     }
 
-    public boolean collisioneLaterale(Griglia campo, int spostamento){
-        if(this.getColonna()+spostamento < 0 ||
-                this.getColonna()+spostamento == 12 ||
-                campo.griglia[this.getColonna()+spostamento][this.getRiga()].getStato() >= 2){
-            return true;
-        } else {
-            return false;
-        }
+    public boolean collisioneLaterale(Griglia campo, int spostamentoOrizzontale, int spostamentoVerticale){
+        return this.getColonna() + spostamentoOrizzontale < 0 ||
+                this.getColonna() + spostamentoOrizzontale == 12 ||
+                this.getRiga() - spostamentoVerticale < 0 ||
+                campo.griglia[this.getColonna() + spostamentoOrizzontale][this.getRiga()+spostamentoVerticale].getStato() >= 2;
     }
 
     public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale, TextColor colore) {
@@ -86,4 +81,3 @@ public class Blocco {
     public void rimuovi(Griglia campo, int colGriglia, int rigGriglia) {
 
     }
-}
