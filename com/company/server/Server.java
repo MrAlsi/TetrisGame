@@ -1,5 +1,6 @@
 package com.company.server;
 
+import com.company.MainSchermata;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -7,6 +8,7 @@ import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -40,13 +42,12 @@ public class Server  implements Runnable{
         this.connectedClients= new HashMap<String, PrintWriter>();
         connectionListener = new ConnectionListener(panel, this.SERVERPORT, coloreLabel);
         listenerThread = new Thread(connectionListener);
-
     }
 
     // Metodo che richiamo subito e serve per far partire il thread dedicato al server
     public void StartServer(Server server) {
-        serverThread = new Thread(server);
-        serverThread.start();
+            serverThread = new Thread(server);
+            serverThread.start();
     }
 
     // Inizializzo la schermata del server
