@@ -170,25 +170,27 @@ public class Client implements Runnable {
 
                                     //Schermo.traduciStringToInt(playersData);
                                 }
-                                //se il messaggio inizia con spazzatura so che dovrò aggiungere righe spazzatura in base
-                                // al numero
-                                else if (playersData.contains("spazzatura")) {
-                                    String arr[] = playersData.split("-");
-                                    if (arr[2].equals("2")) {
-                                        Schermo.aggiungiSpazzatura = 1;
-                                        //Schermo.campo.aggiungiSpazzatura(1);
-                                        System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
-                                    } else if (arr[2].equals("3")) {
-                                        Schermo.aggiungiSpazzatura = 2;
-                                        //Schermo.campo.aggiungiSpazzatura(2);
-                                        System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
-                                        //se non è ne 1 ne 2 ne 3 allora invierò 4 righe perché tanto meno non possono essere
-                                        //se no sarebbe ricaduto in uno dei casi precedenti
-                                    } else {
-                                        Schermo.aggiungiSpazzatura = 4;
-                                        System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
-                                        //Schermo.campo.aggiungiSpazzatura(4);
+                                //se il messaggio inizia con spazzatura so che dovrò aggiungere righe spazzatura in   base al numero
+                                if (playersData.contains("spazzatura")) {
 
+                                    //quindi divido il messaggio e aggiungo righe spazzatura in base a quanto dice il
+                                    //messaggio ricevuto
+                                    String arr[] = playersData.split("-");
+                                    //controllo che le righe spazzatura siano indirizzate a me
+                                    if(arr[1].equals(name)){
+                                        if (arr[2].equals("2")) {
+                                            Schermo.aggiungiSpazzatura = 1;
+                                            System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                                        } else if (arr[2].equals("3")) {
+                                            Schermo.aggiungiSpazzatura = 2;
+                                            System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+
+                                            //se non è ne 1 ne 2 ne 3 allora invierò 4 righe perché tanto meno non possono essere
+                                            //se no sarebbe ricaduto in uno dei casi precedenti
+                                        } else {
+                                            Schermo.aggiungiSpazzatura = 4;
+                                            System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                                        }
                                     }
                                 }
                                 if (playersData.contains("/pause") && !pause) {
