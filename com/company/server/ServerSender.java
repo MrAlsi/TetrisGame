@@ -6,7 +6,9 @@ import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
@@ -64,6 +66,8 @@ public class ServerSender implements Runnable{
                             panel.addComponent(lab_serverMsg);
                         }
                     } else if (messaggioString.equals("/quit")) {
+                        broadcastServerMessage(messaggioString);
+                        /*  questa parte si potrebbe togliere
                         Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
                                 .setForegroundColor(coloreLabel);
                         broadcastServerMessage("[SERVER]: " + serverClosed);
@@ -72,6 +76,18 @@ public class ServerSender implements Runnable{
                                 .setForegroundColor(coloreLabel);
                         broadcastServerMessage("[SERVER]: " + uscita);
                         panel.addComponent(uscita);
+                        */
+
+                        try {
+                            ClientHandler.clientSocket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        while(Server.connectedClients.size()!=0){
+
+                        }
+                        Server.serverThread.stop();
+                        System.exit(0);
 
                     } else {
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
@@ -87,7 +103,6 @@ public class ServerSender implements Runnable{
             }
         }).addTo(panel);
     }
-
     public void broadcastServerMessage(String message) {
 
         for(Map.Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
@@ -97,4 +112,3 @@ public class ServerSender implements Runnable{
         }
     }
 }
-
