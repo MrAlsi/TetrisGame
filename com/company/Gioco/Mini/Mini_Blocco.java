@@ -1,6 +1,7 @@
 package com.company.Gioco.Mini;
 
-import com.company.Gioco.Schermo;
+
+import com.Gioco.Schermo;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -18,29 +19,24 @@ public class Mini_Blocco {
     public int rigaGriglia;
     public int stato = 3; // 0=Vuoto - 1=Pezzo che sta scendendo - 2=Struttura  - 3=Spazzattura
 
-    public Mini_Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore, int scostamento) {
-        //super(schermo, colonnaGriglia, rigaGriglia, colore);
+    public Mini_Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore, char simbolo, int scostamento) {
         this.schermo = schermo;
         this.colonnaGriglia = colonnaGriglia;
         this.rigaGriglia = rigaGriglia;
         this.colore = colore;
         scostamento=scostamento*40+60;
         try {
-            Schermo.semaforoColore.acquire();// serve per gestire l'accesso a "schermo.setForegroundColor" essendo una risorsa condivsa
+            Schermo.semaforoColore.acquire();
             schermo.setForegroundColor(colore);
             schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna+scostamento, rigaGriglia * coefRiga+3),
                     new TerminalSize(coefColonna, coefRiga),
-                    Symbols.BLOCK_SOLID);
+                    simbolo);
             Schermo.semaforoColore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-
     }
-
-
+/*
     // Ritorna la posizione della colonna sullo schermo, coordinata * coefficente
     public int getColonna() {
         return colonnaGriglia;
@@ -54,4 +50,6 @@ public class Mini_Blocco {
     public void muovi(Mini_Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale, TextColor colore, int scostamento) { }
 
     public void rimuovi(Mini_Griglia campo, int colGriglia, int rigGriglia) { }
+
+ */
 }
