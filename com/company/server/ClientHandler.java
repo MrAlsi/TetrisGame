@@ -118,17 +118,6 @@ public class ClientHandler implements Runnable {
                             broadcastServerMessage(Server.connectedClients.keySet() + "-winner");
                             Server.gameStarted = false;
                         }
-                        //divido il messaggio, se la prima parola è spazzatura allora la mando al client interessato
-                        if (message.contains("spazzatura")) {
-                            String arr[] = message.split("-");
-                            for (Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
-                                if (arr[1].equals(Server.connectedClients.get(username))) {
-                                    e.getValue().println(message);
-                                    e.getValue().flush();
-                                    break; //essendoci un solo client con quel nome una volta trovato forzo l'uscita
-                                }
-                            }
-                        }
                         synchronized (this) {
                             for (String i : Server.connectedClients.keySet()) {
 
