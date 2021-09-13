@@ -9,7 +9,7 @@ public class BloccoPieno extends Blocco{
     public static int velocita = 1000;
 
     public BloccoPieno(TextGraphics screen, int colTerminale, int rigTerminale, TextColor colore) {
-        super(screen, colTerminale, rigTerminale, colore);
+        super(screen, colTerminale, rigTerminale, colore, BLOCK_SOLID);
         stato=1;
     }
 
