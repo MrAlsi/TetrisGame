@@ -5,7 +5,7 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 
 public class BloccoSpazzatura extends Blocco{
     public BloccoSpazzatura(TextGraphics screen, int col, int rig) {
-        super(screen, col, rig, TextColor.ANSI.RED_BRIGHT);
+         super(screen, col, rig, TextColor.ANSI.RED, Symbols.BLOCK_SPARSE);
         stato = 3;
     }
     @Override
