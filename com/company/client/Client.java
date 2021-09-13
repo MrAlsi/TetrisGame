@@ -120,7 +120,7 @@ public class Client implements Runnable {
         }
         if(terminate) {
             // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
-            while (message != null && message.equals("/quit")) {
+            while (message != null || message.equals("/quit")) {
 
                 try {
 
