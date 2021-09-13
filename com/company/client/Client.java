@@ -1,7 +1,10 @@
 package com.company.client;
 
+import com.company.Gioco.RiceviStato;
 import com.company.Gioco.*;
 import com.company.MainSchermata;
+import com.company.server.ClientHandler;
+import com.company.server.Server;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -11,7 +14,10 @@ import com.googlecode.lanterna.gui2.Panel;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
+import java.sql.ClientInfoStatus;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -30,6 +36,7 @@ public class Client implements Runnable {
     private Boolean pause = false;
     private List<String> connectedClients;
     private Boolean terminate = true;
+
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
     public Client(String name, String IP, String PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) {
@@ -107,27 +114,40 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
 
-        Traduttore t = new Traduttore();
+        RiceviStato rs = new RiceviStato();
         while(clientSender.shown){
 
         }
         if(terminate) {
             // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
-            while (message != null && !message.equals("/quit")) {
+            while (message != null && message.equals("/quit")) {
+
                 try {
 
                     // Leggi un messaggio inviato dal server
                     message = fromServer.readLine();
-
+                    System.out.println(message);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
                 // Se il server invia un comando /quit mi disconnetto dal server
                 if (message.equals("/quit")) {
-
+                    /*
                     Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
                             .setForegroundColor(coloreLabel);
                     panel.addComponent(successo);
+                  */
+                    try {
+                        connectedClients.remove(name);
+                        Client.socket.close();
+
+                    } catch (SocketException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    panel.removeAllComponents();
+                    MainSchermata.Schermata(panel);
                     break;
 
                 } else if (message.equals("/start")) {
@@ -166,11 +186,13 @@ public class Client implements Runnable {
 
                                 if (playersData.contains(":0")) {
                                     //Schermo.campoAvv=playersData;
-                                    t.run(playersData);
+                                    rs.run(playersData);
 
                                     //Schermo.traduciStringToInt(playersData);
                                 }
-                                //se il messaggio inizia con spazzatura so che dovrò aggiungere righe spazzatura in   base al numero
+
+                                //se il messaggio contiene la parola "spazzatura" so che dovrò aggiungere righe spazzatura
+                                // in base al numero finale del messaggio
                                 if (playersData.contains("spazzatura")) {
 
                                     //quindi divido il messaggio e aggiungo righe spazzatura in base a quanto dice il
@@ -196,10 +218,12 @@ public class Client implements Runnable {
                                 if (playersData.contains("/pause") && !pause) {
                                     pause = true;
                                     gameThread.suspend();
-                                } else if (playersData.contains("/resume") && pause) {
+                                }
+                                if (playersData.contains("/resume") && pause) {
                                     pause = false;
                                     gameThread.resume();
-                                } else if (playersData.contains("/restart") && !pause) {
+                                }
+                                if (playersData.contains("/restart") && !pause) {
                                     Schermo.gameOver = true;
                                     Client.winner = false;
                                     System.out.println("Partita ricominciata");
@@ -232,35 +256,36 @@ public class Client implements Runnable {
                 }
             }
         }
-        try {
-            panel.removeAllComponents();
-            panel.setFillColorOverride(BLACK);
-            Label invalidNick = new Label("\nNickname già in uso da un altro utente.").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-            panel.addComponent(invalidNick);
-            new Button("Indietro",new Runnable(){
-                @Override
-                public void run(){
-                    //svuoto la schermo
-                    panel.removeAllComponents();
-                    panel.setFillColorOverride(BLACK);
-                    MainSchermata.Schermata(panel);
-                    //richiamo schermata inziale
-                }
-            }).addTo(panel);
-            socket.close(); //Chiudi la connessione
-            senderThread.interrupt();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
+        if(connectedClients.size()!=0) {
             try {
+                panel.removeAllComponents();
+                panel.setFillColorOverride(BLACK);
+                Label invalidNick = new Label("\nNickname già in uso da un altro utente.").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                panel.addComponent(invalidNick);
+                new Button("Indietro", new Runnable() {
+                    @Override
+                    public void run() {
+                        //svuoto la schermo
+                        panel.removeAllComponents();
+                        panel.setFillColorOverride(BLACK);
+                        MainSchermata.Schermata(panel);
+                        //richiamo schermata inziale
+                    }
+                }).addTo(panel);
                 socket.close(); //Chiudi la connessione
-            } catch (IOException e) {
-                e.printStackTrace();
+                senderThread.interrupt();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    socket.close(); //Chiudi la connessione
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                senderThread.interrupt();
             }
-            senderThread.interrupt();
+
         }
-
-
     }
 }
