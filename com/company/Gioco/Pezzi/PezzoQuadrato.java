@@ -18,6 +18,13 @@ public class PezzoQuadrato extends Pezzo {
                 new BloccoPieno(schermo, 4, 0, TextColor.ANSI.CYAN_BRIGHT));
         tipoPezzo = 6;
         rotazione = 1;
+
+        spostamentoVerticale= new int[][]{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+        spostamentoOrizzontale = new int[][]{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
     }
 
+    @Override
+    public void ruota(Griglia campo, int rotazione, int verso) {
+        System.out.println("Stai veramente ruotando un quadrato?");
+    }
 }
