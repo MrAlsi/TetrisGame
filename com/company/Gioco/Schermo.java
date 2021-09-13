@@ -56,7 +56,7 @@ public class Schermo implements Runnable{
     public PrintWriter pw = null;
     public int dim;
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];
-    public static Semaphore semaforoColore=new Semaphore(1);// servirà per gestire l'accesso a "schermo.setForegroundColor"
+    public static Semaphore semaforoColore=new Semaphore(1); // servirà per gestire l'accesso a "schermo.setForegroundColor"
 
     public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
         this.IP = IP;
@@ -119,9 +119,9 @@ public class Schermo implements Runnable{
                 String stampanome = " " + (j+1) + "-->'" + nome + "'";
                 screen.refresh();
                 if (j == 0) {
-                    schermo.putString(pos1, posverticale, stampanome).setBackgroundColor(BLACK);
                     //quando disegno il primo campo lo evidenzio sempre per avere fin da subito in maniera automatica un
                     //campo a cui inviare le righe spazzatura
+                    schermo.putString(pos1, posverticale, stampanome).setBackgroundColor(BLACK);
                     evidenzia(0);
                     selezionato=0;
                     usernameDestinatario=nome;
@@ -170,7 +170,7 @@ public class Schermo implements Runnable{
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
                 for(KeyStroke key : keyStrokes) {
-                    screen.refresh();
+                    //screen.refresh();
                     processKeyInput(key);
                     //IS.run(campo);
                 }
@@ -179,7 +179,7 @@ public class Schermo implements Runnable{
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     int combo = campo.controlloRighe();          //Controlla se ci sono righe piene e le elimina
-                    screen.refresh();                            //Refresh dello schermo
+                   // screen.refresh();                            //Refresh dello schermo
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
                         //righeSpazzatura(combo);
                         datas = "spazzatura-" + usernameDestinatario + "-" + combo;
@@ -198,7 +198,6 @@ public class Schermo implements Runnable{
                         break;
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-                    //IS.run(campo);
 
                 }
 
@@ -208,12 +207,20 @@ public class Schermo implements Runnable{
                 }
 
                 if(brickDropTimer.getDropBrick()) {
-                    screen.refresh();
                     pezzoScelto.scendi(campo);
                     IS.run(campo);
 
                 }
-                screen.refresh();
+
+                //Semaforo
+                try {
+                    RiceviStato.traduzione.acquire();
+                    screen.refresh();
+                    RiceviStato.traduzione.release();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
             screen.close();
             Thread.currentThread().interrupt();
@@ -224,16 +231,16 @@ public class Schermo implements Runnable{
         }
     }
 
-    /*public void stampaGriglia(Griglia campo) {
+    public void stampaGriglia(Griglia campo) {
         System.out.println("-------------------------------------");
         for (int i = 0; i < 12; i++) {
             for (int e = 0; e < 24; e++) {
-                System.out.print(campo.griglia[i][e].getStato() + "  ");
+                System.out.print(miniCampo[0].griglia[i][e].stato);
             }
             System.out.println("");
         }
         System.out.println("-------------------------------------");
-    }*/
+    }
 
     //Creatore di pezzi randomici
     public Pezzo prossimoPezzo(TextGraphics schermo){
@@ -253,14 +260,12 @@ public class Schermo implements Runnable{
     //Thread per i pulsati e movimento pezzo
     private void processKeyInput(KeyStroke key) throws IOException {
         // drop
-        Character c1 = ' ';
-        Character c3 = 'x';
-        //Character c4 = 's';
+        Character c1 = ' '; //Fai cadere
+        Character c2 = 'x'; //Ruota
 
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
         Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)
-        datas = "";
 
         //down totale
         if(c1.equals(key.getCharacter())) {
@@ -292,44 +297,44 @@ public class Schermo implements Runnable{
         }
 
         // rotate right
-        if(c3.equals(key.getCharacter())) {
-            pezzoScelto.ruota(campo, pezzoScelto.rotazione, 1);
+        if(c2.equals(key.getCharacter())) {
+            if(!pezzoScelto.collisioneLateraleRotazione(pezzoScelto.spostamentoOrizzontale[pezzoScelto.rotazione], pezzoScelto.rotazione))
+                pezzoScelto.ruota(campo, pezzoScelto.rotazione, 1);
         }
 
         //1
         if (uno.equals(key.getCharacter())&& dim>2) {
             if(selezionato!=0) {
-                evidenzia(0);
-                selezionato=0;
-                for (int i = 1; i < dim - 1; i++) {
-                    noEvidenzia(i);
-                }
-                usernameDestinatario = miniCampo[0].nome;
+                    evidenzia(0);
+                    selezionato=0;
+                    for (int i = 1; i < dim - 1; i++) {
+                        noEvidenzia(i);
+                    }
+                    usernameDestinatario = miniCampo[0].nome;
             }
         }
         //2
         if((due.equals(key.getCharacter()))&& dim>2) {
             if(selezionato!=1) {
-                selezionato=1;
-                evidenzia(1);
-                for (int i = 0; i < dim - 1; i++) {
-                    if (i != 1) {
-                        noEvidenzia(i);
+                    selezionato=1;
+                    evidenzia(1);
+                    for (int i = 0; i < dim - 1; i++) {
+                        if (i != 1) {
+                            noEvidenzia(i);
+                        }
                     }
-                }
-                usernameDestinatario = miniCampo[1].nome;
             }
         }
         //3
         if((tre.equals(key.getCharacter()))&& dim>2) {
             if (selezionato != 2) {
                 if (dim == 4) {
-                    evidenzia(2);
-                    selezionato=2;
-                    for (int i = 0; i < dim - 2; i++) {
-                        noEvidenzia(i);
-                    }
-                    usernameDestinatario = miniCampo[2].nome;
+                        evidenzia(2);
+                        selezionato=2;
+                        for (int i = 0; i < dim - 2; i++) {
+                            noEvidenzia(i);
+                        }
+                        usernameDestinatario = miniCampo[2].nome;
                 }
             }
         }
@@ -339,19 +344,6 @@ public class Schermo implements Runnable{
         pw.println(s);
         pw.flush();
     }
-
-   /* public void righeSpazzatura(int combo){
-        switch(combo){
-            //Prova per vedere se funziona, quando mettiamo le righe spazzatura useremo questo metodo
-            case 2 :{System.out.println("1 Riga spazzatura");
-                break;}
-            case 3 :{System.out.println("2 Riga spazzatura");
-                break;}
-            case 4 :{System.out.println("4 Riga spazzatura");
-                break;}
-
-        }
-    }*/
 
     /**
      * Il metodo Evidenzia serve per creare un rettangolo giallo attorno al campi selezionato, in questo modo quando
@@ -374,7 +366,6 @@ public class Schermo implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
