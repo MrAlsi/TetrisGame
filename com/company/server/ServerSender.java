@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -66,7 +67,11 @@ public class ServerSender implements Runnable{
                             panel.addComponent(lab_serverMsg);
                         }
                     } else if (messaggioString.equals("/quit")) {
-                        broadcastServerMessage(messaggioString);
+                        if(Server.connectedClients.size()==0){
+                            System.exit(0);
+                        }
+                        else {
+                            broadcastServerMessage(messaggioString);
                         /*  questa parte si potrebbe togliere
                         Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
                                 .setForegroundColor(coloreLabel);
@@ -78,16 +83,17 @@ public class ServerSender implements Runnable{
                         panel.addComponent(uscita);
                         */
 
-                        try {
-                            ClientHandler.clientSocket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        while(Server.connectedClients.size()!=0){
+                            try {
+                                ClientHandler.clientSocket.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            while (Server.connectedClients.size() != 0) {
 
+                            }
+                            Server.serverThread.stop();
+                            System.exit(0);
                         }
-                        Server.serverThread.stop();
-                        System.exit(0);
 
                     } else {
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
