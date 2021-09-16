@@ -8,6 +8,7 @@ import com.googlecode.lanterna.gui2.TextBox;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.util.Map;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
@@ -49,7 +50,8 @@ public class ServerSender implements Runnable{
                     if (messaggioString.equals("/start")) {
                         //controllo il numero dei giocatori
                         if (Server.connectedClients.size() < 2) {
-                            Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
+                                    .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
 
                         } else {
@@ -66,20 +68,16 @@ public class ServerSender implements Runnable{
                         }
                     } else if (messaggioString.equals("/quit")) {
                         if(Server.connectedClients.size()==0){
+                            Server.serverThread.stop();
                             System.exit(0);
                         }
                         else {
                             broadcastServerMessage(messaggioString);
-                            try {
-                                ClientHandler.clientSocket.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            while (Server.connectedClients.size() != 0) {
-
-                            }
+                            Server.connectedClients.clear();
+                            Server.senderThread.stop();
                             Server.serverThread.stop();
                             System.exit(0);
+
                         }
                     } else if(messaggioString.equals("/restart")) {
                         Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
