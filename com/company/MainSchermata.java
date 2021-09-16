@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+import static com.googlecode.lanterna.TextColor.ANSI.RED;
+
 //classe per la schermata di inizializzazione del gioco
 public class MainSchermata {
 
@@ -160,7 +162,8 @@ public class MainSchermata {
                             String s = Character.toString(c);
                             if(name.contains(s)) {
 
-                                Label invalidName = new Label("\nNickname non valido. (Non utilizzare spazi o caratteri speciali)").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                Label invalidName = new Label("\nNickname non valido. (Non utilizzare spazi o " +
+                                        "caratteri speciali)").setBackgroundColor(BLACK).setForegroundColor(RED);
                                 panel.addComponent(invalidName);
                                 check = false;
                                 break;
@@ -177,7 +180,7 @@ public class MainSchermata {
                                 clientThread.start();
 
                             } catch (Exception ex) {
-                                ex.printStackTrace();
+                                //ex.printStackTrace();
                                 panel.removeAllComponents();
                                 panel.setFillColorOverride(BLACK);
                                 MainSchermata.Schermata(panel);
@@ -241,10 +244,12 @@ public class MainSchermata {
                             Server server = new Server(name, SERVERPORT, panel, coloreLabel);
                             server.StartServer(server);
                         }catch (Exception ex) {
-                            ex.printStackTrace();
+                            //ex.printStackTrace();
                             panel.removeAllComponents();
                             panel.setFillColorOverride(BLACK);
-
+                            Label erroreserver=new Label("- - - Errore nella creazione del server: riprovare - - -"
+                            ).setBackgroundColor(BLACK).setForegroundColor(RED);
+                            panel.addComponent(erroreserver);
                             MainSchermata.Schermata(panel);
 
                         }
