@@ -1,23 +1,18 @@
 package com.company.client;
 
-import com.company.Gioco.RiceviStato;
 import com.company.Gioco.*;
 import com.company.MainSchermata;
-import com.company.server.ClientHandler;
-import com.company.server.Server;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.sql.ClientInfoStatus;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -31,11 +26,14 @@ public class Client implements Runnable {
     private String serverName;
     private String playersData;
     public static Boolean winner = false;
+    public static Boolean restart = false;
+    public static Boolean winCheck = false;
+    public static Boolean loseCheck = false;
     public static Thread gameThread;
     private String message = "";
     private Boolean pause = false;
     private List<String> connectedClients;
-    private Boolean terminate = true;
+    private Boolean terminate = false;
 
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
@@ -69,11 +67,6 @@ public class Client implements Runnable {
         try {
             System.out.println("Connessione alla socket: " + IP + PORT);
             socket = new Socket(IP, PORT);
-            System.out.println("Connessione eseguita!");
-            Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
-                    .setForegroundColor(coloreLabel);
-            panel.addComponent(connesso);
-
             socketInput = socket.getInputStream();
 
             socketOutput = socket.getOutputStream();
@@ -95,7 +88,10 @@ public class Client implements Runnable {
 
         BufferedReader fromServer = new BufferedReader(socketReader); //Legge stringhe dal socket
         PrintWriter toServer = new PrintWriter(socketWriter); //Scrive stringhe sul socket
-
+        System.out.println("Connessione eseguita!");
+        Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
+                .setForegroundColor(coloreLabel);
+        panel.addComponent(connesso);
         //Creazione del thread di invio messaggi
         Sender clientSender = new Sender(toServer,panel,coloreLabel,name);
         Thread senderThread = new Thread(clientSender);
@@ -108,7 +104,7 @@ public class Client implements Runnable {
         try {
             serverName = fromServer.readLine();
             if(serverName.equals("_terminate")){
-                terminate = false;
+                terminate = true;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -118,7 +114,7 @@ public class Client implements Runnable {
         while(clientSender.shown){
 
         }
-        if(terminate) {
+        if(!terminate) {
             // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
             while (message != null || message.equals("/quit")) {
 
@@ -127,6 +123,7 @@ public class Client implements Runnable {
                     // Leggi un messaggio inviato dal server
                     message = fromServer.readLine();
                     System.out.println(message);
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -157,6 +154,7 @@ public class Client implements Runnable {
                         panel.setFillColorOverride(BLACK);
                         // Leggo i nick di tutti i giocatori
                         MainSchermata.screen.close();
+
                         connectedClients.clear();
 
                         if (YouWin.nextGame) {
@@ -169,9 +167,8 @@ public class Client implements Runnable {
                             Restart.screen.close();
                         }
                         String playersStringMessage = fromServer.readLine();
-                        for (String playerUser : playersStringMessage.split("-")) {
-                            connectedClients.add(playerUser);
-                        }
+                        System.out.println("Nomi: " + playersStringMessage);
+                        connectedClients.addAll(Arrays.asList(playersStringMessage.split("-")));
                         Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
                         gameThread = new Thread(schermo);
                         gameThread.start();
@@ -180,10 +177,9 @@ public class Client implements Runnable {
 
                         while (!Schermo.gameOver) {
                             try {
-
                                 playersData = fromServer.readLine();
                                 //System.out.println(playersData);
-
+                                System.out.println("Dati:" + playersData);
                                 if (playersData.contains(":0")) {
                                     //Schermo.campoAvv=playersData;
                                     rs.run(playersData);
@@ -218,25 +214,40 @@ public class Client implements Runnable {
                                 if (playersData.contains("/pause") && !pause) {
                                     pause = true;
                                     gameThread.suspend();
-                                }
-                                if (playersData.contains("/resume") && pause) {
+                                } else if (playersData.contains("/resume") && pause) {
                                     pause = false;
                                     gameThread.resume();
-                                }
-                                if (playersData.contains("/restart") && !pause) {
-                                    Schermo.gameOver = true;
-                                    Client.winner = false;
-                                    System.out.println("Partita ricominciata");
-                                    Restart ricomincia = new Restart(name, IP, PORT, panel, coloreLabel, connectedClients);
-                                    Thread ricominciaThread = new Thread(ricomincia);
-                                    ricominciaThread.start();
+                                } else if (playersData.contains("/restart") && !pause) {
+                                    winner = false;
+                                    restart = true;
+                                    while(restart){
+
+                                    }
+                                    restart = true;
+                                    connectedClients.clear();
+                                    Thread.currentThread().interrupt();
+                                    break;
+
                                 } else if (playersData.equals("[" + name + "]-winner")) {
-
                                     winner = true;
+                                    connectedClients.clear();
+                                    winCheck = true;
+                                    while(winCheck){
+
+                                    }
+                                    Thread.currentThread().interrupt();
                                     break;
 
-                                } else if (Schermo.gameOver) {
+                                }
+                                if (Schermo.gameOver) {
+                                    connectedClients.clear();
+                                    loseCheck = true;
+                                    while(loseCheck){
+
+                                    }
+                                    Thread.currentThread().interrupt();
                                     break;
+
                                 }
                             } catch (IOException e) {
 
@@ -256,25 +267,18 @@ public class Client implements Runnable {
                 }
             }
         }
-        if(connectedClients.size()!=0) {
+        if(terminate) {
             try {
-                panel.removeAllComponents();
-                panel.setFillColorOverride(BLACK);
-                Label invalidNick = new Label("\nNickname già in uso da un altro utente.").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                panel.addComponent(invalidNick);
-                new Button("Indietro", new Runnable() {
-                    @Override
-                    public void run() {
-                        //svuoto la schermo
-                        panel.removeAllComponents();
-                        panel.setFillColorOverride(BLACK);
-                        MainSchermata.Schermata(panel);
-                        //richiamo schermata inziale
-                    }
-                }).addTo(panel);
+                Terminate termina = new Terminate(panel, coloreLabel);
+                Thread terminateThread = new Thread(termina);
+                terminateThread.start();
                 socket.close(); //Chiudi la connessione
                 senderThread.interrupt();
-
+                try {
+                    MainSchermata.screen.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             } finally {

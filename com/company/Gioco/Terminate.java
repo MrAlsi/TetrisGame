@@ -1,7 +1,6 @@
 package com.company.Gioco;
 
 import com.company.MainSchermata;
-import com.company.client.Client;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Button;
@@ -17,13 +16,13 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.awt.*;
 import java.util.Arrays;
-import java.util.*;
 import java.util.List;
 
-import static com.googlecode.lanterna.TextColor.ANSI.*;
+import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+import static com.googlecode.lanterna.TextColor.ANSI.WHITE_BRIGHT;
 
 //classe per la schermata di inizializzazione del gioco
-public class YouWin implements Runnable{
+public class Terminate implements Runnable{
 
     private String username;
     private String IP;
@@ -34,13 +33,9 @@ public class YouWin implements Runnable{
     public static Boolean nextGame = false;
     private List<String> connectedClients;
 
-    public YouWin(String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) {
-        this.IP = IP;
-        this.PORT = PORT;
+    public Terminate(Panel panel, TextColor coloreLabel) {
         this.panel = panel;
         this.coloreLabel = coloreLabel;
-        this.connectedClients=connectedClients;
-        username = name;
     }
 
     @Override
@@ -92,67 +87,28 @@ public class YouWin implements Runnable{
             MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(BLACK));
             gui.addWindowAndWait(window);
 
-            // Check che serve al client per proseguire la vittoria
-            Client.winCheck = false;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     //codice scritta colorata you win
-    public void provaWin(Panel panel){
-
-        Label provaWin1=new Label("\n           '._==_==_=_.'      \n").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin2=new Label("           .-\\:      /-.     \n").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin3=new Label("          | (|:.     |) |     ").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin4=new Label("           '-|:.     |-'     \n" ).setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin5=new Label("             \\::.    /     \n").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin6=new Label("              '::. .' \n").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin7=new Label("                ) ( \n").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin8=new Label("              _.' '._ \n").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin9=new Label("             `\"\"\"\"\"\"\"` \n").setBackgroundColor(BLACK).setForegroundColor
-                (TextColor.ANSI.YELLOW_BRIGHT);
-        Label provaWin10=new Label("    _   _ ____ _  _    _ _ _ _ _  _     \n").setBackgroundColor(BLACK).setForegroundColor
-                (BLUE);
-        Label provaWin11=new Label("     \\_/  |  | |  |    | | | | |\\ |   \n" ).setBackgroundColor(BLACK).setForegroundColor
-                (BLUE_BRIGHT);
-        Label provaWin12=new Label("      |   |__| |__|    |_|_| | | \\|     \n").setBackgroundColor(BLACK).setForegroundColor
-                (GREEN_BRIGHT);
-
-        panel.addComponent(provaWin1);
-        panel.addComponent(provaWin2);
-        panel.addComponent(provaWin3);
-        panel.addComponent(provaWin4);
-        panel.addComponent(provaWin5);
-        panel.addComponent(provaWin6);
-        panel.addComponent(provaWin7);
-        panel.addComponent(provaWin8);
-        panel.addComponent(provaWin9);
-        panel.addComponent(provaWin10);
-        panel.addComponent(provaWin11);
-        panel.addComponent(provaWin12);
+    public void termina(Panel panel){
+        panel.removeAllComponents();
+        panel.setFillColorOverride(BLACK);
+        Label nome=new Label("\nNickname già in utilizzo da un altro utente.\n").setBackgroundColor(BLACK).setForegroundColor(WHITE_BRIGHT);
+        panel.addComponent(nome);
 
         MainSchermata.Empty(panel, 1);
 
-        new Button("Play again",new Runnable(){
+        new Button("Indietro",new Runnable(){
             @Override
             public void run(){
                 //svuoto la schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
-                nextGame = true;
                 //richiamo schermata inziale
-                Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel, new LinkedList<>());
-                MainSchermata.clientThread = new Thread(client);
-                MainSchermata.clientThread.start();
+                MainSchermata.Schermata(panel);
+                Thread.currentThread().interrupt();
             }
         }).addTo(panel);
     }
@@ -164,8 +120,9 @@ public class YouWin implements Runnable{
 
     //codice home
     public void Schermata(final Panel panel){
+
         final TextColor coloreLabel=TextColor.ANSI.GREEN_BRIGHT;
 
-        provaWin(panel);
+        termina(panel);
     }
 }

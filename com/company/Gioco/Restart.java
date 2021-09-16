@@ -80,7 +80,6 @@ public class Restart implements Runnable{
             // richiamo metodo per avviare la grafica
             Schermata(panel);
 
-
             BasicWindow window = new BasicWindow();
             // importante
             window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN));
@@ -88,9 +87,11 @@ public class Restart implements Runnable{
 
             window.setComponent(panel);
 
+            // Check che serve al client per proseguire /restart
+            Client.restart = false;
+
             MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(BLACK));
             gui.addWindowAndWait(window);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -167,6 +167,16 @@ public class Schermo implements Runnable{
                     break;
                 }
 
+                if(Client.restart){
+                    gameOver = true;
+                    Client.winner = false;
+                    System.out.println("Partita resettata");
+                    Restart ricomincia = new Restart(username, IP, PORT, panel, coloreLabel, connectedClients);
+                    Thread restartThread = new Thread(ricomincia);
+                    restartThread.start();
+                    break;
+                }
+
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
                 for(KeyStroke key : keyStrokes) {

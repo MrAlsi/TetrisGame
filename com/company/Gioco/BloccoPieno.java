@@ -5,6 +5,8 @@ import com.googlecode.lanterna.TextColor;
 
 import com.googlecode.lanterna.graphics.TextGraphics;
 
+import static com.googlecode.lanterna.Symbols.BLOCK_SOLID;
+
 public class BloccoPieno extends Blocco{
     public static int velocita = 1000;
 

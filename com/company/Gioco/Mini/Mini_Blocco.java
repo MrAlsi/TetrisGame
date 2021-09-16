@@ -1,8 +1,7 @@
 package com.company.Gioco.Mini;
 
 
-import com.Gioco.Schermo;
-import com.googlecode.lanterna.Symbols;
+import com.company.Gioco.Schermo;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;

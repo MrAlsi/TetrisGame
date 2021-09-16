@@ -19,8 +19,8 @@ public class PezzoT extends Pezzo{
 
         maxRotazioni = 3;
 
-        spostamentoVerticale= new int[][]{{1, -1, 0, 1}, {-1,-1,0,1}, {-1,1,0,-1}, {1,1,0,-1}};
-        spostamentoOrizzontale = new int[][]{{-1, -1, 0, 1}, {-1,1,0,-1}, {1,1,0,-1}, {1,-1,0,1}};
+        spostamentoVerticale= new int[][]{{1,-1,0,1},{-1,-1,0,1},{-1,1,0,-1},{1,1,0,-1}};
+        spostamentoOrizzontale = new int[][]{{-1,-1,0,1},{-1,1,0,-1},{1,1,0,-1},{1,-1,0,1}};
     }
 
     @Override

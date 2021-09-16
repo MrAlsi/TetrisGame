@@ -20,8 +20,8 @@ public class PezzoL extends Pezzo {
 
         maxRotazioni = 3;
 
-        spostamentoVerticale= new int[][]{​{​-1,0,1,0}​, {-1,0,1,2}​, {​1,0,-1,0}​, {​1,0,-1,-2}​}​;
-        spostamentoOrizzontale = new int[][]{​{​-1,0,1,2}​, {1,0,-1,0}​, {​1,0,-1,-2}​, {-1,0,1,0}​}​;
+        spostamentoVerticale= new int[][]{{-1,0,1,0},{-1,0,1,2},{1,0,-1,0},{1,0,-1,-2}};
+        spostamentoOrizzontale = new int[][]{{-1,0,1,2},{1,0,-1,0},{1,0,-1,-2},{-1,0,1,0}};
 
     }
 

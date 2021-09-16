@@ -19,8 +19,8 @@ public class PezzoQuadrato extends Pezzo {
         tipoPezzo = 6;
         rotazione = 1;
 
-        spostamentoVerticale= new int[][]{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
-        spostamentoOrizzontale = new int[][]{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+        spostamentoVerticale= new int[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+        spostamentoOrizzontale = new int[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
     }
 
     @Override

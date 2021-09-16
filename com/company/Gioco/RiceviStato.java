@@ -4,7 +4,7 @@ import com.company.Gioco.Mini.*;
 import com.googlecode.lanterna.TextColor;
 import java.util.concurrent.Semaphore;
 
-import static com.Gioco.Schermo.*;
+import static com.company.Gioco.Schermo.*;
 
 
 public class RiceviStato extends Thread{

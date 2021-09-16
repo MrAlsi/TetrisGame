@@ -17,6 +17,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
@@ -90,6 +91,9 @@ public class GameOver implements Runnable{
             MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(BLACK));
             gui.addWindowAndWait(window);
 
+            // Check che serve al client per proseguire la sconfitta
+            Client.loseCheck = false;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,7 +122,7 @@ public class GameOver implements Runnable{
                 panel.setFillColorOverride(BLACK);
                 nextGame = true;
                 //richiamo schermata inziale
-                Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel, connectedClients);
+                Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel, new LinkedList<>());
                 MainSchermata.clientThread = new Thread(client);
                 MainSchermata.clientThread.start();
             }

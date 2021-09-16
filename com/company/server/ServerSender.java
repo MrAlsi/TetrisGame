@@ -8,9 +8,7 @@ import com.googlecode.lanterna.gui2.TextBox;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
@@ -35,7 +33,7 @@ public class ServerSender implements Runnable{
 
     }
 
-    public void inviaMessaggio(final TextBox messaggio){
+    public synchronized void inviaMessaggio(final TextBox messaggio){
         new Button("Invia",new Runnable(){
             @Override
             public void run(){
@@ -72,17 +70,6 @@ public class ServerSender implements Runnable{
                         }
                         else {
                             broadcastServerMessage(messaggioString);
-                        /*  questa parte si potrebbe togliere
-                        Label serverClosed = new Label("\n- - SERVER CLOSED - -").setBackgroundColor(BLACK)
-                                .setForegroundColor(coloreLabel);
-                        broadcastServerMessage("[SERVER]: " + serverClosed);
-                        panel.addComponent(serverClosed);
-                        Label uscita = new Label("\nLeaving the server...").setBackgroundColor(BLACK)
-                                .setForegroundColor(coloreLabel);
-                        broadcastServerMessage("[SERVER]: " + uscita);
-                        panel.addComponent(uscita);
-                        */
-
                             try {
                                 ClientHandler.clientSocket.close();
                             } catch (IOException e) {
@@ -94,6 +81,11 @@ public class ServerSender implements Runnable{
                             Server.serverThread.stop();
                             System.exit(0);
                         }
+                    } else if(messaggioString.equals("/restart")) {
+                        Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(lab_serverMsg);
+                        broadcastServerMessage("[" + name + "]: " + messaggioString);
+                        Server.gameStarted = false;
 
                     } else {
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi

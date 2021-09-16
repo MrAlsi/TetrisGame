@@ -1,6 +1,5 @@
 package com.company.Gioco;
 
-import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -59,7 +58,7 @@ public class Blocco {
     }
 
     public boolean collisioneSotto(Griglia campo) {
-        if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga()+1].getStato() > 1) {
+        if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga() + 1].getStato() > 1) {
             return true;
         } else {
             //System.out.println("il colore è: " + campo.griglia[this.getColonna()][this.getRiga()+1].getStato());
@@ -67,11 +66,11 @@ public class Blocco {
         }
     }
 
-    public boolean collisioneLaterale(Griglia campo, int spostamentoOrizzontale, int spostamentoVerticale){
+    public boolean collisioneLaterale(Griglia campo, int spostamentoOrizzontale, int spostamentoVerticale) {
         return this.getColonna() + spostamentoOrizzontale < 0 ||
                 this.getColonna() + spostamentoOrizzontale == 12 ||
                 this.getRiga() - spostamentoVerticale < 0 ||
-                campo.griglia[this.getColonna() + spostamentoOrizzontale][this.getRiga()+spostamentoVerticale].getStato() >= 2;
+                campo.griglia[this.getColonna() + spostamentoOrizzontale][this.getRiga() + spostamentoVerticale].getStato() >= 2;
     }
 
     public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale, TextColor colore) {
@@ -81,3 +80,4 @@ public class Blocco {
     public void rimuovi(Griglia campo, int colGriglia, int rigGriglia) {
 
     }
+}
