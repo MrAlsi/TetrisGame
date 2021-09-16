@@ -2,9 +2,11 @@ package com.company.client;
 
 import com.company.Gioco.*;
 import com.company.MainSchermata;
+import com.company.server.ClientHandler;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 
@@ -106,7 +108,6 @@ public class Client implements Runnable {
                 while (message != null || message.equals("/quit")) {
                     Boolean flag=true;
                     try {
-
                         // Leggi un messaggio inviato dal server
                         message = fromServer.readLine();
                         //System.out.println(message);
@@ -235,7 +236,23 @@ public class Client implements Runnable {
                                             Thread.currentThread().interrupt();
                                             break;
 
-                                        } else if (playersData.equals("[" + name + "]-winner")) {
+                                        } else if(playersData.equals("/quit")){
+                                            Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
+                                                    .setForegroundColor(RED);
+                                            try {
+                                                gameThread.stop();
+                                                connectedClients.clear();
+                                                panel.addComponent(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
+                                                MainSchermata.Schermata(panel);
+                                                socket.close();
+                                                break;
+                                            } catch (SocketException e) {
+                                                // e.printStackTrace();
+                                            } catch (IOException e) {
+                                                //e.printStackTrace();
+                                            }
+                                        }
+                                        else if (playersData.equals("[" + name + "]-winner")) {
                                             winner = true;
                                             connectedClients.clear();
                                             winCheck = true;
@@ -302,7 +319,6 @@ public class Client implements Runnable {
             panel.removeAllComponents();
             panel.addComponent(nonconnesso);
             panel.setFillColorOverride(BLACK);
-
             MainSchermata.Schermata(panel);
 
         }
