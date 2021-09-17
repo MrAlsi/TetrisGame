@@ -83,7 +83,6 @@ public class ServerSender implements Runnable{
                         Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(lab_serverMsg);
                         broadcastServerMessage("[" + name + "]: " + messaggioString);
-                        Server.gameStarted = false;
 
                     } else {
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
