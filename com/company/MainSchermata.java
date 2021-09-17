@@ -286,7 +286,24 @@ public class MainSchermata {
                 //svuoto lo schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
-                Label regolamento = new Label("Regolamento:\n\nUna partita è formata da massimo 4 giocatori.\nVince chi resta più tempo in partita. ").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                Label regolamento = new Label("Benvenuto in questa nuova versione multiplayer di Tetris™!\n\nDi seguito spiegherò le regole del gioco:" +
+                        "\n -Una partita è formata da un minimo di 2 a un massimo di 4 giocatori connessi ad un server;" +
+                        "\n -Ogni giocatore deve ruotare i pezzi che cadono in modo tale da riempire una riga orizzontale di blocchi senza interruzioni;" +
+                        "\n -Quando si ha riempito una riga \"spazzatura\" si può decidere di inviarla ad un avversario, ostacolando la sua partita;" +
+                        "\n -Game Over: i blocchi si accumulano fino alla sommità dell'area di gioco;" +
+                        "\n -Vittoria: tutti gli avversari hanno subito Game Over mentre tu sei rimasto ancora in gioco;" +
+                        "\n\n Di seguito elencherò alcuni comandi utili:" +
+                        "\n\n Server:" +
+                        "\n /start: fai partire il gioco se ci sono almeno 2 giocatori" +
+                        "\n /quit: interrompi la partita ed esci" +
+                        "\n /pause: metti in pausa la partita" +
+                        "\n /resume: riprendi una partita in pausa" +
+                        "\n /restart: ricomincia una partita dall'inizio " +
+                        "\n\n Giocatore:" +
+                        "\n Frecce direzionali ← ↓ →: muovi il pezzo nella direzione corrispondente" +
+                        "\n Barra spaziatrice: fai cadere il pezzo istantaneamente" +
+                        "\n Numeri 1 2 3: seleziona l'avversario a cui inviare le righe spazzatura (inivate automaticamente)").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+
                 panel.addComponent(regolamento);
 
                 Empty(panel, 1);
