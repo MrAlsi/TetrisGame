@@ -41,7 +41,7 @@ public class Schermo implements Runnable{
     private Panel panel;
     private TextColor coloreLabel;
     private final int brickDropDelay = 1000;
-    private Screen screen;
+    public static Screen screen;
     private Random sceltaPezzo = new Random();
     private int selezionato; //servirà come variabile d'appoggio per controllare quale sia il campo evidenziato
 
@@ -140,7 +140,6 @@ public class Schermo implements Runnable{
     public synchronized void run(){
         try {
             //Creazione terminale con dimensioni già fisse
-
             //Gioco
 
             // start brick move treads
@@ -167,7 +166,7 @@ public class Schermo implements Runnable{
                     break;
                 }
 
-                if(Client.restart){
+                /*if(Client.restart){
                     gameOver = true;
                     Client.winner = false;
                     System.out.println("Partita resettata");
@@ -175,7 +174,7 @@ public class Schermo implements Runnable{
                     Thread restartThread = new Thread(ricomincia);
                     restartThread.start();
                     break;
-                }
+                }*/
 
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
@@ -189,7 +188,7 @@ public class Schermo implements Runnable{
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     int combo = campo.controlloRighe();          //Controlla se ci sono righe piene e le elimina
-                   // screen.refresh();                            //Refresh dello schermo
+                    // screen.refresh();                            //Refresh dello schermo
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
                         //righeSpazzatura(combo);
                         datas = "spazzatura-" + usernameDestinatario + "-" + combo;
@@ -230,11 +229,9 @@ public class Schermo implements Runnable{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
             screen.close();
             Thread.currentThread().interrupt();
-
         } catch (IOException e) {
             System.out.println("Problema con il terminale");
             e.printStackTrace();
@@ -315,36 +312,37 @@ public class Schermo implements Runnable{
         //1
         if (uno.equals(key.getCharacter())&& dim>2) {
             if(selezionato!=0) {
-                    evidenzia(0);
-                    selezionato=0;
-                    for (int i = 1; i < dim - 1; i++) {
-                        noEvidenzia(i);
-                    }
-                    usernameDestinatario = miniCampo[0].nome;
+                evidenzia(0);
+                selezionato=0;
+                for (int i = 1; i < dim - 1; i++) {
+                    noEvidenzia(i);
+                }
+                usernameDestinatario = miniCampo[0].nome;
             }
         }
         //2
         if((due.equals(key.getCharacter()))&& dim>2) {
             if(selezionato!=1) {
-                    selezionato=1;
-                    evidenzia(1);
-                    for (int i = 0; i < dim - 1; i++) {
-                        if (i != 1) {
-                            noEvidenzia(i);
-                        }
+                selezionato=1;
+                evidenzia(1);
+                for (int i = 0; i < dim - 1; i++) {
+                    if (i != 1) {
+                        noEvidenzia(i);
                     }
+                }
+                usernameDestinatario = miniCampo[1].nome;
             }
         }
         //3
         if((tre.equals(key.getCharacter()))&& dim>2) {
             if (selezionato != 2) {
                 if (dim == 4) {
-                        evidenzia(2);
-                        selezionato=2;
-                        for (int i = 0; i < dim - 2; i++) {
-                            noEvidenzia(i);
-                        }
-                        usernameDestinatario = miniCampo[2].nome;
+                    evidenzia(2);
+                    selezionato=2;
+                    for (int i = 0; i < dim - 2; i++) {
+                        noEvidenzia(i);
+                    }
+                    usernameDestinatario = miniCampo[2].nome;
                 }
             }
         }
