@@ -48,8 +48,10 @@ public class ServerSender implements Runnable{
                     // Se il server invia il messaggio "/start" il gioco ccerca di partire
 
                     if (messaggioString.equals("/start")) {
+                          System.out.println("Il Server ha dato il comando START : il gioco cerca di partire...");
                         //controllo il numero dei giocatori
                         if (Server.connectedClients.size() < 2) {
+                           System.out.println("Numero di giocatori insufficiente");
                             Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
                                     .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
@@ -63,10 +65,12 @@ public class ServerSender implements Runnable{
                             broadcastServerMessage(players);
                             players = "";
                             Server.gameStarted = true;
+                            System.out.println("Partita iniziata!");
                             Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
                         }
                     } else if (messaggioString.equals("/quit")) {
+                            System.out.println("Uscita dal gioco");
                         if(Server.connectedClients.size()==0){
                             Server.serverThread.stop();
                             System.exit(0);
@@ -80,12 +84,14 @@ public class ServerSender implements Runnable{
 
                         }
                     } else if(messaggioString.equals("/restart")) {
+                        System.out.println("Restart...");
                         Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(lab_serverMsg);
                         broadcastServerMessage("[" + name + "]: " + messaggioString);
 
                     } else {
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
+                                System.out.println("trasmetto il messaggio del server a tutti i client connessi");
                         Label lab_serverMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(lab_serverMsg);
 
