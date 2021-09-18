@@ -2,7 +2,7 @@ package com.company.client;
 
 import com.company.Gioco.*;
 import com.company.MainSchermata;
-import com.company.server.ClientHandler;
+import com.company.server.Server;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import static com.googlecode.lanterna.TextColor.ANSI.*;
 
@@ -36,6 +37,7 @@ public class Client implements Runnable {
     private Boolean pause = false;
     private List<String> connectedClients;
     private Boolean terminate = false;
+    private Semaphore semaforoSchermo=new Semaphore(1);
 
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
@@ -96,7 +98,7 @@ public class Client implements Runnable {
                     terminate = true;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+               // e.printStackTrace();
             }
 
             RiceviStato rs = new RiceviStato();
@@ -157,7 +159,6 @@ public class Client implements Runnable {
 
                         } else if (message.equals("/start")) {
                             try {
-
                                 panel.removeAllComponents();
                                 panel.setFillColorOverride(BLACK);
                                 // Leggo i nick di tutti i giocatori
@@ -165,121 +166,24 @@ public class Client implements Runnable {
 
                                 connectedClients.clear();
 
-                                if (YouWin.nextGame) {
-                                    YouWin.screen.close();
-                                }
-                                if (GameOver.nextGame) {
-                                    GameOver.screen.close();
-                                }
-                                if (Restart.nextGame) {
-                                    Restart.screen.close();
-                                }
                                 String playersStringMessage = fromServer.readLine();
                                 System.out.println("Nomi: " + playersStringMessage);
                                 connectedClients.addAll(Arrays.asList(playersStringMessage.split("-")));
-                                Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
-                                gameThread = new Thread(schermo);
-                                gameThread.start();
-
-                                Schermo.gameOver = false;
-
-                                while (!Schermo.gameOver) {
-                                    try {
-                                        playersData = fromServer.readLine();
-                                        //System.out.println(playersData);
-                                        System.out.println("Dati:" + playersData);
-                                        if (playersData.contains(":0")) {
-                                            //Schermo.campoAvv=playersData;
-                                            rs.run(playersData);
-
-                                            //Schermo.traduciStringToInt(playersData);
-                                        }
-
-                                        //se il messaggio contiene la parola "spazzatura" so che dovrò aggiungere righe spazzatura
-                                        // in base al numero finale del messaggio
-                                        if (playersData.contains("spazzatura")) {
-
-                                            //quindi divido il messaggio e aggiungo righe spazzatura in base a quanto dice il
-                                            //messaggio ricevuto
-                                            String arr[] = playersData.split("-");
-                                            //controllo che le righe spazzatura siano indirizzate a me
-                                            if (arr[1].equals(name)) {
-                                                if (arr[2].equals("2")) {
-                                                    Schermo.aggiungiSpazzatura = 1;
-                                                    System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
-                                                } else if (arr[2].equals("3")) {
-                                                    Schermo.aggiungiSpazzatura = 2;
-                                                    System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
-
-                                                    //se non è ne 1 ne 2 ne 3 allora invierò 4 righe perché tanto meno non possono essere
-                                                    //se no sarebbe ricaduto in uno dei casi precedenti
-                                                } else {
-                                                    Schermo.aggiungiSpazzatura = 4;
-                                                    System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
-                                                }
-                                            }
-                                        }
-                                        if (playersData.contains("/pause") && !pause) {
-                                            pause = true;
-                                            gameThread.suspend();
-                                        } else if (playersData.contains("/resume") && pause) {
-                                            pause = false;
-                                            gameThread.resume();
-                                        } else if (playersData.contains("/restart") && !pause) {
-                                            winner = false;
-                                            restart = true;
-                                            while (restart) {
-
-                                            }
-                                            restart = true;
-                                            connectedClients.clear();
-                                            Thread.currentThread().interrupt();
-                                            break;
-
-                                        } else if(playersData.equals("/quit")){
-                                            Label successo = new Label("\n- - - Server left - - -").setBackgroundColor(BLACK)
-                                                    .setForegroundColor(RED);
-                                            try {
-                                                gameThread.stop();
-                                                connectedClients.clear();
-                                                panel.addComponent(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
-                                                MainSchermata.Schermata(panel);
-                                                socket.close();
-                                                break;
-                                            } catch (SocketException e) {
-                                                // e.printStackTrace();
-                                            } catch (IOException e) {
-                                                //e.printStackTrace();
-                                            }
-                                        }
-                                        else if (playersData.equals("[" + name + "]-winner")) {
-                                            winner = true;
-                                            connectedClients.clear();
-                                            winCheck = true;
-                                            while (winCheck) {
-
-                                            }
-                                            Thread.currentThread().interrupt();
-                                            break;
-
-                                        }
-                                        if (Schermo.gameOver) {
-                                            connectedClients.clear();
-                                            loseCheck = true;
-                                            while (loseCheck) {
-
-                                            }
-                                            Thread.currentThread().interrupt();
-                                            break;
-                                        }
-                                    } catch (IOException e) {
-                                        //e.printStackTrace();
-                                    }
+                                try {
+                                   Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
+                                   Gioco(fromServer,toServer,rs,schermo);
+                                } catch (IOException e) {
+                                   // e.printStackTrace();
                                 }
+
                             } catch (IOException e) {
                                 //e.printStackTrace();
                             }
-                        } else {
+
+                            // } else if(message.equals("/restart")){
+
+
+                        }else {
                             //Se il messaggio non è nullo lo stampo
                             Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_clientMsg);
@@ -323,6 +227,110 @@ public class Client implements Runnable {
 
         }
 
+
+    }
+    public void Gioco(BufferedReader fromServer, PrintWriter toServer, RiceviStato rs,Schermo schermo){
+
+        gameThread = new Thread(schermo);
+        gameThread.start();
+        Schermo.gameOver = false;
+        while (!Schermo.gameOver) {
+            try {
+                playersData = fromServer.readLine();
+
+                System.out.println("Dati:" + playersData);
+                if (playersData.contains(":0")) {
+                    //Schermo.campoAvv=playersData;
+                    rs.run(playersData);
+
+                    //Schermo.traduciStringToInt(playersData);
+                }
+
+                //se il messaggio contiene la parola "spazzatura" so che dovrò aggiungere righe spazzatura
+                // in base al numero finale del messaggio
+                else if (playersData.contains("spazzatura")) {
+
+                    //quindi divido il messaggio e aggiungo righe spazzatura in base a quanto dice il
+                    //messaggio ricevuto
+                    String arr[] = playersData.split("-");
+                    //controllo che le righe spazzatura siano indirizzate a me
+                    if (arr[1].equals(name)) {
+                        if (arr[2].equals("2")) {
+                            Schermo.aggiungiSpazzatura = 1;
+                            System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                        } else if (arr[2].equals("3")) {
+                            Schermo.aggiungiSpazzatura = 2;
+                            System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+
+                            //se non è ne 1 ne 2 ne 3 allora invierò 4 righe perché tanto meno non possono essere
+                            //se no sarebbe ricaduto in uno dei casi precedenti
+                        } else {
+                            Schermo.aggiungiSpazzatura = 4;
+                            System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
+                        }
+                    }
+                } else if (playersData.contains("/pause") && !pause) {
+                    pause = true;
+                    gameThread.suspend();
+                } else if (playersData.contains("/resume") && pause) {
+                    pause = false;
+                    gameThread.resume();
+                } else if (playersData.contains("/restart") && !pause) {
+                    try {
+
+                        gameThread.stop();
+                        Schermo.screen.stopScreen();
+                        Schermo.screen.close();
+                        RiceviStato.traduzione.release();
+                        Schermo schermo1 = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
+                        Gioco(fromServer, toServer, rs, schermo1);
+                        //semaforoSchermo.release();
+
+                    } catch (IOException e) {
+                        //e.printStackTrace();
+                    }
+
+
+                } else if (playersData.equals("/quit")) {
+                    try {
+                        Schermo.screen.stopScreen();
+                        Schermo.screen.close();
+                        socket.close();
+                        gameThread.stop();
+                        connectedClients.clear();
+                        panel.addComponent(new EmptySpace(new TerminalSize(0, 0))); // Empty space underneath labels
+                        String[] args = new String[0];
+                        MainSchermata.main(args);
+
+                        break;
+                    } catch (SocketException e) {
+                        //e.printStackTrace();
+                    } catch (IOException e) {
+                        //e.printStackTrace();
+                    }
+                } else if (playersData.equals("[" + name + "]-winner")) {
+                    winner = true;
+                    connectedClients.clear();
+                    winCheck = true;
+                    while (winCheck) {
+
+                    }
+                    Thread.currentThread().interrupt();
+                    break;
+
+                }
+                if (Schermo.gameOver) {
+                    connectedClients.clear();
+                    loseCheck = true;
+                    while (loseCheck) {
+                    }
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+        }
 
     }
 }
