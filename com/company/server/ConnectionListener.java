@@ -33,7 +33,7 @@ public class ConnectionListener implements Runnable {
             listener.setReuseAddress(true);
 
             while(Server.connectedClients.size() <= 4){
-                System.out.println(Server.connectedClients.size());
+                System.out.println("Client connessi" + Server.connectedClients.size() + "/4");    
                 Socket socket = listener.accept();
                 // Per ogni client che si connette al server creo un thread handlerThread,
                 // a lato server, per ogni client così che possano essere gestiti singolarmente dal server
@@ -46,6 +46,7 @@ public class ConnectionListener implements Runnable {
                 panel.addComponent(lab_clientJoin);
 
                 // Aggiorno i vari client che un nuovo giocatore si è connesso al server
+                System.out.println("Aggiornamento Client quando un nuovo giocatore si connette al Server: "+ "Client connessi" + Server.connectedClients.size() + "/4");
                 broadcastServerMessage("[SERVER]: Connected clients: " + (Server.connectedClients.size()) + "/4");
                 if(Server.connectedClients.size() == 4){
                     Server.gameStarted = true;
@@ -54,6 +55,7 @@ public class ConnectionListener implements Runnable {
                         players = players + pair.getKey() + "-";
                     }
                     broadcastServerMessage(players);
+                    System.out.println("Il gioco è iniziato!")
                     Label lab_serverMsg = new Label("[SERVER]: The game has started!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                     panel.addComponent(lab_serverMsg);
                     while(Server.gameStarted){
