@@ -43,12 +43,14 @@ public class Server  implements Runnable{
         this.connectedClients= new HashMap<String, PrintWriter>();
         connectionListener = new ConnectionListener(panel, this.SERVERPORT, coloreLabel);
         listenerThread = new Thread(connectionListener);
+         System.out.println("Creazione del Server...");
     }
 
     // Metodo che richiamo subito e serve per far partire il thread dedicato al server
     public void StartServer(Server server) {
             serverThread = new Thread(server);
             serverThread.start();
+            System.out.println("Avvio del Server... ");
     }
 
     // Inizializzo la schermata del server
@@ -81,7 +83,7 @@ public class Server  implements Runnable{
 
             // Il server si mette in ascolto per eventuali client che tentano di connettersi
             listenerThread.start();
-
+            System.out.println("Server in ascolto... ");
             // Creo il thread di comunicazione del server e lo avvio
             // Questo thread permette al server di mandare messaggi a tutti i client
             // durante il pre-partita
