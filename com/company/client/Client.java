@@ -2,7 +2,6 @@ package com.company.client;
 
 import com.company.Gioco.*;
 import com.company.MainSchermata;
-import com.company.server.Server;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -17,7 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import static com.googlecode.lanterna.TextColor.ANSI.*;
+import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
+import static com.googlecode.lanterna.TextColor.ANSI.RED;
 
 public class Client implements Runnable {
     private String name;
@@ -102,9 +102,8 @@ public class Client implements Runnable {
             }
 
             RiceviStato rs = new RiceviStato();
-            while(clientSender.shown){
+            Thread.currentThread().sleep(500);
 
-            }
             if(!terminate) {
                 // Finché il server non chiude la connessione o non ricevi un messaggio "/quit"...
                 while (message != null || message.equals("/quit")) {
@@ -164,6 +163,22 @@ public class Client implements Runnable {
                                 // Leggo i nick di tutti i giocatori
                                 MainSchermata.screen.close();
 
+                                // chiudo eventuali schermi
+                                if (YouWin.nextGame) {
+                                    try {
+                                        YouWin.screen.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                if (GameOver.nextGame) {
+                                    try {
+                                        GameOver.screen.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
                                 connectedClients.clear();
 
                                 String playersStringMessage = fromServer.readLine();
@@ -216,7 +231,7 @@ public class Client implements Runnable {
 
             }
 
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             //ex.printStackTrace();
             Label nonconnesso = new Label("\n- - - - Connection failed try again - - - -\n").setBackgroundColor(BLACK)
                     .setForegroundColor(RED);

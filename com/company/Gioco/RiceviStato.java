@@ -8,7 +8,7 @@ import static com.company.Gioco.Schermo.*;
 
 
 public class RiceviStato extends Thread{
-    static Semaphore traduzione = new Semaphore(1);
+    public static Semaphore traduzione = new Semaphore(1);
 
     public void run(String stringa) {
         traduciStringToInt(stringa);

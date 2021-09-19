@@ -1,7 +1,7 @@
 package com.company.Gioco;
 
 import com.googlecode.lanterna.graphics.TextGraphics;
-import static com.Gioco.Schermo.*;
+import static com.company.Gioco.Schermo.*;
 
 /**
  * La classe griglia è la classe che crea e gestisce il campo da gioco, è costituita da una griglia 12x24 di @Blocco

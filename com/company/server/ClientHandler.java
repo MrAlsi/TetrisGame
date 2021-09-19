@@ -150,9 +150,10 @@ public class ClientHandler implements Runnable {
                                     }
                                 }
                                 broadcastMessage(String.format("%s", message), username);
-                                Server.semaforoConnectedClients.release();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
+                            } finally {
+                                Server.semaforoConnectedClients.release();
                             }
                         }
                     }

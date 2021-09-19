@@ -103,10 +103,21 @@ public class Schermo implements Runnable{
         dim = connectedClients.size();
         int posverticale=height/25;
 
+        int pos1;
+        int pos2;
+        int pos3;
+
         //posizioni per mettere i nomi sotto ai campi
-        int pos1=width/19;
-        int pos2=width/12;
-        int pos3=width/9;
+        //variano in base alla dimensione dello schermo
+        if(width<=1280) {
+            pos1 = width / 19;
+            pos2 = width / 12;
+            pos3 = width / 9;
+        } else {
+            pos1 = width / 29;
+            pos2 = width / 17;
+            pos3 = width / 13;
+        }
 
         //for in base al numero di giocatori
         int j = 0;

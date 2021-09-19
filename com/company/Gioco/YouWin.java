@@ -17,7 +17,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.awt.*;
 import java.util.Arrays;
-import java.util.*;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.googlecode.lanterna.TextColor.ANSI.*;
