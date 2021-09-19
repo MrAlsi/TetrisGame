@@ -10,8 +10,4 @@ public class BloccoSpazzatura extends Blocco{
          super(screen, col, rig, TextColor.ANSI.RED, BLOCK_SPARSE);
         stato = 3;
     }
-    @Override
-    public void setStato() {
-        stato = 3;
-    }
 }
