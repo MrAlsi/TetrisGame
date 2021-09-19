@@ -286,13 +286,13 @@ public class MainSchermata {
                 //svuoto lo schermo
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
-               Label regolamento = new Label("Benvenuto in questa nuova versione multiplayer di Tetris™!\n\nDi seguito spiegherò le regole del gioco:" +
-                        "\n -Una partita è formata da un minimo di 2 a un massimo di 4 giocatori connessi ad un server;" +
-                        "\n -Ogni giocatore deve ruotare i pezzi che cadono in modo tale da riempire una riga orizzontale di blocchi senza interruzioni;" +
-                        "\n -Quando si riempie una riga orizzontale questa diventa una 'riga spazzatura' che viene inviata all'avversario selezionato" +
-                        "\n -Game Over: i blocchi si accumulano fino alla sommità dell'area di gioco;" +
-                        "\n -Vittoria: tutti gli avversari hanno subito Game Over mentre tu sei rimasto ancora in gioco;" +
-                        "\n\n Di seguito elencherò alcuni comandi utili:" +
+               Label regolamento = new Label("Benvenuto in questa nuova versione multiplayer di Tetris™!\n\nRegolamento di gioco:" +
+                        "\n -Una partita è formata da un minimo di 2 a un massimo di \n4 giocatori connessi ad un server;" +
+                        "\n\n -Ogni giocatore deve ruotare i pezzi che cadono in modo \ntale da riempire una riga orizzontale di blocchi senza interruzioni;" +
+                        "\n\n -Quando si riempie una riga orizzontale questa diventa una \n'riga spazzatura' che viene inviata all'avversario selezionato;" +
+                        "\n\n -Game Over: i blocchi si accumulano fino alla sommità \ndell'area di gioco;" +
+                        "\n\n -Vittoria: tutti gli avversari hanno subito Game Over \nmentre tu sei rimasto ancora in gioco;" +
+                        "\n\n\n Comandi utili:" +
                         "\n\n Server:" +
                         "\n /start: fai partire il gioco se ci sono almeno 2 giocatori" +
                         "\n /quit o close: interrompi la partita ed esci" +
@@ -300,10 +300,10 @@ public class MainSchermata {
                         "\n /resume: riprendi una partita in pausa" +
                         "\n /restart: ricomincia una partita dall'inizio " +
                         "\n\n Giocatore:" +
-                        "\n Frecce direzionali ← ↓ →: muovi il pezzo nella direzione corrispondente" +
+                        "\n Frecce direzionali ← ↓ →: movimento del pezzo" +
                         "\n x: ruota il pezzo in senso orario" +
                         "\n Barra spaziatrice: fai cadere il pezzo istantaneamente" +
-                        "\n Numeri 1 2 3: seleziona l'avversario a cui inviare le righe spazzatura (inivate automaticamente)").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        "\n Numeri 1 2 3: seleziona l'avversario a cui inviare le righe spazzatura.").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                
                 panel.addComponent(regolamento);
 
