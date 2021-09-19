@@ -1,5 +1,6 @@
 package com.company.Gioco;
 
+import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -25,20 +26,16 @@ public class Blocco {
         try {
             Schermo.semaforoColore.acquire(); //serve per gestire l'accesso a "schermo.setForegroundColor" essendo una risorsa condivsa
             schermo.setForegroundColor(colore);
-            schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna, rigaGriglia * coefRiga), new TerminalSize(coefColonna, coefRiga), simbolo);
+            schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna+1, rigaGriglia * coefRiga+1), new TerminalSize(coefColonna, coefRiga), simbolo);
             Schermo.semaforoColore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void cambiaColore(TextColor colore) {
-        schermo.setBackgroundColor(colore);
-    }
-
     // Ritorna la posizione della colonna sullo schermo, coordinata * coefficente
-    public int getColonna() {
-        return colonnaGriglia;
+    public int getColonna() { 
+        return colonnaGriglia; 
     }
 
     // Ritorna la posizione della riga sullo schermo, coordinata * coefficente
@@ -46,6 +43,7 @@ public class Blocco {
         return rigaGriglia;
     }
 
+    // Ritorna il colore del blocco
     public TextColor getColor() {
         return colore;
     }
@@ -54,23 +52,16 @@ public class Blocco {
         return stato;
     }
 
-    public void setStato() {
-    }
-
     public boolean collisioneSotto(Griglia campo) {
-        if (this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga() + 1].getStato() > 1) {
-            return true;
-        } else {
-            //System.out.println("il colore è: " + campo.griglia[this.getColonna()][this.getRiga()+1].getStato());
-            return false;
-        }
+        return this.getRiga() == 23 || campo.griglia[this.getColonna()][this.getRiga() + 1].getStato() > 1;
     }
 
     public boolean collisioneLaterale(Griglia campo, int spostamentoOrizzontale, int spostamentoVerticale) {
-        return this.getColonna() + spostamentoOrizzontale < 0 ||
-                this.getColonna() + spostamentoOrizzontale == 12 ||
-                this.getRiga() - spostamentoVerticale < 0 ||
-                campo.griglia[this.getColonna() + spostamentoOrizzontale][this.getRiga() + spostamentoVerticale].getStato() >= 2;
+        return this.getColonna() + spostamentoOrizzontale < 0 || //Collisione con muro di sinistra
+                this.getColonna() + spostamentoOrizzontale > 11 || //Collisione con muro di destra
+                this.getRiga() + spostamentoVerticale < 0 || //Collisione con muro in alto
+                this.getRiga() + spostamentoVerticale > 23 || //Collisione con muro in basso
+                campo.griglia[this.getColonna() + spostamentoOrizzontale][this.getRiga() + spostamentoVerticale].getStato() >= 2; //Collisione con blocco struttura/spazzatura
     }
 
     public void muovi(Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale, TextColor colore) {
