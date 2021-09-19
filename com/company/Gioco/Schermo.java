@@ -56,6 +56,7 @@ public class Schermo implements Runnable{
     public int dim;
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];
     public static Semaphore semaforoColore=new Semaphore(1); // servirà per gestire l'accesso a "schermo.setForegroundColor"
+    public Semaphore semaforoSpazzatura = new Semaphore(1);
 
     public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
         this.IP = IP;
@@ -164,30 +165,17 @@ public class Schermo implements Runnable{
                     vittoriaThread.start();
                     break;
                 }
-
-                /*if(Client.restart){
-                    gameOver = true;
-                    Client.winner = false;
-                    System.out.println("Partita resettata");
-                    Restart ricomincia = new Restart(username, IP, PORT, panel, coloreLabel, connectedClients);
-                    Thread restartThread = new Thread(ricomincia);
-                    restartThread.start();
-                    break;
-                }*/
-
+                
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();
 
                 for(KeyStroke key : keyStrokes) {
-                    //screen.refresh();
                     processKeyInput(key);
-                    //IS.run(campo);
                 }
 
                 if((pezzoScelto.collisioneSotto() && brickDropTimer.getDropBrick()) || barra){
                     barra = false;                               //Avviene una collisione: TRUE
                     pezzoScelto.setStruttura();                  //Il pezzo diventa parte della struttura
                     int combo = campo.controlloRighe();          //Controlla se ci sono righe piene e le elimina
-                    // screen.refresh();                            //Refresh dello schermo
                     if(combo > 1){                               //Combo serve per vedere se si sono liberate più righe
                         //righeSpazzatura(combo);
                         datas = "spazzatura-" + usernameDestinatario + "-" + combo;
@@ -209,8 +197,14 @@ public class Schermo implements Runnable{
                 }
 
                 if(aggiungiSpazzatura != 0){
+                    try {
+                        semaforoSpazzatura.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     campo.aggiungiSpazzatura(aggiungiSpazzatura);
                     aggiungiSpazzatura = 0;
+                    semaforoSpazzatura.release();
                 }
 
                 if(brickDropTimer.getDropBrick()) {
@@ -267,6 +261,7 @@ public class Schermo implements Runnable{
         // drop
         Character c1 = ' '; //Fai cadere
         Character c2 = 'x'; //Ruota
+        Character c3 = 's';
 
         Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
         Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
@@ -305,6 +300,10 @@ public class Schermo implements Runnable{
         if(c2.equals(key.getCharacter())) {
             if(!pezzoScelto.collisioneRotazione())
                 pezzoScelto.ruota(campo, pezzoScelto.rotazione, 1);
+        }
+
+        if(c3.equals(key.getCharacter())) {
+           campo.aggiungiSpazzatura(3);
         }
 
         //1
