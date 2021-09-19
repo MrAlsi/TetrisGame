@@ -10,9 +10,4 @@ public class BloccoStruttura extends Blocco{
          super(schermo, col, rig, TextColor.ANSI.WHITE_BRIGHT, BLOCK_DENSE);
         stato = 2;
     }
-
-    @Override
-    public void setStato() {
-        stato = 2;
-    }
 }
