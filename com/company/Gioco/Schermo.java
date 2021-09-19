@@ -28,18 +28,17 @@ import static com.googlecode.lanterna.TextColor.ANSI.YELLOW_BRIGHT;
 
 public class Schermo implements Runnable{
 
-
     //Variabili private
     private int numeroDiStampa = 0;
-    private Pezzo pezzoScelto;
+    public static Pezzo pezzoScelto;
     private CadutaBlocco brickDropTimer;
     private Boolean barra = false;
-    private List<String> connectedClients;
+    private static List<String> connectedClients;
     private static String username;
-    private String IP;
-    private int PORT;
-    private Panel panel;
-    private TextColor coloreLabel;
+    private static String IP;
+    private static int PORT;
+    private static Panel panel;
+    private static TextColor coloreLabel;
     private final int brickDropDelay = 1000;
     public static Screen screen;
     private Random sceltaPezzo = new Random();
@@ -53,7 +52,7 @@ public class Schermo implements Runnable{
     public static String datas = "e";
     public static String usernameDestinatario = "";
     public static int aggiungiSpazzatura = 0;
-    public PrintWriter pw = null;
+    public static PrintWriter pw = null;
     public int dim;
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];
     public static Semaphore semaforoColore=new Semaphore(1); // servirà per gestire l'accesso a "schermo.setForegroundColor"
@@ -196,15 +195,14 @@ public class Schermo implements Runnable{
                     }
                     //Richiamo il metodo per mandare le righe spaz. in base alla combo
                     //screen.refresh();                            //Refresh dello schermo
-                    if(campo.sconfitta()){
-                        System.out.println("Partita finita");
-                        String msg_sconfitta = username + "-lost";
-                        invia(msg_sconfitta, pw);
-                        GameOver sconfitta = new GameOver(username, IP, PORT, panel, coloreLabel, connectedClients);
-                        Thread sconfittaThread = new Thread(sconfitta);
-                        sconfittaThread.start();
-                        gameOver = true;
-                        break;
+                    for(int i=0; i<12; i++)
+                    {
+                        if(campo.griglia[i][0].stato>1){
+                            haiPerso();
+                            System.out.println("1");
+                            gameOver=true;
+                            break;
+                        }
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
 
@@ -291,21 +289,21 @@ public class Schermo implements Runnable{
 
         // left
         if(key.getKeyType().equals(KeyType.ArrowLeft)) {
-            if(!pezzoScelto.collisioneLaterale(-1)) {
-                pezzoScelto.muovi(campo, -1);
+            if(!pezzoScelto.collisioneMovimento(-1)) {
+                pezzoScelto.muovi(campo, -1, 0);
             }
         }
 
         // right
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
-            if(!pezzoScelto.collisioneLaterale(1)) {
-                pezzoScelto.muovi(campo, 1);
+            if(!pezzoScelto.collisioneMovimento(1)) {
+                pezzoScelto.muovi(campo, 1, 0);
             }
         }
 
         // rotate right
         if(c2.equals(key.getCharacter())) {
-            if(!pezzoScelto.collisioneLateraleRotazione(pezzoScelto.spostamentoOrizzontale[pezzoScelto.rotazione], pezzoScelto.rotazione))
+            if(!pezzoScelto.collisioneRotazione())
                 pezzoScelto.ruota(campo, pezzoScelto.rotazione, 1);
         }
 
@@ -395,6 +393,18 @@ public class Schermo implements Runnable{
             semaforoColore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void haiPerso() {
+        if(!gameOver) {
+            System.out.println("Partita finita");
+            String msg_sconfitta = username + "-lost";
+            invia(msg_sconfitta, pw);
+            GameOver sconfitta = new GameOver(username, IP, PORT, panel, coloreLabel, connectedClients);
+            Thread sconfittaThread = new Thread(sconfitta);
+            sconfittaThread.start();
+            gameOver=true;
         }
     }
 }
