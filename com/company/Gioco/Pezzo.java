@@ -32,7 +32,6 @@ public class Pezzo {
     }
 
     public void scendi(Griglia campo) {
-
         for (int i = 0; i < 4; i++) {
             pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
             // System.out.println(pezzo[i].getStato());
@@ -56,21 +55,21 @@ public class Pezzo {
         }
     }
 
-    public void muovi(Griglia campo, int orizzontale){
-        if(!collisioneLaterale(orizzontale)){ //deve ritornare false per entrare
+    public void muovi(Griglia campo, int orizzontale, int verticale){
+        if(!collisioneMovimento(orizzontale)){ //deve ritornare false per entrare
             for (int i = 3; i >= 0; i--) {
                 pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
-
             }
             for (int i = 3; i >= 0; i--) {
-                pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, 0, pezzo[i].colore);
+                pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, verticale, pezzo[i].colore);
                 pezzo[i].colonnaGriglia = pezzo[i].getColonna() + orizzontale;
+                pezzo[i].rigaGriglia = pezzo[i].getRiga() + verticale;
             }
         }
     }
 
     //Controllo laterale e con struttura per spostamento
-    public boolean collisioneLaterale(int spostamento){ //Spostamento 1: Destra  -1: Sinistra
+    public boolean collisioneMovimento(int spostamento){ //Spostamento 1: Destra  -1: Sinistra
         return pezzo[0].collisioneLaterale(campo, spostamento, 0) ||
                 pezzo[1].collisioneLaterale(campo, spostamento, 0) ||
                 pezzo[2].collisioneLaterale(campo, spostamento, 0) ||
@@ -78,23 +77,29 @@ public class Pezzo {
     }
 
     //Controllo laterale e con struttura per rotazione
-    public boolean collisioneLateraleRotazione(int[] spostamento, int rotazione){
-        if(rotazione==maxRotazioni)
-            return  pezzo[0].collisioneLaterale(campo, spostamentoOrizzontale[0][0], spostamentoVerticale[0][0]) ||
-                    pezzo[1].collisioneLaterale(campo, spostamentoOrizzontale[0][1], spostamentoVerticale[0][1]) ||
-                    pezzo[2].collisioneLaterale(campo, spostamentoOrizzontale[0][2], spostamentoVerticale[0][2]) ||
-                    pezzo[3].collisioneLaterale(campo, spostamentoOrizzontale[0][3], spostamentoVerticale[0][3]);
-        else
-            return  pezzo[0].collisioneLaterale(campo, spostamento[0], spostamentoVerticale[rotazione][0]) ||
-                    pezzo[1].collisioneLaterale(campo, spostamento[1], spostamentoVerticale[rotazione][1]) ||
-                    pezzo[2].collisioneLaterale(campo, spostamento[2], spostamentoVerticale[rotazione][2]) ||
-                    pezzo[3].collisioneLaterale(campo, spostamento[3], spostamentoVerticale[rotazione][3]);
-    }
+    public boolean collisioneRotazione(){
+        return  pezzo[0].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][0], spostamentoVerticale[rotazione][0]) ||
+                pezzo[1].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][1], spostamentoVerticale[rotazione][1]) ||
+                pezzo[2].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][2], spostamentoVerticale[rotazione][2]) ||
+                pezzo[3].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][3], spostamentoVerticale[rotazione][3]);
+}
 
     public boolean collisioneSotto() {
         return pezzo[0].collisioneSotto(campo)||
                 pezzo[1].collisioneSotto(campo) ||
                 pezzo[2].collisioneSotto(campo) ||
                 pezzo[3].collisioneSotto(campo);
+    }
+
+    public void alzaPezzo(int altezza){
+        if (pezzo[0].collisioneLaterale(campo, 0, -altezza) ||
+                pezzo[1].collisioneLaterale(campo, 0, -altezza) ||
+                pezzo[2].collisioneLaterale(campo, 0, -altezza) ||
+                pezzo[3].collisioneLaterale(campo, 0, -altezza)) {
+            System.out.println("ricorsione");
+            alzaPezzo(altezza-1);
+        } else {
+            muovi(campo, 0, -altezza);
+        }
     }
 }
