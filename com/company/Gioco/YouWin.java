@@ -155,6 +155,30 @@ public class YouWin implements Runnable{
                 MainSchermata.clientThread.start();
             }
         }).addTo(panel);
+        new Button("Close", new Runnable() {
+            @Override
+            public void run() {
+                //shown = false;
+                try {
+                    System.exit(0);
+                    panel.removeAllComponents();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).addTo(panel);
+        new Button("Esci dal server", new Runnable() {
+            @Override
+            public void run() {
+                //shown = false;
+                try {
+                    panel.removeAllComponents();
+                    MainSchermata.Schermata(panel);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).addTo(panel);
     }
 
     // separatore di dimensioni pari a size
