@@ -16,6 +16,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -118,13 +119,38 @@ public class GameOver implements Runnable{
             @Override
             public void run(){
                 //svuoto la schermo
-                panel.removeAllComponents();
+                //panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
                 nextGame = true;
                 //richiamo schermata inziale
+                RiceviStato.traduzione.release();
                 Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel, new LinkedList<>());
                 MainSchermata.clientThread = new Thread(client);
                 MainSchermata.clientThread.start();
+            }
+        }).addTo(panel);
+        new Button("Close", new Runnable() {
+            @Override
+            public void run() {
+                //shown = false;
+                try {
+                    System.exit(0);
+                    panel.removeAllComponents();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).addTo(panel);
+        new Button("Esci dal server", new Runnable() {
+            @Override
+            public void run() {
+                //shown = false;
+                try {
+                    panel.removeAllComponents();
+                    MainSchermata.Schermata(panel);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }).addTo(panel);
     }
