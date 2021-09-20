@@ -1,6 +1,7 @@
 package com.company.server;
 
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
@@ -20,7 +21,6 @@ public class ConnectionListener implements Runnable {
     public static Thread handlerThread;
     private int SERVERPORT;
     private String players = "";
-    public TextBox messaggio=new TextBox();
 
     public  ConnectionListener(Panel panel, int SERVERPORT, TextColor coloreLabel) {
         this.panel=panel;
@@ -46,7 +46,6 @@ public class ConnectionListener implements Runnable {
                 handlerThread.start();
 
                 Label lab_clientJoin=new Label("[SERVER]: Connected clients: " + (Server.connectedClients.size())+ "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                controlloLabel(messaggio);
                 panel.addComponent(lab_clientJoin);
 
                 // Aggiorno i vari client che un nuovo giocatore si è connesso al server
@@ -61,7 +60,6 @@ public class ConnectionListener implements Runnable {
                     broadcastServerMessage(players);
                     System.out.println("Il gioco è iniziato!");
                     Label lab_serverMsg = new Label("[SERVER]: The game has started!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                    controlloLabel(messaggio);
                     panel.addComponent(lab_serverMsg);
                     while(Server.gameStarted){
 
@@ -81,21 +79,5 @@ public class ConnectionListener implements Runnable {
             e.getValue().println(message);
             e.getValue().flush();
         }
-    }
-    public synchronized void controlloLabel(TextBox messaggio){
-        if (Server.contaLabel>=15){
-            Server.contaLabel=0;
-            panel.removeAllComponents();
-            Label lab=new Label("\nStarting "+ ServerSender.name + "... ").setBackgroundColor(BLACK).setForegroundColor(
-                    coloreLabel);
-            panel.addComponent(lab);
-            Label myIp = new Label("\nShare your ip address: " + ip).setBackgroundColor(BLACK).setForegroundColor(
-                    coloreLabel);
-            panel.addComponent(myIp);
-            Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-            panel.addComponent(lab_serverOn);
-            panel.addComponent(messaggio);
-        }
-        Server.contaLabel++;
     }
 }
