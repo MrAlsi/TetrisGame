@@ -3,11 +3,13 @@ package com.company.server;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.TextBox;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Map.Entry;
 
+import static com.company.server.Server.ip;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 // Per ogni client che si connetterà al server creo un Thread handlerThread che si occupa
@@ -20,6 +22,7 @@ public class ClientHandler implements Runnable {
     private TextColor coloreLabel;
     private Boolean  usernameCheck = true;
     private int check = 0;
+    public TextBox messaggio=new TextBox();
 
     public ClientHandler(Socket socket, String userName,Panel panel,TextColor coloreLabel) {
         this.clientSocket = socket;
@@ -28,7 +31,7 @@ public class ClientHandler implements Runnable {
         this.coloreLabel=coloreLabel;
     }
 
-    public void clientHandler() {
+    public synchronized void clientHandler() {
         PrintWriter out;
         try {
             InputStream socketInput = clientSocket.getInputStream();
@@ -68,7 +71,7 @@ public class ClientHandler implements Runnable {
                 Label lab_newClient = new Label("[SERVER]: " + "New client connected: " + username + " ["
                         + clientSocket.getInetAddress().getHostAddress()
                         + "]").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                panel.addComponent(lab_newClient);
+
 
                 broadcastServerMessage("[SERVER]: " + "New client connected: " + username + " ["
                         + clientSocket.getInetAddress().getHostAddress()
@@ -96,6 +99,7 @@ public class ClientHandler implements Runnable {
                             // Il server si occupa poi di trasmettere il messaggio agli altri client
                             System.out.println("[" + username + "]: " + message );
                             Label lab_clientMsg = new Label("[" + username + "]: " + message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            controlloLabel(messaggio);
                             panel.addComponent(lab_clientMsg);
                             if(!Server.gameStarted){
                                 System.out.println("[" + username + "]: " + message);
@@ -117,7 +121,7 @@ public class ClientHandler implements Runnable {
 
                             System.out.println(username + " è il vincitore");
                             Label lab_clientPerso = new Label("[SERVER]: " + username + " is the winner!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            panel.addComponent(lab_clientPerso);
+                            controlloLabel(messaggio);
                             broadcastServerMessage(Server.connectedClients.keySet() + "-winner");
                             Server.gameStarted = false;
                         }
@@ -130,20 +134,22 @@ public class ClientHandler implements Runnable {
 
                                         System.out.println(i + " ha perso");
                                         Label lab_clientPerso = new Label("[SERVER]: " + i + " lost!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                        controlloLabel(messaggio);
                                         panel.addComponent(lab_clientPerso);
 
                                         if ((Server.connectedClients.size() - 1) > 1) {
 
                                             System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
                                             Label lab_clientPerso2 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                            controlloLabel(messaggio);
                                             panel.addComponent(lab_clientPerso2);
 
                                         } else {
-                                            
+
                                             System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
                                             Label lab_clientPerso3 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                            controlloLabel(messaggio);
                                             panel.addComponent(lab_clientPerso3);
-
                                         }
                                         Server.connectedClients.remove(i);
                                         Thread.currentThread().interrupt();
@@ -166,23 +172,25 @@ public class ClientHandler implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                    // Quando un giocatore invia il comando /quit si disconnette dal server
-                    // Viene quindi mandato un messaggio di aggiornamento a tutti i client
+                // Quando un giocatore invia il comando /quit si disconnette dal server
+                // Viene quindi mandato un messaggio di aggiornamento a tutti i client
 
-                    System.out.println("[SERVER]: " + username + " is leaving");
-                    Server.connectedClients.remove(username);
-                     System.out.println(("[SERVER]: " + username + "  si è disconnesso"));
-                    Label lab_clientLeft = new Label("[SERVER]: " + username + " has left").setBackgroundColor(BLACK)
-                            .setForegroundColor(coloreLabel);
-                    panel.addComponent(lab_clientLeft);
+                System.out.println("[SERVER]: " + username + " is leaving");
+                Server.connectedClients.remove(username);
+                System.out.println(("[SERVER]: " + username + "  si è disconnesso"));
+                Label lab_clientLeft = new Label("[SERVER]: " + username + " has left").setBackgroundColor(BLACK)
+                        .setForegroundColor(coloreLabel);
+                controlloLabel(messaggio);
+                panel.addComponent(lab_clientLeft);
 
-                    System.out.println("[SERVER]: " + "Connected clients: " + Server.connectedClients.size() + "/4");
-                    Label lab_clientTot = new Label("[SERVER]: " + "Connected clients: " + Server.connectedClients
-                            .size() + "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                    panel.addComponent(lab_clientTot);
+                System.out.println("[SERVER]: " + "Connected clients: " + Server.connectedClients.size() + "/4");
+                Label lab_clientTot = new Label("[SERVER]: " + "Connected clients: " + Server.connectedClients
+                        .size() + "/4").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                controlloLabel(messaggio);
+                panel.addComponent(lab_clientTot);
 
-                    broadcastServerMessage("[SERVER]: " + username + " has left");
-                    broadcastServerMessage("[SERVER]: Connected clients: " + Server.connectedClients.size() + "/4");
+                broadcastServerMessage("[SERVER]: " + username + " has left");
+                broadcastServerMessage("[SERVER]: Connected clients: " + Server.connectedClients.size() + "/4");
                     /*try {
                         ClientHandler.clientSocket.close();
                     } catch (IOException e) {
@@ -213,5 +221,22 @@ public class ClientHandler implements Runnable {
                 e.getValue().flush();
             }
         }
+    }
+
+    public  synchronized void  controlloLabel(TextBox messaggio){
+        if (Server.contaLabel>=15){
+            Server.contaLabel=0;
+            panel.removeAllComponents();
+            Label lab=new Label("\nStarting "+ ServerSender.name + "... ").setBackgroundColor(BLACK).setForegroundColor(
+                    coloreLabel);
+            panel.addComponent(lab);
+            Label myIp = new Label("\nShare your ip address: " + ip).setBackgroundColor(BLACK).setForegroundColor(
+                    coloreLabel);
+            panel.addComponent(myIp);
+            Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+            panel.addComponent(lab_serverOn);
+            panel.addComponent(messaggio);
+        }
+        Server.contaLabel++;
     }
 }
