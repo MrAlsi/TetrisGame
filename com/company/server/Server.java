@@ -30,7 +30,6 @@ public class Server  implements Runnable{
     public static Boolean gameStarted = false;
     public static HashMap<String, PrintWriter> connectedClients;
     public static Semaphore semaforoConnectedClients=new Semaphore(1);
-    public static int contaLabel=0;
     public static String ip="";
 
 
