@@ -30,18 +30,16 @@ public class ServerSender implements Runnable{
     }
 
     public synchronized void run() {
-
-        TextBox messaggio=new TextBox();
-        panel.addComponent(messaggio);
-
-        inviaMessaggio(messaggio);
-
+            TextBox messaggio = new TextBox();
+            panel.addComponent(messaggio);
+            inviaMessaggio(messaggio);
     }
 
     public synchronized void inviaMessaggio(final TextBox messaggio){
         new Button("Invia",new Runnable(){
             @Override
             public void run(){
+                //flag=false;
                 //Finché non ricevi un comando "quit" dall'utente...
                 //userMessage = userInput.nextLine(); //... leggi un messaggio da console (bloccante!)...
                 //toOther.println(userMessage); //... e invialo al server
@@ -58,7 +56,8 @@ public class ServerSender implements Runnable{
                             System.out.println("Numero di giocatori insufficiente");
                             Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
                                     .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            controlloLabel(messaggio,lab_serverMsg,messaggioString);
+                            panel.addComponent(lab_serverMsg);
+                            broadcastServerMessage("[" + name + "]: " + messaggioString);
 
 
                         } else {
@@ -72,7 +71,8 @@ public class ServerSender implements Runnable{
                             players = "";
                             Server.gameStarted = true;
                             Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            controlloLabel(messaggio,lab_serverMsg,messaggioString);
+                            panel.addComponent(lab_serverMsg);
+                            broadcastServerMessage("[" + name + "]: " + messaggioString);
 
                         }
                     } else if (messaggioString.equals("/quit")) {
@@ -92,13 +92,28 @@ public class ServerSender implements Runnable{
                     } else if(messaggioString.equals("/restart")) {
                         System.out.println("Restart...");
                         Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        controlloLabel(messaggio,lab_serverMsg,messaggioString);
+                        panel.addComponent(lab_serverMsg);
+                        broadcastServerMessage("[" + name + "]: " + messaggioString);
 
+                    }else if(messaggioString.equals("/clear")){
+                        System.out.println("Pulisci schermo...");
+                        panel.removeAllComponents();
+                        Label lab=new Label("\nStarting "+ name + "... ").setBackgroundColor(BLACK).setForegroundColor(
+                                coloreLabel);
+                        panel.addComponent(lab);
+                        Label myIp = new Label("\nShare your ip address: " + Server.ip).setBackgroundColor(BLACK).setForegroundColor(
+                                coloreLabel);
+                        panel.addComponent(myIp);
+                        Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(lab_serverOn);
+                        panel.addComponent(messaggio);
+                        inviaMessaggio(messaggio);
                     } else {
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
                         System.out.println("trasmetto il messaggio del server a tutti i client connessi");
                         Label lab_serverMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        controlloLabel(messaggio,lab_serverMsg,messaggioString);
+                        panel.addComponent(lab_serverMsg);
+                        broadcastServerMessage("[" + name + "]: " + messaggioString);
                     }
 
                     // Una volta inviato il messaggio pulisco la textbox
@@ -107,26 +122,7 @@ public class ServerSender implements Runnable{
             }
         }).addTo(panel);
     }
-    public synchronized void controlloLabel(TextBox messaggio, Label lab_serverMsg,String messaggioString){
-        if (Server.contaLabel>=15){
-            Server.contaLabel=0;
-            panel.removeAllComponents();
-            Label lab=new Label("\nStarting "+ name + "... ").setBackgroundColor(BLACK).setForegroundColor(
-                    coloreLabel);
-            panel.addComponent(lab);
-            Label myIp = new Label("\nShare your ip address: " + Server.ip).setBackgroundColor(BLACK).setForegroundColor(
-                    coloreLabel);
-            panel.addComponent(myIp);
-            Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-            panel.addComponent(lab_serverOn);
-            panel.addComponent(messaggio);
-            inviaMessaggio(messaggio);
 
-        }
-        Server.contaLabel++;
-        panel.addComponent(lab_serverMsg);
-        broadcastServerMessage("[" + name + "]: " + messaggioString);
-    }
     public void broadcastServerMessage(String message) {
 
         for(Map.Entry<String, PrintWriter> e : Server.connectedClients.entrySet()) {
