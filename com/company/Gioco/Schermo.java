@@ -219,9 +219,14 @@ public class Schermo implements Runnable{
                 }
 
                 if(brickDropTimer.getDropBrick()) {
+                    try {
+                        semaforoSpazzatura.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     pezzoScelto.scendi(campo);
                     IS.run(campo);
-
+                    semaforoSpazzatura.release();
                 }
 
                 //Semaforo
