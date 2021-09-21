@@ -325,7 +325,9 @@ public class Schermo implements Runnable{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            pezzoScelto.scendi(campo);
+            if(!pezzoScelto.collisioneSotto()){
+                pezzoScelto.scendi(campo);
+            }            
             semaforoSpazzatura.release();
 
         }
