@@ -4,6 +4,9 @@ import com.googlecode.lanterna.TextColor;
 import java.io.PrintWriter;
 import java.util.concurrent.Semaphore;
 
+/**
+ * Questa classe serve per inviare lo stato della propria griglia agli altri giocatori
+ */
 public class InviaStato implements Runnable{
     int[][] miaGriglia = new int[12][24];
     PrintWriter pw;
@@ -25,6 +28,10 @@ public class InviaStato implements Runnable{
         traduciGrigliaToInt(griglia);
     }
 
+    /**
+     * @param griglia il proprio campo da gioco in questo momento, traduce la griglia di blocco in una griglia di
+     *                ugual misura ma di numeri, i numeri (0, 1, 2, 3) indicano lo stato di ogni blocco della griglia
+     */
     public synchronized void traduciGrigliaToInt(Griglia griglia){
         try {
             traduzione.acquire();
@@ -53,6 +60,9 @@ public class InviaStato implements Runnable{
 
     }
 
+    /**
+     * @param mat, traduco la matrice di int in una Stringa, questa stringa inizia con il proprio username, cosi gli altri giocatori capiranno di chi sia la griglia
+     */
     public synchronized void traduciInttoString(int[][] mat){
         String stringa= username + ":";
         for(int i=0; i<12; i++){
@@ -61,8 +71,6 @@ public class InviaStato implements Runnable{
             }
         }
         stringa=stringa+":"+colore;
-        //System.out.println(stringa);
         Schermo.invia(stringa, pw);
-
     }
 }
