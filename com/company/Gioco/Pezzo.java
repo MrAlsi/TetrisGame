@@ -27,34 +27,50 @@ public class Pezzo {
         this.campo = campo;
     }
 
+    /**
+     * @param campo
+     * @param rotazione
+     * Metodo Override-ato da ogni pezzo nel package pezzi (tranne PezzoQuadrato)
+     */
     public void ruota(Griglia campo, int rotazione, int verso){
         
     }
 
+    /**
+     * Fa scendere di 1 il pezzo in verticale
+     * @param campo campo da gioco
+     */
     public void scendi(Griglia campo) {
         for (int i = 0; i < 4; i++) {
             pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
-            // System.out.println(pezzo[i].getStato());
         }
         for (int i = 0; i < 4; i++) {
             pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), 0, 1, pezzo[i].colore);
             pezzo[i].rigaGriglia = pezzo[i].getRiga() + 1;
-            // System.out.println(pezzo[i].getStato());
         }
 
     }
 
+    /**
+     * I pezzi hanno avuto una collisione sotto e diventano parte della struttura, la posizione di ogni blocco del
+     * pezzo diventa un nuovo BloccoStruttura
+     */
     public void setStruttura(){
         for (int i = 0; i < 4; i++) {
             int y = pezzo[i].rigaGriglia;
             int x = pezzo[i].colonnaGriglia;
-            //pezzo[i] = new BloccoStruttura(campo.screen, x, y);
-            //pezzo[i].setStato();
             campo.griglia[x][y] = new BloccoStruttura(campo.screen, x, y);
-            //System.out.println(pezzo[i].getStato());
         }
     }
 
+    /**
+     * @param campo campo da gioco
+     * @param orizzontale movimento orizzontale
+     * @param verticale movimente verticale
+     *
+     * Prima controlla se avverebbe una collissione, se non collide prima rimuove i pezzi dalla loro posizione poi
+     * li riposizione nella griglia aggiungendo i paramentri di movimento
+     */
     public void muovi(Griglia campo, int orizzontale, int verticale){
         if(!collisioneMovimento(orizzontale)){ //deve ritornare false per entrare
             for (int i = 3; i >= 0; i--) {
@@ -68,7 +84,12 @@ public class Pezzo {
         }
     }
 
-    //Controllo laterale e con struttura per spostamento
+    /**
+     * Controllo laterale e con struttura per spostamento
+     * @param spostamento 1=Destra e -1=Sinistra, controlla se la posizione data+spostamento è occupata o
+     *                    è fuori dalla griglia di gioco
+     * @return false: nessuna collisione    true: avviene una collisione
+     */
     public boolean collisioneMovimento(int spostamento){ //Spostamento 1: Destra  -1: Sinistra
         return pezzo[0].collisioneLaterale(campo, spostamento, 0) ||
                 pezzo[1].collisioneLaterale(campo, spostamento, 0) ||
@@ -76,7 +97,12 @@ public class Pezzo {
                 pezzo[3].collisioneLaterale(campo, spostamento, 0);
     }
 
-    //Controllo laterale e con struttura per rotazione
+    /**
+     * Controllo laterale e con struttura per rotazione
+     * Controlla se ruotando andrebbe a finire su un blocco già occupato dalla struttura o dalla spazzatura oppure
+     * andrebbe a finire fuori dalla griglia
+     * @return false: nessuna collisione    true: avviene una collisione
+     */
     public boolean collisioneRotazione(){
         return  pezzo[0].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][0], spostamentoVerticale[rotazione][0]) ||
                 pezzo[1].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][1], spostamentoVerticale[rotazione][1]) ||
@@ -84,6 +110,10 @@ public class Pezzo {
                 pezzo[3].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][3], spostamentoVerticale[rotazione][3]);
 }
 
+    /**
+     * controlla se avviene una collisione sotto con un BloccoStruttura o un BloccoSpazzatura
+     * @return false: nessuna collisione    true: avviene una collisione
+     */
     public boolean collisioneSotto() {
         return pezzo[0].collisioneSotto(campo)||
                 pezzo[1].collisioneSotto(campo) ||
@@ -91,6 +121,10 @@ public class Pezzo {
                 pezzo[3].collisioneSotto(campo);
     }
 
+    /**
+     * @param altezza di quanto andrebbe alzato il pezzo, questo metodo è un metodo ricorsivo perché se l'altezza data lo
+     * facesse andare fuori dalla griglia allora richiama se stesso con altezza -1
+     */
     public void alzaPezzo(int altezza){
         if (pezzo[0].collisioneLaterale(campo, 0, -altezza) ||
                 pezzo[1].collisioneLaterale(campo, 0, -altezza) ||
