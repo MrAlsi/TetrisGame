@@ -98,23 +98,38 @@ public class ServerSender implements Runnable{
                                 .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(restart);
 
-                    }else if(messaggioString.equals("/startagain")) {
-                        clear(messaggio);
-                        System.out.println("Restart immediato...");
-                        Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        panel.addComponent(lab_serverMsg);
-                        broadcastServerMessage(messaggioString);
-                        Label inizio = new Label("[SERVER]: Partita iniziata...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        panel.addComponent(inizio);
+                    }else if(messaggioString.equals("/startagain")&& Server.gameStarted==true) {
+                        if(Server.connectedClients.size()>=2) {
+                            clear(messaggio);
+                            System.out.println("Restart immediato...");
+                            Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_serverMsg);
+                            broadcastServerMessage(messaggioString);
+                            Label inizio = new Label("[SERVER]: Partita iniziata...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(inizio);
+                        }
 
                     }else if(messaggioString.equals("/clear")){
                         clear(messaggio);
                     } else {
+                        if(messaggioString.equals("/startagain")){
+                           // if(Server.connectedClients.size()>=2) {
+                                System.out.println("Numero di giocatori insufficiente");
+                                Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
+                                        .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                panel.addComponent(lab_serverMsg);
+                            //}
+                           /* System.out.println("La partita non é ancora iniziata non puoi reiniziarla ");
+                            Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
+                                    .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_serverMsg);*/
+                        }else{
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
                         System.out.println("trasmetto il messaggio del server a tutti i client connessi");
                         Label lab_serverMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(lab_serverMsg);
                         broadcastServerMessage("[" + name + "]: " + messaggioString);
+                        }
                     }
 
                     // Una volta inviato il messaggio pulisco la textbox
