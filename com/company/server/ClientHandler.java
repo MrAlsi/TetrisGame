@@ -128,22 +128,24 @@ public class ClientHandler implements Runnable {
 
                                     if (message.equals(i + "-lost")) {
 
+                                        broadcastMessage(message,username);
                                         System.out.println(i + " ha perso");
                                         Label lab_clientPerso = new Label("[SERVER]: " + i + " lost!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                                         panel.addComponent(lab_clientPerso);
 
-                                        if ((Server.connectedClients.size() - 1) > 1) {
+                                        /*if ((Server.connectedClients.size() - 1) > 1) {
 
                                             System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
-                                            Label lab_clientPerso2 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                                            panel.addComponent(lab_clientPerso2);
+                                            //Label lab_clientPerso2 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                                            //panel.addComponent(lab_clientPerso2);
 
                                         } else {
 
                                             System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
                                             Label lab_clientPerso3 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                                             panel.addComponent(lab_clientPerso3);
-                                        }
+                                        }*/
+                                        System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
                                         Server.connectedClients.remove(i);
                                         Thread.currentThread().interrupt();
                                     }
