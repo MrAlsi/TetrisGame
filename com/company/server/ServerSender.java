@@ -89,25 +89,26 @@ public class ServerSender implements Runnable{
                             System.exit(0);
 
                         }
-                    } else if(messaggioString.equals("/restart")) {
-                        System.out.println("Restart...");
+                    }else if(messaggioString.equals("/restart")) {
+                        clear(messaggio);
+                        //Server.connectedClients.clear();
+                        System.out.println("Restart ...");
+                        broadcastServerMessage(messaggioString);
+                        Label restart= new Label("[SERVER]: Resettando la partita...\n[SERVER]: nuova partita avviata")
+                                .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(restart);
+
+                    }else if(messaggioString.equals("/startagain")) {
+                        clear(messaggio);
+                        System.out.println("Restart immediato...");
                         Label lab_serverMsg = new Label("[SERVER]: Resettando la partita...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                         panel.addComponent(lab_serverMsg);
-                        broadcastServerMessage("[" + name + "]: " + messaggioString);
+                        broadcastServerMessage(messaggioString);
+                        Label inizio = new Label("[SERVER]: Partita iniziata...").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                        panel.addComponent(inizio);
 
                     }else if(messaggioString.equals("/clear")){
-                        System.out.println("Pulisci schermo...");
-                        panel.removeAllComponents();
-                        Label lab=new Label("\nStarting "+ name + "... ").setBackgroundColor(BLACK).setForegroundColor(
-                                coloreLabel);
-                        panel.addComponent(lab);
-                        Label myIp = new Label("\nShare your ip address: " + Server.ip).setBackgroundColor(BLACK).setForegroundColor(
-                                coloreLabel);
-                        panel.addComponent(myIp);
-                        Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        panel.addComponent(lab_serverOn);
-                        panel.addComponent(messaggio);
-                        inviaMessaggio(messaggio);
+                        clear(messaggio);
                     } else {
                         // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
                         System.out.println("trasmetto il messaggio del server a tutti i client connessi");
@@ -130,5 +131,19 @@ public class ServerSender implements Runnable{
             e.getValue().println(message);
             e.getValue().flush();
         }
+    }
+    public void clear( TextBox messaggio){
+        System.out.println("Pulisci schermo...");
+        panel.removeAllComponents();
+        Label lab=new Label("\nStarting "+ name + "... ").setBackgroundColor(BLACK).setForegroundColor(
+                coloreLabel);
+        panel.addComponent(lab);
+        Label myIp = new Label("\nShare your ip address: " + Server.ip).setBackgroundColor(BLACK).setForegroundColor(
+                coloreLabel);
+        panel.addComponent(myIp);
+        Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+        panel.addComponent(lab_serverOn);
+        panel.addComponent(messaggio);
+        inviaMessaggio(messaggio);
     }
 }
