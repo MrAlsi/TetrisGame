@@ -8,13 +8,15 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.WindowListener;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 import static com.googlecode.lanterna.TextColor.ANSI.RED;
@@ -37,7 +39,6 @@ public class Client implements Runnable {
     private Boolean pause = false;
     private List<String> connectedClients;
     private Boolean terminate = false;
-    private Semaphore semaforoSchermo=new Semaphore(1);
 
 
     // Reperisco dal form di "find game" i vari dati che mi interessano
@@ -51,6 +52,7 @@ public class Client implements Runnable {
     }
 
     public void run() {
+
 
         // Inizializzo la chat pre-partita del client
         panel.removeAllComponents();
@@ -98,7 +100,7 @@ public class Client implements Runnable {
                     terminate = true;
                 }
             } catch (IOException e) {
-               // e.printStackTrace();
+                // e.printStackTrace();
             }
 
             RiceviStato rs = new RiceviStato();
@@ -185,18 +187,29 @@ public class Client implements Runnable {
                                 System.out.println("Nomi: " + playersStringMessage);
                                 connectedClients.addAll(Arrays.asList(playersStringMessage.split("-")));
                                 try {
-                                   Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
-                                   Gioco(fromServer,toServer,rs,schermo);
+                                    Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
+                                    Gioco(fromServer, toServer, rs, schermo);
                                 } catch (IOException e) {
-                                   // e.printStackTrace();
+                                    // e.printStackTrace();
                                 }
 
                             } catch (IOException e) {
                                 //e.printStackTrace();
                             }
-
-                            // } else if(message.equals("/restart")){
-
+                        }else if(message.equals("/restart")){
+                            Label restart = new Label("\n- - - Resarting - - -").setBackgroundColor(BLACK)
+                                    .setForegroundColor(RED);
+                            try {
+                                Client.socket.close();
+                                Schermo.screen.close();
+                            } catch (SocketException e) {
+                                // e.printStackTrace();
+                            } catch (IOException e) {
+                                //e.printStackTrace();
+                            }
+                            panel.removeAllComponents();
+                            panel.addComponent(restart);
+                            MainSchermata.Schermata(panel);
 
                         }else {
                             //Se il messaggio non è nullo lo stampo
@@ -284,15 +297,20 @@ public class Client implements Runnable {
                             System.out.println("Spazzatura aggiunta: " + Schermo.aggiungiSpazzatura);
                         }
                     }
+                } else if (playersData.contains("-lost")) {
+                    String arr[] = playersData.split("-");
+                    if (!arr[0].equals(name)) {
+                        Schermo.lost(arr[0]);
+                    }
+
                 } else if (playersData.contains("/pause") && !pause) {
                     pause = true;
                     gameThread.suspend();
                 } else if (playersData.contains("/resume") && pause) {
                     pause = false;
                     gameThread.resume();
-                } else if (playersData.contains("/restart") && !pause) {
+                } else if (playersData.contains("/startagain") && !pause) {
                     try {
-
                         gameThread.stop();
                         Schermo.screen.stopScreen();
                         Schermo.screen.close();
@@ -304,9 +322,23 @@ public class Client implements Runnable {
                     } catch (IOException e) {
                         //e.printStackTrace();
                     }
-
-
-                } else if (playersData.equals("/quit")) {
+                }else if(playersData.equals("/restart")){
+                    try {
+                        Schermo.screen.stopScreen();
+                        Schermo.screen.close();
+                        socket.close();
+                        gameThread.stop();
+                        connectedClients.clear();
+                        panel.addComponent(new EmptySpace(new TerminalSize(0, 0))); // Empty space underneath labels
+                        String[] args = new String[0];
+                        MainSchermata.main(args);
+                        break;
+                    } catch (SocketException e) {
+                        //e.printStackTrace();
+                    } catch (IOException e) {
+                        //e.printStackTrace();
+                    }
+                }else if (playersData.equals("/quit")) {
                     try {
                         Schermo.screen.stopScreen();
                         Schermo.screen.close();
