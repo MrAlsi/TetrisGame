@@ -1,12 +1,16 @@
 package com.company.Gioco.Mini;
 
-
 import com.company.Gioco.Schermo;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
+
+/**
+ * I miniBlocchi sono i blocchi della miniGriglia, servono per mostrare i campi degli altri gioatori, non fanno
+ * controlli perché saranno già fatti tutti da griglia e blocchi
+ */
 public class Mini_Blocco {
     public TextGraphics schermo; // Griglia nel terminale
 
@@ -16,14 +20,14 @@ public class Mini_Blocco {
     public TextColor colore;
     public int colonnaGriglia;
     public int rigaGriglia;
-    public int stato = 3; // 0=Vuoto - 1=Pezzo che sta scendendo - 2=Struttura  - 3=Spazzattura
+    public int stato; // 0=Vuoto - 1=Pezzo che sta scendendo - 2=Struttura  - 3=Spazzattura
 
     public Mini_Blocco(TextGraphics schermo, int colonnaGriglia, int rigaGriglia, TextColor colore, char simbolo, int scostamento) {
         this.schermo = schermo;
         this.colonnaGriglia = colonnaGriglia;
         this.rigaGriglia = rigaGriglia;
         this.colore = colore;
-        scostamento=scostamento*40+60;
+        scostamento=scostamento*40+60; //Lo scostamento è una variabile che serve per far capire il minicampo di cui stiamo parlando
         try {
             Schermo.semaforoColore.acquire();
             schermo.setForegroundColor(colore);
@@ -35,20 +39,14 @@ public class Mini_Blocco {
             e.printStackTrace();
         }
     }
-/*
-    // Ritorna la posizione della colonna sullo schermo, coordinata * coefficente
-    public int getColonna() {
-        return colonnaGriglia;
+
+    public void setColore(TextColor colore){
+        try {
+            Schermo.semaforoColore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.colore=colore;
+        Schermo.semaforoColore.release();
     }
-
-    // Ritorna la posizione della riga sullo schermo, coordinata * coefficente
-    public int getRiga() {
-        return rigaGriglia;
-    }
-
-    public void muovi(Mini_Griglia campo, int colGriglia, int rigGriglia, int orizzontale, int verticale, TextColor colore, int scostamento) { }
-
-    public void rimuovi(Mini_Griglia campo, int colGriglia, int rigGriglia) { }
-
- */
 }
