@@ -2,7 +2,8 @@ package com.company.Gioco;
 
 import com.company.Gioco.Mini.Mini_Griglia;
 import com.company.Gioco.Pezzi.*;
-import com.company.client.Client;import com.googlecode.lanterna.Symbols;
+import com.company.client.Client;
+import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
