@@ -305,15 +305,18 @@ public class Schermo implements Runnable{
     private void processKeyInput(KeyStroke key) throws IOException {
         //down totale
         if(c1.equals(key.getCharacter())) {
-            try {
-                semaforoSpazzatura.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while(!pezzoScelto.collisioneSotto()){
+                try {
+                    semaforoSpazzatura.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                pezzoScelto.scendi(campo);
+                semaforoSpazzatura.release();
             }
-            pezzoScelto.scendi(campo);
-            semaforoSpazzatura.release();
             barra = true;
         }
+
 
         // down
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
