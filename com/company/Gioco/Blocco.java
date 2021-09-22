@@ -42,8 +42,8 @@ public class Blocco {
     /**
      * @return la posizione della colonna sulla griglia
      */
-    public int getColonna() { 
-        return colonnaGriglia; 
+    public int getColonna() {
+        return colonnaGriglia;
     }
 
     /**

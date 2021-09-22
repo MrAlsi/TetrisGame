@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 
@@ -29,6 +30,7 @@ public class Server  implements Runnable{
     public static Thread listenerThread;
     public static Boolean gameStarted = false;
     public static HashMap<String, PrintWriter> connectedClients;
+    public static LinkedList<String> giocatori;
     public static Semaphore semaforoConnectedClients=new Semaphore(1);
     public static String ip="";
 
@@ -57,6 +59,7 @@ public class Server  implements Runnable{
 
     // Inizializzo la schermata del server
     public void run(){
+        giocatori = new LinkedList<String>();
         panel.removeAllComponents();
         panel.setFillColorOverride(BLACK);
         panel.setPosition(new TerminalPosition(0,0));
@@ -97,12 +100,7 @@ public class Server  implements Runnable{
             Label lab_serverOn=new Label("\n- - - Server on - - -").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
             panel.addComponent(lab_serverOn);
             while(true) {
-                while (!gameStarted) {
 
-                }
-                while (gameStarted) {
-
-                }
             }
 
 

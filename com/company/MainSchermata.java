@@ -28,9 +28,13 @@ public class MainSchermata {
 
     public static Screen screen;
     public static Thread clientThread;
+    private static Boolean erroreNome = false;
+    private static Boolean erroreCaratteri = false;
+    private static Boolean erroreIP = false;
+    private static Boolean errorePORT = false;
 
     public static void main(String[] args) throws IOException {
-        //prova
+
 
         //organizzazione della schermata
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -160,14 +164,44 @@ public class MainSchermata {
 
                         for (char c : ch) {
                             String s = Character.toString(c);
-                            if(name.contains(s)) {
-
-                                Label invalidName = new Label("\nNickname non valido. (Non utilizzare spazi o " +
-                                        "caratteri speciali)").setBackgroundColor(BLACK).setForegroundColor(RED);
+                            if(name.contains(s) && !erroreCaratteri) {
+                                erroreCaratteri = true;
+                                Label invalidName = new Label("\nERRORE: Nickname non valido. Non utilizzare spazi o " +
+                                        "caratteri speciali").setBackgroundColor(BLACK).setForegroundColor(RED);
                                 panel.addComponent(invalidName);
                                 check = false;
                                 break;
                             }
+                            if(name.contains(s)) {
+                                erroreCaratteri = true;
+                                check = false;
+                                break;
+                            }
+                        }
+
+                        if(name.equals("") && !erroreNome){
+                            erroreNome = true;
+                            Label nickNull = new Label("\nERRORE: Compilare il campo nome").setBackgroundColor(BLACK).setForegroundColor(RED);
+                            panel.addComponent(nickNull);
+                            check = false;
+                        }
+
+                        if(IP.equals("") && !erroreIP){
+                            erroreIP = true;
+                            Label ipNull = new Label("\nERRORE: Compilare il campo IP").setBackgroundColor(BLACK).setForegroundColor(RED);
+                            panel.addComponent(ipNull);
+                            check = false;
+                        }
+
+                        if(PORT.equals("") && !errorePORT){
+                            errorePORT = true;
+                            Label portNull = new Label("\nERRORE: Compilare il campo PORT").setBackgroundColor(BLACK).setForegroundColor(RED);
+                            panel.addComponent(portNull);
+                            check = false;
+                        }
+
+                        if(name.equals("") || IP.equals("") || PORT.equals("")){
+                            check = false;
                         }
 
                         if(check) {
@@ -188,6 +222,7 @@ public class MainSchermata {
                         }
                     }
                 }).addTo(panel);
+                Empty(panel, 1);
                 //bottone che mi riporta alla home
                 new Button("Indietro",new Runnable(){
                     @Override

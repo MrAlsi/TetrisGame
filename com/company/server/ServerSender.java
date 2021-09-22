@@ -1,15 +1,12 @@
 package com.company.server;
 
-import com.company.client.Client;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.util.Map;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
@@ -19,9 +16,7 @@ public class ServerSender implements Runnable{
     private Panel panel;
     private TextColor coloreLabel;
     public static String name;
-    private String players = "";
     public String ip;
-
 
     public ServerSender(Panel panel, TextColor coloreLabel, String name) {
         this.name=name;
@@ -30,9 +25,9 @@ public class ServerSender implements Runnable{
     }
 
     public synchronized void run() {
-            TextBox messaggio = new TextBox();
-            panel.addComponent(messaggio);
-            inviaMessaggio(messaggio);
+        TextBox messaggio = new TextBox();
+        panel.addComponent(messaggio);
+        inviaMessaggio(messaggio);
     }
 
     public synchronized void inviaMessaggio(final TextBox messaggio){
@@ -64,11 +59,16 @@ public class ServerSender implements Runnable{
                             //svuoto il pannello e avverto i client
                             System.out.println("Partita iniziata!");
                             broadcastServerMessage(messaggioString);
-                            for (Map.Entry<String, PrintWriter> pair : Server.connectedClients.entrySet()) {
-                                players = players + pair.getKey() + "-";
+                            if(Server.giocatori != null) {
+                                Server.giocatori.clear();
                             }
-                            broadcastServerMessage(players);
-                            players = "";
+                            for (Map.Entry<String, PrintWriter> pair : Server.connectedClients.entrySet()) {
+                                ConnectionListener.players = ConnectionListener.players + pair.getKey() + "-";
+                                Server.giocatori.add(pair.getKey());
+                            }
+
+                            broadcastServerMessage(ConnectionListener.players);
+                            ConnectionListener.players = "";
                             Server.gameStarted = true;
                             Label lab_serverMsg = new Label("[SERVER]: Partita iniziata").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);
@@ -113,22 +113,22 @@ public class ServerSender implements Runnable{
                         clear(messaggio);
                     } else {
                         if(messaggioString.equals("/startagain")){
-                           // if(Server.connectedClients.size()>=2) {
-                                System.out.println("Numero di giocatori insufficiente");
-                                Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
-                                        .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                                panel.addComponent(lab_serverMsg);
+                            // if(Server.connectedClients.size()>=2) {
+                            System.out.println("Numero di giocatori insufficiente");
+                            Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
+                                    .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_serverMsg);
                             //}
                            /* System.out.println("La partita non é ancora iniziata non puoi reiniziarla ");
                             Label lab_serverMsg = new Label("[SERVER]: Numero di giocatori insufficiente.")
                                     .setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                             panel.addComponent(lab_serverMsg);*/
                         }else{
-                        // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
-                        System.out.println("trasmetto il messaggio del server a tutti i client connessi");
-                        Label lab_serverMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                        panel.addComponent(lab_serverMsg);
-                        broadcastServerMessage("[" + name + "]: " + messaggioString);
+                            // In tutti gli altri casi trasmetto il messaggio del server a tutti i client connessi
+                            System.out.println("trasmetto il messaggio del server a tutti i client connessi");
+                            Label lab_serverMsg = new Label("[" + name + "]: " + messaggioString).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_serverMsg);
+                            broadcastServerMessage("[" + name + "]: " + messaggioString);
                         }
                     }
 

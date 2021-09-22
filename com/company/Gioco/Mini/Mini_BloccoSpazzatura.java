@@ -12,7 +12,7 @@ public class Mini_BloccoSpazzatura extends Mini_Blocco {
                 TextColor.ANSI.RED,     //Colore del pezzo che sta scendendo
                 BLOCK_SPARSE,           //Feature del blocco
                 scostamento);           //Lo scostamento è lo scostamento dal margine sinistro dello schermo, a seconda
-                                        //dello scostamento sai in che campo devi cambiare
+        //dello scostamento sai in che campo devi cambiare
         stato=3;
     }
 }

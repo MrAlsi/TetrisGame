@@ -13,7 +13,7 @@ public class Mini_BloccoStruttura extends Mini_Blocco {
                 TextColor.ANSI.WHITE,   //Colore del pezzo che sta scendendo
                 BLOCK_SOLID,            //Feature del blocco
                 scostamento);           //Lo scostamento è lo scostamento dal margine sinistro dello schermo, a seconda
-                                        //dello scostamento sai in che campo devi cambiare
+        //dello scostamento sai in che campo devi cambiare
         stato = 2;
     }
 }

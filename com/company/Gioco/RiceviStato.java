@@ -1,9 +1,15 @@
 package com.company.Gioco;
 
+import com.company.Gioco.Mini.Mini_BloccoPieno;
+import com.company.Gioco.Mini.Mini_BloccoSpazzatura;
+import com.company.Gioco.Mini.Mini_BloccoStruttura;
+import com.company.Gioco.Mini.Mini_BloccoVuoto;
 import com.googlecode.lanterna.TextColor;
+
 import java.util.concurrent.Semaphore;
-import com.company.Gioco.Mini.*;
-import static com.company.Gioco.Schermo.*;
+
+import static com.company.Gioco.Schermo.miniCampo;
+import static com.company.Gioco.Schermo.schermo;
 
 /**
  * serve per ricevere lo stato della griglia degli altri giocati e tradurlo nei minicampi
@@ -56,34 +62,34 @@ public class RiceviStato extends Thread{
      * griglia di interi lo traduco nel suo corrispondente in mini_Blocco
      */
     public void traduciIntToMiniGriglia(int[][] campo, String nome, TextColor colore) {
-            int id = 0;                                     //Id del campo del giocatore
-            for (int i = 0; i < miniCampo.length; i++) {    //For per trovare il giocatore con quel nome
-                if (nome.equals(miniCampo[i].nome)) {
-                    id = i;
-                    break;
-                }
+        int id = 0;                                     //Id del campo del giocatore
+        for (int i = 0; i < miniCampo.length; i++) {    //For per trovare il giocatore con quel nome
+            if (nome.equals(miniCampo[i].nome)) {
+                id = i;
+                break;
             }
+        }
 
-            //Traduttore da interi a mini_Blocco
-            for (int i = 0; i < campo.length; i++) {
-                for (int e = 0; e < campo[i].length; e++) {
-                    switch (campo[i][e]) {
-                        case 0 -> {
-                            miniCampo[id].griglia[i][e] = new Mini_BloccoVuoto(schermo, i, e, id);
-                            break;
-                        }
-                        case 1 -> {
-                            miniCampo[id].griglia[i][e] = new Mini_BloccoPieno(schermo, i, e, colore, id);
-                            break;
-                        }
-                        case 2 -> {
-                            miniCampo[id].griglia[i][e] = new Mini_BloccoStruttura(schermo, i, e, id);
-                            break;
-                        }
-                        case 3 -> miniCampo[id].griglia[i][e] = new Mini_BloccoSpazzatura(schermo, i, e, id);
+        //Traduttore da interi a mini_Blocco
+        for (int i = 0; i < campo.length; i++) {
+            for (int e = 0; e < campo[i].length; e++) {
+                switch (campo[i][e]) {
+                    case 0 -> {
+                        miniCampo[id].griglia[i][e] = new Mini_BloccoVuoto(schermo, i, e, id);
+                        break;
                     }
+                    case 1 -> {
+                        miniCampo[id].griglia[i][e] = new Mini_BloccoPieno(schermo, i, e, colore, id);
+                        break;
+                    }
+                    case 2 -> {
+                        miniCampo[id].griglia[i][e] = new Mini_BloccoStruttura(schermo, i, e, id);
+                        break;
+                    }
+                    case 3 -> miniCampo[id].griglia[i][e] = new Mini_BloccoSpazzatura(schermo, i, e, id);
                 }
             }
+        }
 
 
     }

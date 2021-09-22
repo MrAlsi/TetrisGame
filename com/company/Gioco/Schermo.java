@@ -3,9 +3,6 @@ package com.company.Gioco;
 import com.company.Gioco.Mini.Mini_Griglia;
 import com.company.Gioco.Pezzi.*;
 import com.company.client.Client;
-import com.company.server.ClientHandler;
-import com.company.server.Server;
-import com.company.server.ServerSender;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -136,6 +133,7 @@ public class Schermo implements Runnable{
 
         //for in base al numero di giocatori
         int j = 0;
+        System.out.println("Client connessi: " + connectedClients);
         for (String nome : connectedClients) {
             //controllo che il nome sia diverso dal mio
             if (!nome.equals(name)) {
@@ -327,7 +325,7 @@ public class Schermo implements Runnable{
             }
             if(!pezzoScelto.collisioneSotto()){
                 pezzoScelto.scendi(campo);
-            }            
+            }
             semaforoSpazzatura.release();
 
         }

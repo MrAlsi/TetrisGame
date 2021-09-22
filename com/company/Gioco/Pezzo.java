@@ -33,7 +33,7 @@ public class Pezzo {
      * Metodo Override-ato da ogni pezzo nel package pezzi (tranne PezzoQuadrato)
      */
     public void ruota(Griglia campo, int rotazione, int verso){
-        
+
     }
 
     /**
@@ -108,7 +108,7 @@ public class Pezzo {
                 pezzo[1].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][1], spostamentoVerticale[rotazione][1]) ||
                 pezzo[2].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][2], spostamentoVerticale[rotazione][2]) ||
                 pezzo[3].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][3], spostamentoVerticale[rotazione][3]);
-}
+    }
 
     /**
      * controlla se avviene una collisione sotto con un BloccoStruttura o un BloccoSpazzatura

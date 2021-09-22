@@ -30,7 +30,7 @@ public class Terminate implements Runnable{
     private Panel panel;
     private TextColor coloreLabel;
     public static Screen screen;
-    public static Boolean nextGame = false;
+    public static Boolean termina = false;
     private List<String> connectedClients;
 
     public Terminate(Panel panel, TextColor coloreLabel) {
@@ -107,6 +107,7 @@ public class Terminate implements Runnable{
                 panel.removeAllComponents();
                 panel.setFillColorOverride(BLACK);
                 //richiamo schermata inziale
+                termina = true;
                 MainSchermata.Schermata(panel);
                 Thread.currentThread().interrupt();
             }

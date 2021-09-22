@@ -4,11 +4,13 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Map.Entry;
 
-import static com.company.server.Server.ip;
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
 
 // Per ogni client che si connetterà al server creo un Thread handlerThread che si occupa
@@ -114,17 +116,18 @@ public class ClientHandler implements Runnable {
 
                     if (message != null) {
 
-                        if (Server.connectedClients.size() == 1 && Server.gameStarted) {
+                        if (Server.giocatori.size() == 1 && Server.gameStarted) {
 
                             System.out.println(username + " è il vincitore");
-                            Label lab_clientPerso = new Label("[SERVER]: " + username + " is the winner!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                            broadcastServerMessage(Server.connectedClients.keySet() + "-winner");
+                            Label lab_clientVinto = new Label("[SERVER]: " + username + " is the winner!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
+                            panel.addComponent(lab_clientVinto);
+                            broadcastServerMessage("[" + username + "]" + "-winner");
                             Server.gameStarted = false;
                         }
                         synchronized (this) {
                             try {
                                 Server.semaforoConnectedClients.acquire();
-                                for (String i : Server.connectedClients.keySet()) {
+                                for (String i : Server.giocatori) {
 
                                     if (message.equals(i + "-lost")) {
 
@@ -133,19 +136,8 @@ public class ClientHandler implements Runnable {
                                         Label lab_clientPerso = new Label("[SERVER]: " + i + " lost!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
                                         panel.addComponent(lab_clientPerso);
 
-                                        /*if ((Server.connectedClients.size() - 1) > 1) {
-
-                                            System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
-                                            //Label lab_clientPerso2 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " players left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                                            //panel.addComponent(lab_clientPerso2);
-
-                                        } else {
-
-                                            System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
-                                            Label lab_clientPerso3 = new Label("[SERVER]: " + (Server.connectedClients.size() - 1) + " player left!").setBackgroundColor(BLACK).setForegroundColor(coloreLabel);
-                                            panel.addComponent(lab_clientPerso3);
-                                        }*/
-                                        System.out.println((Server.connectedClients.size() - 1)+ "  giocatori rimasti");
+                                        System.out.println((Server.giocatori.size() - 1)+ "  giocatori rimasti");
+                                        Server.giocatori.remove(i);
                                         Server.connectedClients.remove(i);
                                         Thread.currentThread().interrupt();
                                     }
@@ -172,6 +164,7 @@ public class ClientHandler implements Runnable {
 
                 System.out.println("[SERVER]: " + username + " is leaving");
                 Server.connectedClients.remove(username);
+                Server.giocatori.remove(username);
                 System.out.println(("[SERVER]: " + username + "  si è disconnesso"));
                 Label lab_clientLeft = new Label("[SERVER]: " + username + " has left").setBackgroundColor(BLACK)
                         .setForegroundColor(coloreLabel);

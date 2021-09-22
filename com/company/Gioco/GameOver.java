@@ -16,7 +16,6 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,7 +112,7 @@ public class GameOver implements Runnable{
         panel.addComponent(gameover2);
         panel.addComponent(gameover3);
 
-        MainSchermata.Empty(panel, 1);
+        MainSchermata.Empty(panel, 2);
 
         new Button("Play again",new Runnable(){
             @Override
@@ -129,10 +128,10 @@ public class GameOver implements Runnable{
                 MainSchermata.clientThread.start();
             }
         }).addTo(panel);
+        Empty(panel, 1);
         new Button("Close", new Runnable() {
             @Override
             public void run() {
-                //shown = false;
                 try {
                     System.exit(0);
                     panel.removeAllComponents();
@@ -141,6 +140,7 @@ public class GameOver implements Runnable{
                 }
             }
         }).addTo(panel);
+        Empty(panel, 1);
         new Button("Esci dal server", new Runnable() {
             @Override
             public void run() {
@@ -148,6 +148,7 @@ public class GameOver implements Runnable{
                 try {
                     panel.removeAllComponents();
                     MainSchermata.Schermata(panel);
+                    nextGame = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

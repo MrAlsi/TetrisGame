@@ -140,7 +140,7 @@ public class YouWin implements Runnable{
         panel.addComponent(provaWin11);
         panel.addComponent(provaWin12);
 
-        MainSchermata.Empty(panel, 1);
+        MainSchermata.Empty(panel, 2);
 
         new Button("Play again",new Runnable(){
             @Override
@@ -155,10 +155,10 @@ public class YouWin implements Runnable{
                 MainSchermata.clientThread.start();
             }
         }).addTo(panel);
+        Empty(panel, 1);
         new Button("Close", new Runnable() {
             @Override
             public void run() {
-                //shown = false;
                 try {
                     System.exit(0);
                     panel.removeAllComponents();
@@ -167,6 +167,7 @@ public class YouWin implements Runnable{
                 }
             }
         }).addTo(panel);
+        Empty(panel, 1);
         new Button("Esci dal server", new Runnable() {
             @Override
             public void run() {
@@ -174,6 +175,7 @@ public class YouWin implements Runnable{
                 try {
                     panel.removeAllComponents();
                     MainSchermata.Schermata(panel);
+                    nextGame = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
