@@ -122,7 +122,6 @@ public class GameOver implements Runnable{
                 panel.setFillColorOverride(BLACK);
                 nextGame = true;
                 //richiamo schermata inziale
-                RiceviStato.traduzione.release();
                 Client client=new Client(username, IP, String.valueOf(PORT), panel, coloreLabel, new LinkedList<>());
                 MainSchermata.clientThread = new Thread(client);
                 MainSchermata.clientThread.start();
