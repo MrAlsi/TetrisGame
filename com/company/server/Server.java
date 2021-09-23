@@ -12,12 +12,9 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 
 import static com.googlecode.lanterna.TextColor.ANSI.BLACK;
-
-
 
 public class Server  implements Runnable{
     private ConnectionListener connectionListener;
@@ -34,9 +31,12 @@ public class Server  implements Runnable{
     public static Semaphore semaforoConnectedClients=new Semaphore(1);
     public static String ip="";
 
-
-    // Appena creo il sevrer gli passso i seguenti parametri e avvio il thread listenerThread
-    // che si occupa di restare in ascolto per le connessioni dei client che vorranno collegarsi al server
+    /**
+     * Classe principale del server,
+     * si occupa di inizializzare tutti i componenti
+     * le variabili pubbliche e i Thread necessari
+     * al funzionamento.
+     */
     public Server(String name, String SERVERPORT, Panel panel, TextColor coloreLabel) {
         this.name = name;
         this.SERVERPORT = Integer.parseInt(SERVERPORT);
@@ -49,7 +49,10 @@ public class Server  implements Runnable{
 
     }
 
-    // Metodo che richiamo subito e serve per far partire il thread dedicato al server
+    /**
+     * Metodo che richiamo subito e che serve a
+     * far inizializzare il thread dedicato al server
+     */
     public void StartServer(Server server) {
         serverThread = new Thread(server);
         serverThread.start();
@@ -57,7 +60,7 @@ public class Server  implements Runnable{
 
     }
 
-    // Inizializzo la schermata del server
+    // Inizializzo la schermata del server.
     public void run(){
         giocatori = new LinkedList<String>();
         panel.removeAllComponents();
@@ -70,29 +73,30 @@ public class Server  implements Runnable{
 
         gameStarted = false;
 
+        // Funzione che restituisce e stampa l'indirizzo
+        // IP pubblico del server.
         try{
             URL whatismyip = new URL("http://checkip.amazonaws.com");
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     whatismyip.openStream()));
-            ip = in.readLine(); //you get the IP as a String
+            ip = in.readLine();
 
             Label myIp = new Label("\nShare your ip address: " + ip).setBackgroundColor(BLACK).setForegroundColor(
                     coloreLabel);
             panel.addComponent(myIp);
         }catch(Exception e){
-            //System.out.println(e);
+            System.out.println("Errore nell'acquisizione dell'ip.");
         }
 
         try {
 
-            // Il server si mette in ascolto per eventuali client che tentano di connettersi
+            // Faccio partire il Thread dedicato all'ascolto di connessioni
+            // in entrata da parte dei client.
             listenerThread.start();
             System.out.println("Server in ascolto... ");
 
-
-            // Creo il thread di comunicazione del server e lo avvio
-            // Questo thread permette al server di mandare messaggi a tutti i client
-            // durante il pre-partita
+            // Creo il thread di comunicazione del server e lo avvio.
+            // Questo thread permette al server di mandare messaggi a tutti i client.
             ServerSender serverSender = new ServerSender(panel, coloreLabel, name);
             senderThread = new Thread(serverSender);
             senderThread.start();
@@ -102,22 +106,8 @@ public class Server  implements Runnable{
             while(true) {
 
             }
-
-
         } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-
-    }
-
-    // Metodo per la trasmissione di un messaggio inviato dal server agli altri client
-    public static void broadcastServerMessage(String message) {
-
-        for(Entry <String, PrintWriter> e: connectedClients.entrySet()) {
-
-            e.getValue().println(message);
-            e.getValue().flush();
+            System.out.println("Errore durante l'inizializzazione dei Thread.");
         }
     }
 }
