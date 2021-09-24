@@ -12,8 +12,7 @@ public class InviaStato implements Runnable{
     PrintWriter pw;
     String username;
     TextColor colore;
-    Semaphore traduzione = new Semaphore(1);
-
+    public static Semaphore traduzione = new Semaphore(1);
     public InviaStato(String username, PrintWriter pw){
         this.pw=pw;
         this.username=username;
