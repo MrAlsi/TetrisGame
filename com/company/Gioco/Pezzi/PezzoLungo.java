@@ -1,8 +1,8 @@
-package com.Gioco.Pezzi;
+package com.company.Gioco.Pezzi;
 
-import com.Gioco.BloccoPieno;
-import com.Gioco.Griglia;
-import com.Gioco.Pezzo;
+import com.company.Gioco.BloccoPieno;
+import com.company.Gioco.Griglia;
+import com.company.Gioco.Pezzo;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
