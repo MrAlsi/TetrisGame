@@ -64,7 +64,7 @@ public class Schermo implements Runnable{
     Character c1 = ' '; //Fai cadere il pezzo fino a giù
     Character c2 = 'd'; //Ruota a destra
     Character c3 = 's'; //Ruota a sinistra
-
+    Character c4 = 't'; //Test
     Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
     Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
     Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)
@@ -409,12 +409,12 @@ public class Schermo implements Runnable{
         }
 
         //per provare righe spazzatura
-        if(c3.equals(key.getCharacter())) {
+       /* if(c4.equals(key.getCharacter())) {
 
             datas = "spazzatura-" + usernameDestinatario + "-" + 3;
             invia(datas, pw);
 
-        }
+        }*/
     }
     /**
      * Metodo per inviare messaggi
