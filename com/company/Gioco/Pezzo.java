@@ -98,16 +98,39 @@ public class Pezzo {
     }
 
     /**
-     * Controllo laterale e con struttura per rotazione
+     * Controllo laterale e con struttura per rotazione ORARIA
      * Controlla se ruotando andrebbe a finire su un blocco già occupato dalla struttura o dalla spazzatura oppure
      * andrebbe a finire fuori dalla griglia
      * @return false: nessuna collisione    true: avviene una collisione
      */
-    public boolean collisioneRotazione(){
+    public boolean collisioneRotazioneOraria(){
         return  pezzo[0].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][0], spostamentoVerticale[rotazione][0]) ||
                 pezzo[1].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][1], spostamentoVerticale[rotazione][1]) ||
                 pezzo[2].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][2], spostamentoVerticale[rotazione][2]) ||
                 pezzo[3].collisioneLaterale(campo, spostamentoOrizzontale[rotazione][3], spostamentoVerticale[rotazione][3]);
+    }
+
+    /**
+     * Controllo laterale e con struttura per rotazione ANTIORARIA
+     * Controlla se ruotando andrebbe a finire su un blocco già occupato dalla struttura o dalla spazzatura oppure
+     * andrebbe a finire fuori dalla griglia
+     * all'inizio controlla qual è la rotazione precedente, la maggior parte dei casi basta fare -1 ma nel caso di essere
+     * nella rotazione 0 la rotazione precedente è il MaxRotazioni e non -1 (che non esiste), assegno il numero rotazione
+     * precedente alla variabile d'appoggio rote la uso per controllare la collisione
+     * @return false: nessuna collisione    true: avviene una collisione
+     */
+    public boolean collisioneRotazioneAntiOraria(){
+        int rot;
+        if(rotazione==0) {
+            rot = maxRotazioni;
+        } else {
+            rot = rotazione-1;
+        }
+
+        return  pezzo[0].collisioneLaterale(campo, spostamentoOrizzontale[rot][0]*(-1), spostamentoVerticale[rot][0]*(-1)) ||
+                pezzo[1].collisioneLaterale(campo, spostamentoOrizzontale[rot][1]*(-1), spostamentoVerticale[rot][1]*(-1)) ||
+                pezzo[2].collisioneLaterale(campo, spostamentoOrizzontale[rot][2]*(-1), spostamentoVerticale[rot][2]*(-1)) ||
+                pezzo[3].collisioneLaterale(campo, spostamentoOrizzontale[rot][3]*(-1), spostamentoVerticale[rot][3]*(-1));
     }
 
     /**
