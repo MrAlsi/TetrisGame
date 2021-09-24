@@ -58,7 +58,7 @@ public class Schermo implements Runnable{
     public int dim;
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];   //Campi degli avversari, max 3
     public static Semaphore semaforoColore=new Semaphore(1); // serve per gestire l'accesso a "schermo.setForegroundColor"
-    public Semaphore semaforoSpazzatura = new Semaphore(1);  // serve per evitare la concorrenza tra il pezzo che scende
+    public static Semaphore semaforoSpazzatura = new Semaphore(1);  // serve per evitare la concorrenza tra il pezzo che scende
     // e l'arrivo di una riga spazzatura
     //Variabili per i tasti per il processKeyInput
     Character c1 = ' '; //Fai cadere il pezzo fino a giù
