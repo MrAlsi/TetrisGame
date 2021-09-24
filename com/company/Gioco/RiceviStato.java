@@ -105,6 +105,7 @@ public class RiceviStato extends Thread{
             case "RED_BRIGHT": return TextColor.ANSI.RED_BRIGHT;
             case "CYAN_BRIGHT": return TextColor.ANSI.CYAN_BRIGHT;
             case "GREEN_BRIGHT": return TextColor.ANSI.GREEN_BRIGHT;
+            case "GREEN": return TextColor.ANSI.GREEN;
         }
         return null;
     }
