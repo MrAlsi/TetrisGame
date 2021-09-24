@@ -329,6 +329,8 @@ public class Client implements Runnable {
                         socket.close();
                         Server.semaforoConnectedClients.release();
                         Schermo.semaforoColore.release();
+                        Schermo.semaforoSpazzatura.release();
+                        InviaStato.traduzione.release();
                         String[] args = new String[0];
                         MainSchermata.main(args);
                         panel.addComponent(new EmptySpace(new TerminalSize(0, 0))); // Empty space underneath labels
