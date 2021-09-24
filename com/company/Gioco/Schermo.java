@@ -62,8 +62,8 @@ public class Schermo implements Runnable{
     // e l'arrivo di una riga spazzatura
     //Variabili per i tasti per il processKeyInput
     Character c1 = ' '; //Fai cadere il pezzo fino a giù
-    Character c2 = 'x'; //Ruota
-    Character c3 = 's'; //Eventuale per aggiungersi la spazzatura
+    Character c2 = 'd'; //Ruota a destra
+    Character c3 = 's'; //Ruota a sinistra
 
     Character uno = '1'; //Evidenziare campo 1 (in realtà lo 0)
     Character due = '2'; //Evidenziare campo 2 (in realtà lo 1)
@@ -344,11 +344,24 @@ public class Schermo implements Runnable{
             }
         }
 
-        // rotate right
+        // rotatazione orario
         if(c2.equals(key.getCharacter())) {
-            if(!pezzoScelto.collisioneRotazione())
+            if(!pezzoScelto.collisioneRotazioneOraria()) {
                 pezzoScelto.ruota(campo, pezzoScelto.rotazione, 1);
+            }
         }
+
+        // rotazione antiorario
+        if(c3.equals(key.getCharacter())) {
+            if(!pezzoScelto.collisioneRotazioneAntiOraria()) {
+                if (pezzoScelto.rotazione == 0) {
+                    pezzoScelto.ruota(campo, pezzoScelto.maxRotazioni, -1);
+                } else {
+                    pezzoScelto.ruota(campo, pezzoScelto.rotazione - 1, -1);
+                }
+            }
+        }
+
         //1
         //Evidenziare il campo 1
         if (uno.equals(key.getCharacter())&& dim>2) {
