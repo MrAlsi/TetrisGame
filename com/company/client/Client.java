@@ -88,7 +88,7 @@ public class Client implements Runnable {
             Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
                     .setForegroundColor(coloreLabel);
             panel.addComponent(connesso);
-            
+
             // Creazione del thread di invio messaggi.
             Sender clientSender = new Sender(toServer,panel,coloreLabel,name);
             Thread senderThread = new Thread(clientSender);
@@ -107,7 +107,6 @@ public class Client implements Runnable {
             } catch (IOException e) {
                 System.out.println("Errore di lettura: " + e);
             }
-
 
             RiceviStato rs = new RiceviStato();
 
@@ -211,15 +210,19 @@ public class Client implements Runnable {
                                     // Faccio partire il gioco
                                     Thread.currentThread().sleep(500);
                                     Schermo schermo = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
-                                    Gioco(fromServer,toServer,rs,schermo);
+                                    Gioco(fromServer, toServer, rs, schermo);
                                     break;
                                 } catch (IOException e) {
-                                     e.printStackTrace();
+                                    e.printStackTrace();
                                 }
 
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+
+                            // Se il messaggio contiene ":0" non stampare nulla
+                        }else if (message.contains(":0") || message.contains(":2")) {
+
                         }else {
                             // Se il messaggio non è nullo lo stampo
                             Label lab_clientMsg = new Label(message).setBackgroundColor(BLACK).setForegroundColor(coloreLabel);

@@ -4,6 +4,7 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 
+import java.awt.*;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,6 +24,7 @@ public class ConnectionListener implements Runnable {
     public static Thread handlerThread;
     private int SERVERPORT;
     public static String players = "";
+    private int dimension;
 
     public  ConnectionListener(Panel panel, int SERVERPORT, TextColor coloreLabel) {
         this.panel=panel;
@@ -38,6 +40,9 @@ public class ConnectionListener implements Runnable {
             listener.setReuseAddress(true);
 
             while(true) {
+
+                Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+                dimension = size.height * size.width;
                 while (Server.connectedClients.size() < 4) {
                     System.out.println("Client connessi" + Server.connectedClients.size() + "/4");
                     Socket socket = listener.accept();
