@@ -2,7 +2,6 @@ package com.company.client;
 
 import com.company.Gioco.*;
 import com.company.MainSchermata;
-import com.company.server.Server;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -158,9 +157,9 @@ public class Client implements Runnable {
                                 Client.socket.close();
 
                             } catch (SocketException e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
                             panel.removeAllComponents();
                             panel.addComponent(successo);
@@ -240,15 +239,15 @@ public class Client implements Runnable {
                     try {
                         MainSchermata.screen.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                       // e.printStackTrace();
                     }
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    //ex.printStackTrace();
                 } finally {
                     try {
                         socket.close(); //Chiudi la connessione
                     } catch (IOException e) {
-                        e.printStackTrace();
+                       // e.printStackTrace();
                     }
                     senderThread.interrupt();
                 }
@@ -278,7 +277,7 @@ public class Client implements Runnable {
                 playersData = fromServer.readLine();
 
                 // Se il messaggio contiene ":0" significa che sono coordinate provenienti dai client
-                if (playersData.contains(":0")) {
+                if (playersData.contains(":0") || playersData.contains(":2")) {
                     rs.run(playersData);
                 }
 
@@ -323,16 +322,14 @@ public class Client implements Runnable {
                     // Faccio ripartire istantaneamente un'altra partita
                 } else if (playersData.equals("/startagain") && !pause) {
                     try {
-
                         gameThread.stop();
                         Schermo.screen.stopScreen();
                         Schermo.screen.close();
-                        RiceviStato.traduzione.release();
                         Schermo schermo1 = new Schermo(toServer, name, IP, PORT, panel, coloreLabel, connectedClients);
                         Gioco(fromServer, toServer, rs, schermo1);
 
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
 
                     // Annullo la partita e disconnetto il client
@@ -342,18 +339,14 @@ public class Client implements Runnable {
                         Schermo.screen.close();
                         gameThread.stop();
                         socket.close();
-                        Server.semaforoConnectedClients.release();
-                        Schermo.semaforoColore.release();
-                        Schermo.semaforoSpazzatura.release();
-                        InviaStato.traduzione.release();
                         String[] args = new String[0];
                         MainSchermata.main(args);
                         panel.addComponent(new EmptySpace(new TerminalSize(0, 0))); // Empty space underneath labels
                         break;
                     } catch (SocketException e) {
-                        e.printStackTrace();
+                       // e.printStackTrace();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                       e.printStackTrace();
                     }
 
                     // Se il server manda un messaggio /quit interrompo la partita e mi disconnetto
@@ -369,9 +362,9 @@ public class Client implements Runnable {
                         MainSchermata.main(args);
                         break;
                     } catch (SocketException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
 
                     // Se arriva il messaggio di vittoria interrompo il Thread e faccio
@@ -400,7 +393,7 @@ public class Client implements Runnable {
                     break;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+               // e.printStackTrace();
             }
         }
 
