@@ -15,7 +15,7 @@ public class PezzoL extends Pezzo {
                 new BloccoPieno(schermo, 5, 0, TextColor.ANSI.YELLOW_BRIGHT),
                 new BloccoPieno(schermo, 6, 0, TextColor.ANSI.YELLOW_BRIGHT),
                 new BloccoPieno(schermo, 4, 1, TextColor.ANSI.YELLOW_BRIGHT));
-        tipoPezzo = 2;
+                
         rotazione = 0;
 
         maxRotazioni = 3;
