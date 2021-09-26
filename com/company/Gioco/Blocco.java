@@ -33,9 +33,10 @@ public class Blocco {
             Schermo.semaforoColore.acquire(); //serve per gestire l'accesso a "schermo.setForegroundColor" essendo una risorsa condivsa
             schermo.setForegroundColor(colore);
             schermo.fillRectangle(new TerminalPosition(colonnaGriglia * coefColonna+1, rigaGriglia * coefRiga+1), new TerminalSize(coefColonna, coefRiga), simbolo);
-            Schermo.semaforoColore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            Schermo.semaforoColore.release();
         }
     }
 
@@ -51,13 +52,6 @@ public class Blocco {
      */
     public int getRiga() {
         return rigaGriglia;
-    }
-
-    /**
-     * @return il colore del blocco
-     */
-    public TextColor getColor() {
-        return colore;
     }
 
     /**
