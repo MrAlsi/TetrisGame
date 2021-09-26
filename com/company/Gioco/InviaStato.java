@@ -23,7 +23,7 @@ public class InviaStato implements Runnable{
 
     }
 
-    public synchronized void run(Griglia griglia) {
+    public void run(Griglia griglia) {
         traduciGrigliaToInt(griglia);
     }
 
@@ -31,7 +31,7 @@ public class InviaStato implements Runnable{
      * @param griglia il proprio campo da gioco in questo momento, traduce la griglia di blocco in una griglia di
      *                ugual misura ma di numeri, i numeri (0, 1, 2, 3) indicano lo stato di ogni blocco della griglia
      */
-    public synchronized void traduciGrigliaToInt(Griglia griglia){
+    public void traduciGrigliaToInt(Griglia griglia){
         try {
             traduzione.acquire();
             for(int i=0; i<griglia.griglia.length; i++){
@@ -51,18 +51,18 @@ public class InviaStato implements Runnable{
                     }
                 }
             }
-            traduciInttoString(miaGriglia);
-            traduzione.release();
+            traduciInttoString(miaGriglia); //Richiamo il metodo per tradurre la matrice di interi in in una Stringa da inviare
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            traduzione.release();
         }
-
     }
 
     /**
      * @param mat, traduco la matrice di int in una Stringa, questa stringa inizia con il proprio username, cosi gli altri giocatori capiranno di chi sia la griglia
      */
-    public synchronized void traduciInttoString(int[][] mat){
+    public void traduciInttoString(int[][] mat){
         String stringa= username + ":";
         for(int i=0; i<12; i++){
             for(int e=0; e<24; e++){
