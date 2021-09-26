@@ -312,10 +312,14 @@ public class Client implements Runnable {
                     if (!arr[0].equals(name)) {
                         Schermo.lost(arr[0]);
                     }
-                } else if (playersData.equals("/pause") && !pause) {
+                    
+                    //Se arriva una messaggio che contiene "/pause" e non si è già in pause, stoppa il gioco
+                } else if (playersData.contains("/pause") && !pause) {
                     pause = true;
                     gameThread.suspend();
-                } else if (playersData.equals("/resume") && pause) {
+                    
+                    //Se arriva un messaggio che contiene "/resume" e si è in pausa fa ripartire il gioco
+                } else if (playersData.contains("/resume") && pause) {
                     pause = false;
                     gameThread.resume();
 
