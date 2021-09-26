@@ -17,7 +17,6 @@ public class PezzoJ extends Pezzo {
                 new BloccoPieno(schermo, 5, 0, TextColor.ANSI.MAGENTA_BRIGHT),
                 new BloccoPieno(schermo, 5, 1, TextColor.ANSI.MAGENTA_BRIGHT));
 
-        tipoPezzo = 3;
         rotazione = 0;
 
         maxRotazioni = 3;
