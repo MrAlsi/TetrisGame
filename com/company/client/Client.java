@@ -84,6 +84,11 @@ public class Client implements Runnable {
             BufferedReader fromServer = new BufferedReader(socketReader); //Legge stringhe dal socket
             PrintWriter toServer = new PrintWriter(socketWriter); //Scrive stringhe sul socket
 
+            System.out.println("Connessione eseguita!");
+            Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
+                    .setForegroundColor(coloreLabel);
+            panel.addComponent(connesso);
+            
             // Creazione del thread di invio messaggi.
             Sender clientSender = new Sender(toServer,panel,coloreLabel,name);
             Thread senderThread = new Thread(clientSender);
@@ -103,10 +108,6 @@ public class Client implements Runnable {
                 System.out.println("Errore di lettura: " + e);
             }
 
-            System.out.println("Connessione eseguita!");
-            Label connesso = new Label("\n- - - - Connected - - - -\n").setBackgroundColor(BLACK)
-                    .setForegroundColor(coloreLabel);
-            panel.addComponent(connesso);
 
             RiceviStato rs = new RiceviStato();
 
