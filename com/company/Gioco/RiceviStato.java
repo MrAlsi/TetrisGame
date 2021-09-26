@@ -47,9 +47,10 @@ public class RiceviStato extends Thread{
             }
             TextColor colore = getColore(s[2]);
             traduciIntToMiniGriglia(campoAvv, s[0], colore);
-            traduzione.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            traduzione.release();
         }
     }
 
@@ -74,24 +75,22 @@ public class RiceviStato extends Thread{
         for (int i = 0; i < campo.length; i++) {
             for (int e = 0; e < campo[i].length; e++) {
                 switch (campo[i][e]) {
-                    case 0 -> {
+                    case 0 : {
                         miniCampo[id].griglia[i][e] = new Mini_BloccoVuoto(schermo, i, e, id);
                         break;
                     }
-                    case 1 -> {
+                    case 1 :{
                         miniCampo[id].griglia[i][e] = new Mini_BloccoPieno(schermo, i, e, colore, id);
                         break;
                     }
-                    case 2 -> {
+                    case 2 : {
                         miniCampo[id].griglia[i][e] = new Mini_BloccoStruttura(schermo, i, e, id);
                         break;
                     }
-                    case 3 -> miniCampo[id].griglia[i][e] = new Mini_BloccoSpazzatura(schermo, i, e, id);
+                    case 3 : miniCampo[id].griglia[i][e] = new Mini_BloccoSpazzatura(schermo, i, e, id);
                 }
             }
         }
-
-
     }
 
     /**
