@@ -32,14 +32,12 @@ public class YouWin implements Runnable{
     private TextColor coloreLabel;
     public static Screen screen;
     public static Boolean nextGame = false;
-    private List<String> connectedClients;
 
-    public YouWin(String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) {
+    public YouWin(String name, String IP, int PORT, Panel panel, TextColor coloreLabel) {
         this.IP = IP;
         this.PORT = PORT;
         this.panel = panel;
         this.coloreLabel = coloreLabel;
-        this.connectedClients=connectedClients;
         username = name;
     }
 
