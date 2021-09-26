@@ -16,7 +16,6 @@ public class PezzoQuadrato extends Pezzo {
                 new BloccoPieno(schermo, 4, 1, TextColor.ANSI.CYAN_BRIGHT),
                 new BloccoPieno(schermo, 3, 0, TextColor.ANSI.CYAN_BRIGHT),
                 new BloccoPieno(schermo, 4, 0, TextColor.ANSI.CYAN_BRIGHT));
-        tipoPezzo = 6;
         rotazione = 1;
 
         spostamentoVerticale= new int[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
