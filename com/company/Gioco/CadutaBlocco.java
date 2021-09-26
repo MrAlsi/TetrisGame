@@ -12,21 +12,10 @@ public class CadutaBlocco extends Thread {
         }
         return this.dropBrick;
     }
-    public void setDropBrick(boolean dropBrick) {
-        this.dropBrick = dropBrick;
-    }
 
-    public Integer getDelay() {
-        return delay;
-    }
     public void setDelay(Integer delay) {
         this.delay = delay;
     }
-
-    public void setTrue(){
-        this.dropBrick = true;
-    }
-
 
     public void run() {
         while(true) {
