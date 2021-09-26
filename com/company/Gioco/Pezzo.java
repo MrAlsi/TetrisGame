@@ -8,7 +8,6 @@ package com.company.Gioco;
 public class Pezzo {
     public Blocco[] pezzo;
     Griglia campo;
-    public int tipoPezzo = 0; // 0 pezzoLungo, 1 pezzoT, 2 pezzoL , 3 pezzoJ,  4 pezzoS, 5 PezzoZ, 6 pezzoQuadrato
     public int rotazione = 0; // 0 posizione iniziale, successivamente in senso orario
 
     public int maxRotazioni; //numero massimo di rotazioni possibili
@@ -72,15 +71,13 @@ public class Pezzo {
      * li riposizione nella griglia aggiungendo i paramentri di movimento
      */
     public void muovi(Griglia campo, int orizzontale, int verticale){
-        if(!collisioneMovimento(orizzontale)){ //deve ritornare false per entrare
-            for (int i = 3; i >= 0; i--) {
-                pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
-            }
-            for (int i = 3; i >= 0; i--) {
-                pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, verticale, pezzo[i].colore);
-                pezzo[i].colonnaGriglia = pezzo[i].getColonna() + orizzontale;
-                pezzo[i].rigaGriglia = pezzo[i].getRiga() + verticale;
-            }
+        for (int i = 3; i >= 0; i--) {
+            pezzo[i].rimuovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga());
+        }
+        for (int i = 3; i >= 0; i--) {
+            pezzo[i].muovi(campo, pezzo[i].getColonna(), pezzo[i].getRiga(), orizzontale, verticale, pezzo[i].colore);
+            pezzo[i].colonnaGriglia = pezzo[i].getColonna() + orizzontale;
+            pezzo[i].rigaGriglia = pezzo[i].getRiga() + verticale;
         }
     }
 
@@ -150,11 +147,11 @@ public class Pezzo {
      */
     public void alzaPezzo(int altezza){
         if (pezzo[0].collisioneLaterale(campo, 0, -altezza) ||
-                pezzo[1].collisioneLaterale(campo, 0, -altezza) ||
-                pezzo[2].collisioneLaterale(campo, 0, -altezza) ||
-                pezzo[3].collisioneLaterale(campo, 0, -altezza)) {
-            System.out.println("ricorsione");
-            alzaPezzo(altezza-1);
+            pezzo[1].collisioneLaterale(campo, 0, -altezza) ||
+            pezzo[2].collisioneLaterale(campo, 0, -altezza) ||
+            pezzo[3].collisioneLaterale(campo, 0, -altezza)) {
+                System.out.println("ricorsione");
+                alzaPezzo(altezza-1);
         } else {
             muovi(campo, 0, -altezza);
         }
