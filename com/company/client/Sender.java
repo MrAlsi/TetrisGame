@@ -1,8 +1,6 @@
 package com.company.client;
 
 import com.company.MainSchermata;
-import com.company.server.ClientHandler;
-import com.company.server.Server;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Label;
@@ -63,7 +61,7 @@ public class Sender implements Runnable {
                     System.exit(0);
                     panel.removeAllComponents();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }).addTo(panel);
