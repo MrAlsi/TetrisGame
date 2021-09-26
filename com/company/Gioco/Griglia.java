@@ -73,7 +73,7 @@ public class Griglia {
 
     /**
      * @param riga
-     * fa cadere la struttura dalla riga passa come parametro
+     * fa cadere la struttura dalla riga passata come parametro
      */
     public void cadutaStruttura(int riga){
         for(int i = riga - 1; i >= 0; i--){
@@ -92,7 +92,12 @@ public class Griglia {
     }
 
     /**
-     * @param righeSpazzatura
+     * Come prima cosa alza il pezzo, non posso alzare semplicemente i blocchi perché al prossimo timer il pezzo cadrà
+     * da dov'era prima, quindi bisogna alzare proprio il pezzo.
+     * Dopo di chè controllo alzo ogni pezzo delle righe, a meno ché il blocco dove finirà c'è già un bloccoPieno
+     * Per ogni pezzo faccio un controllo che andando su non causi un errore andando fuori dalla struttura, ma per i
+     * blocchi della struttura e spazzatura nel caso "sforino" la griglia si ha perso, quindi richiamo il metodo HaiPerso.
+     * Alla fine di tutti aggiungo le righe spazzatura in basso.
      */
     public void aggiungiSpazzatura(int righeSpazzatura){
         //Alza il pezzo, non posso trattarlo come un blocco normale perché altrimenti, al brickDropTimer scenderebbe da
@@ -100,57 +105,48 @@ public class Griglia {
         pezzoScelto.alzaPezzo(righeSpazzatura);
 
         for(int i = 0; i < 24; i++){
-            //if(i >= righeSpazzatura - 1)
-            for(int j = 0; j < 12; j++){
-                switch(griglia[j][i].stato) {
-                    //Devo alzare un blocco vuoto
-                    case 0: {
-                        if (!(i - righeSpazzatura < 0)) //Controllo che non vada oltre la griglia per evitare un errore
-                            griglia[j][i - righeSpazzatura] = new BloccoVuoto(screen,
-                                    griglia[j][i - righeSpazzatura].colonnaGriglia,
-                                    griglia[j][i - righeSpazzatura].rigaGriglia);
-                        break;
-                    }
-
-                    //Devo alzare un blocco della struttura
-                    case 2: {
-                        if (i - righeSpazzatura < 0){ //Controllo che se va oltre la griglia, nel caso ho perso
-                            haiPerso();
-                            System.out.println("2");
+            for(int j = 0; j < 12; j++) {
+                    switch (griglia[j][i].stato) {
+                        //Devo alzare un blocco vuoto
+                        case 0: {
+                            if (!(i - righeSpazzatura < 0) && griglia[j][i - righeSpazzatura].getStato()!=1) //Controllo che non vada oltre la griglia per evitare un errore
+                                griglia[j][i - righeSpazzatura] = new BloccoVuoto(screen,
+                                        griglia[j][i - righeSpazzatura].colonnaGriglia,
+                                        griglia[j][i - righeSpazzatura].rigaGriglia);
                             break;
-                        } else {
-                            griglia[j][i - righeSpazzatura] = new BloccoStruttura(screen,
-                                    griglia[j][i - righeSpazzatura].colonnaGriglia,
-                                    griglia[j][i - righeSpazzatura].rigaGriglia);
                         }
-                        break;
-                    }
 
-                    //Devo alzare della spazzatura
-                    case 3: {
-                        if (i - righeSpazzatura < 0) { //Controllo che se va oltre la griglia, nel caso ho perso
-                            haiPerso();
-                            System.out.println("3");
+                        //Devo alzare un blocco della struttura
+                        case 2: {
+                            if (i - righeSpazzatura < 0) { //Controllo che se va oltre la griglia, nel caso ho perso
+                                haiPerso();
+                                break;
+                            } else if(griglia[j][i - righeSpazzatura].getStato()!=1) {
+                                        griglia[j][i - righeSpazzatura] = new BloccoStruttura(screen,
+                                        griglia[j][i - righeSpazzatura].colonnaGriglia,
+                                        griglia[j][i - righeSpazzatura].rigaGriglia);
+                            }
                             break;
-                        } else {
-                            griglia[j][i - righeSpazzatura] = new BloccoSpazzatura(screen,
-                                    griglia[j][i - righeSpazzatura].colonnaGriglia,
-                                    griglia[j][i - righeSpazzatura].rigaGriglia);
                         }
-                        break;
 
+                        //Devo alzare della spazzatura
+                        case 3: {
+                            if (i - righeSpazzatura < 0) { //Controllo che se va oltre la griglia, nel caso ho perso
+                                haiPerso();
+                                break;
+                            } else if(griglia[j][i - righeSpazzatura].getStato()!=1){
+                                griglia[j][i - righeSpazzatura] = new BloccoSpazzatura(screen,
+                                        griglia[j][i - righeSpazzatura].colonnaGriglia,
+                                        griglia[j][i - righeSpazzatura].rigaGriglia);
+                            }
+                            break;
+                        }
                     }
-                }
-
-                //Disegno le nuove righe spazzatura in fondo
-                if(i >= (23 - righeSpazzatura)) {
-                    griglia[j][i] = new BloccoSpazzatura(screen,
-                            griglia[j][i].colonnaGriglia,
-                            griglia[j][i].rigaGriglia);
-                }
+                    //Disegno le nuove righe spazzatura in fondo
+                    if (i >= (23 - righeSpazzatura)) {
+                        griglia[j][i] = new BloccoSpazzatura(screen, griglia[j][i].colonnaGriglia, griglia[j][i].rigaGriglia);
+                    }
             }
-
         }
-
     }
 }
