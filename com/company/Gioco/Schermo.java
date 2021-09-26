@@ -44,9 +44,6 @@ public class Schermo implements Runnable{
     private Random sceltaPezzo = new Random();          //Variabile randomica per scegliere il prossimo pezzo che cadrà
     private int selezionato;                           //servirà come variabile d'appoggio per controllare quale sia il campo evidenziato
 
-
-    //Variabili publiche
-    public int delay = 1000 / 60;
     public Griglia campo;
     public static TextGraphics schermo;
     public static boolean gameOver = false;
@@ -59,7 +56,7 @@ public class Schermo implements Runnable{
     public static Mini_Griglia[] miniCampo = new Mini_Griglia[3];   //Campi degli avversari, max 3
     public static Semaphore semaforoColore=new Semaphore(1); // serve per gestire l'accesso a "schermo.setForegroundColor"
     public static Semaphore semaforoSpazzatura = new Semaphore(1);  // serve per evitare la concorrenza tra il pezzo che scende
-    // e l'arrivo di una riga spazzatura
+                                                                            // e l'arrivo di una riga spazzatura
     //Variabili per i tasti per il processKeyInput
     Character c1 = ' '; //Fai cadere il pezzo fino a giù
     Character c2 = 'd'; //Ruota a destra
@@ -70,7 +67,8 @@ public class Schermo implements Runnable{
     Character tre = '3'; //Evidenziare campo 3 (in realtà lo 2)
 
 
-    public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel, List<String> connectedClients) throws IOException {
+    public Schermo(PrintWriter toServer, String name, String IP, int PORT, Panel panel, TextColor coloreLabel,
+                   List<String> connectedClients) throws IOException {
         this.IP = IP;
         this.PORT = PORT;
         this.panel = panel;
@@ -78,7 +76,6 @@ public class Schermo implements Runnable{
         this.connectedClients=connectedClients;
         pw = toServer;
         username = name;
-
 
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -92,9 +89,6 @@ public class Schermo implements Runnable{
         // height will store the height of the screen
         int height = (int)size.getHeight();
 
-        int leftMargin = width/19;
-        int topMargin = height/50;
-
         //codice per avere uno schermo
         final int COLS = width/8;
         final int ROWS = height/16;
@@ -104,17 +98,16 @@ public class Schermo implements Runnable{
 
         screen = new TerminalScreen(terminal);
         screen.startScreen();
-
         schermo = screen.newTextGraphics();
+
         //Creazione del campo da gioco
         campo = new Griglia(schermo);
         campo.creaCampo();
-        //creo minicampi
 
+        //creo minicampi
         //prendo la dimensione per sapere i client connessi
         dim = connectedClients.size();
         int posverticale=height/25;
-
         int pos1;
         int pos2;
         int pos3;
@@ -156,7 +149,6 @@ public class Schermo implements Runnable{
                 }
                 j++;
             }
-
         }
         screen.refresh();
     }
@@ -164,11 +156,7 @@ public class Schermo implements Runnable{
     public synchronized void run(){
         //Gioco
         try {
-            //Creazione terminale con dimensioni già fisse
-            //Gioco
-
             // start brick move treads
-
             brickDropTimer = new CadutaBlocco();
             brickDropTimer.setDelay(brickDropDelay);
             brickDropTimer.start();
@@ -180,7 +168,6 @@ public class Schermo implements Runnable{
             InviaStato IS = new InviaStato(username, pw);
             IS.run(campo);
 
-
             // run game loop
             while(!gameOver) {
 
@@ -188,16 +175,14 @@ public class Schermo implements Runnable{
                     gameOver = true;
                     Client.winner = false;
                     System.out.println("Partita finita");
-                    YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel, connectedClients);
+                    YouWin vittoria = new YouWin(username, IP, PORT, panel, coloreLabel);
                     Thread vittoriaThread = new Thread(vittoria);
                     vittoriaThread.start();
                     break;
                 }
 
                 List<KeyStroke> keyStrokes = keyInput.getKeyStrokes();  //Lista per prendere gli input da tastiera
-
-                for(KeyStroke key : keyStrokes) {               //Esegue gli input presi da tastiera
-
+                for(KeyStroke key : keyStrokes) {                       //Esegue gli input presi da tastiera
                     processKeyInput(key);
                 }
 
@@ -210,64 +195,67 @@ public class Schermo implements Runnable{
                         datas = "spazzatura-" + usernameDestinatario + "-" + combo;
                         invia(datas, pw);
                     }
-                    //Richiamo il metodo per mandare le righe spaz. in base alla combo
-                    //screen.refresh();                            //Refresh dello schermo
+
                     for(int i=4; i<8; i++) {                     //Controllo se la prima riga al centro è occupata da dei
                         if(campo.griglia[i][0].stato>1){        // blocchi della struttura o spazzatura, in tal caso ho perso
                             haiPerso();
-                            System.out.println("1");
                             gameOver=true;
                             break;
                         }
                     }
                     pezzoScelto = prossimoPezzo(schermo);        //Nuovo pezzo inizia a scendere
-
                 }
 
                 //Aggiungi la spazzatura
                 if(aggiungiSpazzatura != 0){            //Qualcuno mi ha inviato una riga spazzatura
                     try {
-                        semaforoSpazzatura.acquire();       //Semaforo per evitare problemi di concorrenza
-                    } catch (InterruptedException e) {      //se finisse il brickDropTimer
-
+                        semaforoSpazzatura.acquire();       //Semaforo per evitare problemi di concorrenza se finisse il brickDropTimer
+                        campo.aggiungiSpazzatura(aggiungiSpazzatura);
+                        aggiungiSpazzatura = 0;
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
+                    } finally {
+                        semaforoSpazzatura.release();
                     }
-                    campo.aggiungiSpazzatura(aggiungiSpazzatura);
-                    aggiungiSpazzatura = 0;
-                    semaforoSpazzatura.release();
                 }
+
                 //Finito il tempo, deve cadere il pezzo
                 if(brickDropTimer.getDropBrick()) {
                     try {
-                        semaforoSpazzatura.acquire();       //Semaforo per evitare problemi di concorrenza
-                    } catch (InterruptedException e) {      // se arrivasse della spazzatura adesso
+                        semaforoSpazzatura.acquire();       //Semaforo per evitare problemi di concorrenza // se arrivasse della spazzatura adesso
+                        pezzoScelto.scendi(campo);          //Il pezzo scende
+                        IS.run(campo);                      //Manda l'aggioramento del proprio stato agli altri
 
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
+                    } finally {
+                        semaforoSpazzatura.release();
                     }
-                    pezzoScelto.scendi(campo);              //Il pezzo scende
-                    IS.run(campo);                          //Manda l'aggioramento del proprio stato agli altri
-
-                    semaforoSpazzatura.release();
                 }
+
                 try {
                     RiceviStato.traduzione.acquire();       //Semaforo per evitare problemi di concorrenza
+                    screen.refresh();                       //Refresho lo schermo
                 } catch (InterruptedException e) {          //con l'arrivo dello stato della griglia degli altri campi
-                    e.printStackTrace();
+                     e.printStackTrace();
+                } finally {
+                    RiceviStato.traduzione.release();
                 }
-                screen.refresh();                       //Refresho lo schermo
-                RiceviStato.traduzione.release();
-
             }
-            semaforoColore.release();
+            //Fine gameloop
+
             screen.close();                                 //Chiude lo schermo
             Thread.currentThread().interrupt();             //Interrompe il thread
-
         } catch (IOException e) {
             System.out.println("Problema con il terminale");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
+    /**
+     * Stampa stato della griglia, usato per eventuali controlli
+     * @param campo
+     */
     public void stampaGriglia(Griglia campo) {
         System.out.println("-------------------------------------");
         for (int i = 0; i < 12; i++) {
@@ -285,6 +273,7 @@ public class Schermo implements Runnable{
      */
     public Pezzo prossimoPezzo(TextGraphics schermo){
         //Restituisce il prossimo pezzo che cadrà
+        //sceltaPezzo.nextInt(7)
         switch(sceltaPezzo.nextInt(7)) {
             case 0: return new PezzoLungo(schermo, campo);
             case 1: return new PezzoT(schermo, campo);
@@ -298,46 +287,46 @@ public class Schermo implements Runnable{
     }
 
     /**
-     * Traduttore da KeyInput ad evento del pezzo
+     * Traduttore da KeyInput ad evento del tasto
      */
     private void processKeyInput(KeyStroke key) throws IOException {
-        //down totale
+        //giù totale
         if(c1.equals(key.getCharacter())) {
             while(!pezzoScelto.collisioneSotto()){
                 try {
                     semaforoSpazzatura.acquire();
+                    pezzoScelto.scendi(campo);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } finally {
+                    semaforoSpazzatura.release();
                 }
-                pezzoScelto.scendi(campo);
-                semaforoSpazzatura.release();
             }
             barra = true;
         }
 
-
-        // down
+        // giù
         if(key.getKeyType().equals(KeyType.ArrowDown)) {
             try {
                 semaforoSpazzatura.acquire();
+                if(!pezzoScelto.collisioneSotto()){
+                    pezzoScelto.scendi(campo);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                semaforoSpazzatura.release();
             }
-            if(!pezzoScelto.collisioneSotto()){
-                pezzoScelto.scendi(campo);
-            }
-            semaforoSpazzatura.release();
-
         }
 
-        // left
+        // sinistra
         if(key.getKeyType().equals(KeyType.ArrowLeft)) {
             if(!pezzoScelto.collisioneMovimento(-1)) {
                 pezzoScelto.muovi(campo, -1, 0);
             }
         }
 
-        // right
+        // destra
         if(key.getKeyType().equals(KeyType.ArrowRight)) {
             if(!pezzoScelto.collisioneMovimento(1)) {
                 pezzoScelto.muovi(campo, 1, 0);
@@ -409,13 +398,20 @@ public class Schermo implements Runnable{
         }
 
         //per provare righe spazzatura
-       /* if(c4.equals(key.getCharacter())) {
-
-            datas = "spazzatura-" + usernameDestinatario + "-" + 3;
+       /*if(c4.equals(key.getCharacter())) {
+           /* datas = "spazzatura-" + usernameDestinatario + "-" + 3;
             invia(datas, pw);
-
+           try {
+               semaforoSpazzatura.acquire();
+               campo.aggiungiSpazzatura(3);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           } finally {
+               semaforoSpazzatura.release();
+            }
         }*/
     }
+
     /**
      * Metodo per inviare messaggi
      * @param s Stringa che si vuole inviare
@@ -440,11 +436,13 @@ public class Schermo implements Runnable{
             semaforoColore.acquire();
             schermo.setForegroundColor(YELLOW_BRIGHT);
             campo=campo*40+60-1;
-            schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                    Symbols.BLOCK_SOLID);
-            semaforoColore.release();
+            schermo.drawRectangle(new TerminalPosition(campo, 2),
+                                    new TerminalSize(26, 26),
+                                    Symbols.BLOCK_SOLID);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            semaforoColore.release();
         }
     }
 
@@ -462,11 +460,13 @@ public class Schermo implements Runnable{
             semaforoColore.acquire();
             schermo.setForegroundColor(BLACK);
             campo=campo*40+60-1;
-            schermo.drawRectangle(new TerminalPosition(campo, 2), new TerminalSize(26, 26),
-                    Symbols.BLOCK_SOLID);
-            semaforoColore.release();
+            schermo.drawRectangle(new TerminalPosition(campo, 2),
+                                    new TerminalSize(26, 26),
+                                    Symbols.BLOCK_SOLID);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            semaforoColore.release();
         }
     }
     /**
@@ -484,6 +484,11 @@ public class Schermo implements Runnable{
             gameOver=true;
         }
     }
+    
+    /**
+     * @param name, metodo che viene richiamato quando un avversario perde, riconosco il suo campo con il suo nome che
+     *              e ci scrivo sopra "Ha perso"
+     */
     public static void lost(String name){
         int i;
         for(i=0;i<miniCampo.length;i++){
@@ -495,33 +500,37 @@ public class Schermo implements Runnable{
             String stampalost = "Ha perso";
             try {
                 semaforoColore.acquire();
+                schermo.setForegroundColor(RED_BRIGHT);
+                schermo.putString(1280/19,720/40 , stampalost).setBackgroundColor(BLACK);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                semaforoColore.release();
             }
-            schermo.setForegroundColor(RED_BRIGHT);
-            schermo.putString(1280/19,720/40 , stampalost).setBackgroundColor(BLACK);
-            semaforoColore.release();
         }
         else if(i==1){
             try {
                 semaforoColore.acquire();
+                schermo.setForegroundColor(RED_BRIGHT);
+                String stampalost = "Ha perso";
+                schermo.putString(1280/12,720/40 , stampalost).setBackgroundColor(BLACK);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                semaforoColore.release();
             }
-            schermo.setForegroundColor(RED_BRIGHT);
-            String stampalost = "Ha perso";
-            schermo.putString(1280/12,720/40 , stampalost).setBackgroundColor(BLACK);
-            semaforoColore.release();
+
         }else{
             try {
                 semaforoColore.acquire();
+                schermo.setForegroundColor(RED_BRIGHT);
+                String stampalost = "Ha perso";
+                schermo.putString(1280/9,720/ 40, stampalost).setBackgroundColor(BLACK);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                semaforoColore.release();
             }
-            schermo.setForegroundColor(RED_BRIGHT);
-            String stampalost = "Ha perso";
-            schermo.putString(1280/9,720/ 40, stampalost).setBackgroundColor(BLACK);
-            semaforoColore.release();
         }
     }
 }
