@@ -15,7 +15,6 @@ public class PezzoS extends Pezzo {
                 new BloccoPieno(schermo, 5, 0, TextColor.ANSI.BLUE_BRIGHT),
                 new BloccoPieno(schermo, 3, 1, TextColor.ANSI.BLUE_BRIGHT),
                 new BloccoPieno(schermo, 4, 1, TextColor.ANSI.BLUE_BRIGHT));
-        tipoPezzo = 4;
         rotazione = 1;
 
         maxRotazioni = 1;
