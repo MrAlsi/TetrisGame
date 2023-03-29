@@ -1,7 +1,11 @@
-  _____   U _____ u   _____      ____                     ____       _____   
- |_ " _|  \| ___"|/  |_ " _|  U |  _"\ u       ___       / __"| u   |_ " _|  
-   | |     |  _|"      | |     \| |_) |/      |_"_|     <\___ \/      | |    
-  /| |\    | |___     /| |\     |  _ <         | |       u___) |     /| |\   
- u |_|U    |_____|   u |_|U     |_| \_\      U/| |\u     |____/>>   u |_|U   
- _// \\_   <<   >>   _// \\_    //   \\_  .-,_|___|_,-.   )(  (__)  _// \\_  
-(__) (__) (__) (__) (__) (__)  (__)  (__)  \_)-' '-(_/   (__)      (__) (__)
+# Tetris
+
+University project for exam of operating systems, this project was used to learn multithreading, to learn it the project was developed in Java with a library which doesn't handle multithreading: Lanterna.
+Exam score 30/30.
+
+## Description
+
+
+
+### The game
+The game is a n
